@@ -23,9 +23,10 @@ interface LtpBannerProps {
     nifty: LtpData;
     banknifty: LtpData;
   };
+  showOHLC?: boolean;
 }
 
-const InstrumentCard = ({ label, data }: { label: string; data: LtpData }) => {
+const InstrumentCard = ({ label, data, showOHLC = false }: { label: string; data: LtpData; showOHLC?: boolean }) => {
   const difference = data.ltp - data.close;
   const changePercentage = data.change;
   const isPositive = difference >= 0;
@@ -46,29 +47,31 @@ const InstrumentCard = ({ label, data }: { label: string; data: LtpData }) => {
           </div>
         </div>
       </div>
-      <div className="flex gap-4 text-xs">
-        <div className="text-center">
-          <p className="text-muted-foreground font-medium mb-1">O</p>
-          <p className="font-semibold text-foreground">{data.open.toFixed(2)}</p>
+      {showOHLC && (
+        <div className="flex gap-4 text-xs">
+          <div className="text-center">
+            <p className="text-muted-foreground font-medium mb-1">O</p>
+            <p className="font-semibold text-foreground">{data.open.toFixed(2)}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-muted-foreground font-medium mb-1">H</p>
+            <p className="font-semibold text-green-400">{data.high.toFixed(2)}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-muted-foreground font-medium mb-1">L</p>
+            <p className="font-semibold text-red-400">{data.low.toFixed(2)}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-muted-foreground font-medium mb-1">C</p>
+            <p className="font-semibold text-foreground">{data.close.toFixed(2)}</p>
+          </div>
         </div>
-        <div className="text-center">
-          <p className="text-muted-foreground font-medium mb-1">H</p>
-          <p className="font-semibold text-green-400">{data.high.toFixed(2)}</p>
-        </div>
-        <div className="text-center">
-          <p className="text-muted-foreground font-medium mb-1">L</p>
-          <p className="font-semibold text-red-400">{data.low.toFixed(2)}</p>
-        </div>
-        <div className="text-center">
-          <p className="text-muted-foreground font-medium mb-1">C</p>
-          <p className="font-semibold text-foreground">{data.close.toFixed(2)}</p>
-        </div>
-      </div>
+      )}
     </div>
   );
 };
 
-export default function LtpBanner({ data }: LtpBannerProps) {
+export default function LtpBanner({ data, showOHLC = false }: LtpBannerProps) {
   return (
     <Card className="p-5 border-primary/30 bg-card/80 backdrop-blur-sm">
       <motion.div
@@ -76,9 +79,9 @@ export default function LtpBanner({ data }: LtpBannerProps) {
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col lg:flex-row gap-6 divide-y lg:divide-y-0 lg:divide-x divide-border"
       >
-        <InstrumentCard label="NIFTY" data={data.nifty} />
+        <InstrumentCard label="NIFTY" data={data.nifty} showOHLC={showOHLC} />
         <div className="lg:pl-6 pt-6 lg:pt-0">
-          <InstrumentCard label="BANKNIFTY" data={data.banknifty} />
+          <InstrumentCard label="BANKNIFTY" data={data.banknifty} showOHLC={showOHLC} />
         </div>
       </motion.div>
     </Card>

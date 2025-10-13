@@ -101,7 +101,7 @@ export default function Landing() {
             </p>
           </motion.div>
 
-          {/* LTP Banner */}
+          {/* LTP Banner - with OHLC */}
           {ltpData.nifty && ltpData.banknifty && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -109,7 +109,7 @@ export default function Landing() {
               transition={{ delay: 0.3 }}
               className="w-full"
             >
-              <LtpBanner data={{ nifty: ltpData.nifty, banknifty: ltpData.banknifty }} />
+              <LtpBanner data={{ nifty: ltpData.nifty, banknifty: ltpData.banknifty }} showOHLC={true} />
             </motion.div>
           )}
 

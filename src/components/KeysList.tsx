@@ -21,7 +21,7 @@ export default function KeysList({ keys, selectedKey, onSelectKey }: KeysListPro
           >
             <Button
               variant={selectedKey === key ? "default" : "ghost"}
-              className="w-full justify-start cursor-pointer"
+              className="w-full justify-start cursor-pointer text-foreground hover:text-foreground"
               onClick={() => onSelectKey(key)}
             >
               {key}
