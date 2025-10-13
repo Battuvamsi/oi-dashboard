@@ -73,14 +73,14 @@ const InstrumentCard = ({ label, data, showOHLC = false }: { label: string; data
 
 export default function LtpBanner({ data, showOHLC = false }: LtpBannerProps) {
   return (
-    <Card className="p-5 border-primary/30 bg-card/80 backdrop-blur-sm">
+    <Card className="p-3 border-primary/30 bg-card/80 backdrop-blur-sm">
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-2"
       >
         <InstrumentCard label="NIFTY" data={data.nifty} showOHLC={showOHLC} />
-        <div className="border-t border-border pt-4">
+        <div className="border-t border-border pt-2">
           <InstrumentCard label="BANKNIFTY" data={data.banknifty} showOHLC={showOHLC} />
         </div>
       </motion.div>

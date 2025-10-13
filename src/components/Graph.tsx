@@ -41,7 +41,7 @@ export default function Graph({ data }: GraphProps) {
 
     // Set canvas size
     const width = container.clientWidth;
-    const height = 400;
+    const height = 320;
     canvas.width = width;
     canvas.height = height;
 
@@ -167,8 +167,8 @@ export default function Graph({ data }: GraphProps) {
   }, [data, isExpanded]);
 
   return (
-    <Card className="p-4 bg-card/80 backdrop-blur-sm">
-      <div className="flex items-center justify-between mb-4">
+    <Card className="p-3 bg-card/80 backdrop-blur-sm">
+      <div className="flex items-center justify-between mb-2">
         <h3 className="text-lg font-bold tracking-tight text-foreground">Total Imbalance Over Time</h3>
         <Button
           variant="ghost"

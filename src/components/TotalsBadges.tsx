@@ -20,8 +20,8 @@ export default function TotalsBadges({ totals }: TotalsBadgesProps) {
   ];
 
   return (
-    <Card className="p-5 bg-card/80 backdrop-blur-sm">
-      <div className="flex flex-wrap gap-6">
+    <Card className="p-3 bg-card/80 backdrop-blur-sm">
+      <div className="flex flex-wrap gap-4">
         {badges.map((badge, index) => (
           <motion.div
             key={badge.label}
