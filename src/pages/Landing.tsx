@@ -2,9 +2,56 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { BarChart3, TrendingUp, Activity, ArrowRight } from "lucide-react";
+import LtpBanner from "@/components/LtpBanner";
+import { useEffect, useState } from "react";
+
+interface LtpData {
+  instrumentToken: number;
+  ltp: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  change: number;
+  lastTradedQuantity: number;
+  averageTradePrice: number;
+  volumeTradedToday: number;
+  oi: number;
+  openInterestDayHigh: number;
+  openInterestDayLow: number;
+}
 
 export default function Landing() {
   const navigate = useNavigate();
+  const [ltpData, setLtpData] = useState<{ nifty: LtpData | null; banknifty: LtpData | null }>({
+    nifty: null,
+    banknifty: null,
+  });
+
+  const API_BASE = "http://localhost:8080";
+
+  useEffect(() => {
+    const fetchLtpData = async () => {
+      try {
+        const [niftyResponse, bankniftyResponse] = await Promise.all([
+          fetch(`${API_BASE}/cache/ltp/256265`),
+          fetch(`${API_BASE}/cache/ltp/260105`),
+        ]);
+
+        if (niftyResponse.ok && bankniftyResponse.ok) {
+          const niftyData = await niftyResponse.json();
+          const bankniftyData = await bankniftyResponse.json();
+          setLtpData({ nifty: niftyData, banknifty: bankniftyData });
+        }
+      } catch (error) {
+        console.error("Error fetching LTP data:", error);
+      }
+    };
+
+    fetchLtpData();
+    const interval = setInterval(fetchLtpData, 5000); // Refresh every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <motion.div
@@ -30,7 +77,7 @@ export default function Landing() {
 
       {/* Hero Section */}
       <div className="flex-1 flex flex-col items-center justify-center px-4">
-        <div className="max-w-5xl mx-auto text-center space-y-8">
+        <div className="max-w-5xl mx-auto text-center space-y-8 w-full">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -43,6 +90,18 @@ export default function Landing() {
               Real-time options chain analysis with open interest tracking, imbalance monitoring, and PCR calculations
             </p>
           </motion.div>
+
+          {/* LTP Banner */}
+          {ltpData.nifty && ltpData.banknifty && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="w-full"
+            >
+              <LtpBanner data={{ nifty: ltpData.nifty, banknifty: ltpData.banknifty }} />
+            </motion.div>
+          )}
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
