@@ -49,7 +49,7 @@ export default function Landing() {
     };
 
     fetchLtpData();
-    const interval = setInterval(fetchLtpData, 5000); // Refresh every 5 seconds
+    const interval = setInterval(fetchLtpData, 3000); // Refresh every 3 seconds
     return () => clearInterval(interval);
   }, []);
 

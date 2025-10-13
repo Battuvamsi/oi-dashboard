@@ -115,40 +115,72 @@ export default function Dashboard() {
   useEffect(() => {
     if (!selectedKey) return;
 
-    const fetchData = async () => {
-      setLoadingData(true);
+    const fetchOiData = async () => {
       try {
-        const [oiResponse, graphResponse, niftyLtpResponse, bankniftyLtpResponse] = await Promise.all([
-          fetch(`${API_BASE}/cache/getOiChange/${selectedKey}`),
-          fetch(`${API_BASE}/cache/graph/${selectedKey}`),
+        const response = await fetch(`${API_BASE}/cache/getOiChange/${selectedKey}`);
+        if (!response.ok) throw new Error("Failed to fetch OI data");
+        const data = await response.json();
+        setOiChangeData(data);
+      } catch (error) {
+        console.error("Error fetching OI data:", error);
+        toast.error("Failed to load OI data");
+      }
+    };
+
+    const fetchGraphData = async () => {
+      try {
+        const response = await fetch(`${API_BASE}/cache/graph/${selectedKey}`);
+        if (!response.ok) throw new Error("Failed to fetch graph data");
+        const data = await response.json();
+        setGraphData(data);
+      } catch (error) {
+        console.error("Error fetching graph data:", error);
+        toast.error("Failed to load graph data");
+      }
+    };
+
+    const fetchLtpData = async () => {
+      try {
+        const [niftyResponse, bankniftyResponse] = await Promise.all([
           fetch(`${API_BASE}/cache/ltp/256265`),
           fetch(`${API_BASE}/cache/ltp/260105`),
         ]);
 
-        if (!oiResponse.ok || !graphResponse.ok || !niftyLtpResponse.ok || !bankniftyLtpResponse.ok) {
-          throw new Error("Failed to fetch data");
+        if (niftyResponse.ok && bankniftyResponse.ok) {
+          const niftyData = await niftyResponse.json();
+          const bankniftyData = await bankniftyResponse.json();
+          setLtpData({
+            nifty: niftyData,
+            banknifty: bankniftyData,
+          });
         }
-
-        const oiData = await oiResponse.json();
-        const gData = await graphResponse.json();
-        const niftyLtpData = await niftyLtpResponse.json();
-        const bankniftyLtpData = await bankniftyLtpResponse.json();
-
-        setOiChangeData(oiData);
-        setGraphData(gData);
-        setLtpData({
-          nifty: niftyLtpData,
-          banknifty: bankniftyLtpData,
-        });
       } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Failed to load data for selected key");
+        console.error("Error fetching LTP data:", error);
+      }
+    };
+
+    // Initial fetch with loading state
+    const initialFetch = async () => {
+      setLoadingData(true);
+      try {
+        await Promise.all([fetchOiData(), fetchGraphData(), fetchLtpData()]);
       } finally {
         setLoadingData(false);
       }
     };
 
-    fetchData();
+    initialFetch();
+
+    // Set up intervals for each data type
+    const ltpInterval = setInterval(fetchLtpData, 3000); // Every 3 seconds
+    const oiInterval = setInterval(fetchOiData, 5000); // Every 5 seconds
+    const graphInterval = setInterval(fetchGraphData, 60000); // Every 1 minute
+
+    return () => {
+      clearInterval(ltpInterval);
+      clearInterval(oiInterval);
+      clearInterval(graphInterval);
+    };
   }, [selectedKey]);
 
   if (loadingKeys) {
