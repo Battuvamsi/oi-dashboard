@@ -49,8 +49,9 @@ export default function Graph({ data }: GraphProps) {
     const graphWidth = width - padding.left - padding.right;
     const graphHeight = height - padding.top - padding.bottom;
 
-    // Clear canvas
-    ctx.clearRect(0, 0, width, height);
+    // Clear canvas with dark background
+    ctx.fillStyle = "#1a1a1a";
+    ctx.fillRect(0, 0, width, height);
 
     // Clamp values
     const clampedData = data.values.map((point) => ({
@@ -63,10 +64,8 @@ export default function Graph({ data }: GraphProps) {
     }));
 
     // Draw grid lines and Y-axis labels
-    ctx.strokeStyle = "#e5e7eb";
     ctx.lineWidth = 1;
     ctx.font = "12px sans-serif";
-    ctx.fillStyle = "#6b7280";
 
     const yValues = [-120, -90, -60, -30, 0, 30, 60, 90, 120];
     yValues.forEach((val) => {
@@ -75,8 +74,8 @@ export default function Graph({ data }: GraphProps) {
       // Grid line color
       if (val === 30) ctx.strokeStyle = "#22c55e";
       else if (val === -30) ctx.strokeStyle = "#ef4444";
-      else if (val === 0) ctx.strokeStyle = "#9ca3af";
-      else ctx.strokeStyle = "#e5e7eb";
+      else if (val === 0) ctx.strokeStyle = "#6b7280";
+      else ctx.strokeStyle = "#374151";
 
       ctx.beginPath();
       ctx.moveTo(padding.left, y);
@@ -84,7 +83,7 @@ export default function Graph({ data }: GraphProps) {
       ctx.stroke();
 
       // Y-axis label
-      ctx.fillStyle = "#6b7280";
+      ctx.fillStyle = "#9ca3af";
       ctx.textAlign = "right";
       ctx.fillText(val.toString(), padding.left - 10, y + 4);
     });
@@ -100,14 +99,14 @@ export default function Graph({ data }: GraphProps) {
       };
     });
 
-    ctx.fillStyle = "#6b7280";
+    ctx.fillStyle = "#9ca3af";
     ctx.textAlign = "center";
     timeLabels.forEach((label) => {
       ctx.fillText(label.label, label.x, height - padding.bottom + 20);
     });
 
     // Draw line and dots
-    ctx.strokeStyle = "#3b82f6";
+    ctx.strokeStyle = "#60a5fa";
     ctx.lineWidth = 2;
     ctx.beginPath();
 
@@ -131,9 +130,9 @@ export default function Graph({ data }: GraphProps) {
 
       ctx.beginPath();
       ctx.arc(x, y, index === clampedData.length - 1 ? 6 : 4, 0, 2 * Math.PI);
-      ctx.fillStyle = index === clampedData.length - 1 ? "#ef4444" : "#3b82f6";
+      ctx.fillStyle = index === clampedData.length - 1 ? "#ef4444" : "#60a5fa";
       ctx.fill();
-      ctx.strokeStyle = "#ffffff";
+      ctx.strokeStyle = "#1a1a1a";
       ctx.lineWidth = 2;
       ctx.stroke();
     });
@@ -168,9 +167,9 @@ export default function Graph({ data }: GraphProps) {
   }, [data, isExpanded]);
 
   return (
-    <Card className="p-4">
+    <Card className="p-4 bg-card/80 backdrop-blur-sm">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold tracking-tight">Total Imbalance Over Time</h3>
+        <h3 className="text-lg font-bold tracking-tight text-foreground">Total Imbalance Over Time</h3>
         <Button
           variant="ghost"
           size="sm"
@@ -199,12 +198,12 @@ export default function Graph({ data }: GraphProps) {
           ref={containerRef}
           className="relative w-full"
         >
-          <canvas ref={canvasRef} className="w-full" />
+          <canvas ref={canvasRef} className="w-full rounded-lg" />
           {tooltip.visible && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="fixed bg-black text-white text-xs p-2 rounded shadow-lg pointer-events-none z-50 whitespace-pre-line"
+              className="fixed bg-card border border-border text-foreground text-xs p-3 rounded-lg shadow-xl pointer-events-none z-50 whitespace-pre-line"
               style={{ left: tooltip.x + 10, top: tooltip.y + 10 }}
             >
               {tooltip.content}
