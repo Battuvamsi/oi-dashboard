@@ -19,45 +19,47 @@ interface LtpData {
 }
 
 interface LtpBannerProps {
-  data: LtpData;
+  data: {
+    nifty: LtpData;
+    banknifty: LtpData;
+  };
 }
 
-export default function LtpBanner({ data }: LtpBannerProps) {
+const InstrumentCard = ({ label, data }: { label: string; data: LtpData }) => {
   const difference = data.ltp - data.close;
   const changePercentage = data.change;
   const isPositive = difference >= 0;
 
   return (
-    <Card className="p-4">
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between flex-wrap gap-4"
-      >
-        <div className="flex items-center gap-6">
+    <div className="flex-1 min-w-[300px]">
+      <div className="mb-3">
+        <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">{label}</p>
+      </div>
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="flex items-center gap-4">
           <div>
-            <p className="text-sm text-muted-foreground mb-1">Last Traded Price</p>
-            <p className="text-3xl font-bold tracking-tight">{data.ltp.toFixed(2)}</p>
+            <p className="text-sm text-muted-foreground mb-1">LTP</p>
+            <p className="text-2xl font-bold tracking-tight">{data.ltp.toFixed(2)}</p>
           </div>
           
           <div className={`flex items-center gap-2 ${isPositive ? "text-green-600" : "text-red-600"}`}>
             {isPositive ? (
-              <TrendingUp className="h-6 w-6" />
+              <TrendingUp className="h-5 w-5" />
             ) : (
-              <TrendingDown className="h-6 w-6" />
+              <TrendingDown className="h-5 w-5" />
             )}
             <div>
-              <p className="text-2xl font-bold">
+              <p className="text-xl font-bold">
                 {isPositive ? "+" : ""}{difference.toFixed(2)}
               </p>
-              <p className="text-sm font-semibold">
+              <p className="text-xs font-semibold">
                 ({isPositive ? "+" : ""}{changePercentage.toFixed(2)}%)
               </p>
             </div>
           </div>
         </div>
 
-        <div className="flex gap-6 text-sm">
+        <div className="flex gap-4 text-xs">
           <div>
             <p className="text-muted-foreground">Open</p>
             <p className="font-semibold">{data.open.toFixed(2)}</p>
@@ -74,6 +76,23 @@ export default function LtpBanner({ data }: LtpBannerProps) {
             <p className="text-muted-foreground">Close</p>
             <p className="font-semibold">{data.close.toFixed(2)}</p>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default function LtpBanner({ data }: LtpBannerProps) {
+  return (
+    <Card className="p-4">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col lg:flex-row gap-6 divide-y lg:divide-y-0 lg:divide-x"
+      >
+        <InstrumentCard label="NIFTY" data={data.nifty} />
+        <div className="lg:pl-6 pt-6 lg:pt-0">
+          <InstrumentCard label="BANKNIFTY" data={data.banknifty} />
         </div>
       </motion.div>
     </Card>

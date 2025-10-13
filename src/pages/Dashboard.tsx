@@ -80,7 +80,10 @@ export default function Dashboard() {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [oiChangeData, setOiChangeData] = useState<OiChangeData | null>(null);
   const [graphData, setGraphData] = useState<GraphData | null>(null);
-  const [ltpData, setLtpData] = useState<LtpData | null>(null);
+  const [ltpData, setLtpData] = useState<{ nifty: LtpData | null; banknifty: LtpData | null }>({
+    nifty: null,
+    banknifty: null,
+  });
   const [loadingKeys, setLoadingKeys] = useState(true);
   const [loadingData, setLoadingData] = useState(false);
 
@@ -115,26 +118,28 @@ export default function Dashboard() {
     const fetchData = async () => {
       setLoadingData(true);
       try {
-        // Determine LTP token based on selected key
-        const ltpToken = selectedKey.toUpperCase().includes("BANKNIFTY") ? "260105" : "256265";
-        
-        const [oiResponse, graphResponse, ltpResponse] = await Promise.all([
+        const [oiResponse, graphResponse, niftyLtpResponse, bankniftyLtpResponse] = await Promise.all([
           fetch(`${API_BASE}/cache/getOiChange/${selectedKey}`),
           fetch(`${API_BASE}/cache/graph/${selectedKey}`),
-          fetch(`${API_BASE}/cache/ltp/${ltpToken}`),
+          fetch(`${API_BASE}/cache/ltp/256265`),
+          fetch(`${API_BASE}/cache/ltp/260105`),
         ]);
 
-        if (!oiResponse.ok || !graphResponse.ok || !ltpResponse.ok) {
+        if (!oiResponse.ok || !graphResponse.ok || !niftyLtpResponse.ok || !bankniftyLtpResponse.ok) {
           throw new Error("Failed to fetch data");
         }
 
         const oiData = await oiResponse.json();
         const gData = await graphResponse.json();
-        const lData = await ltpResponse.json();
+        const niftyLtpData = await niftyLtpResponse.json();
+        const bankniftyLtpData = await bankniftyLtpResponse.json();
 
         setOiChangeData(oiData);
         setGraphData(gData);
-        setLtpData(lData);
+        setLtpData({
+          nifty: niftyLtpData,
+          banknifty: bankniftyLtpData,
+        });
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Failed to load data for selected key");
@@ -179,10 +184,10 @@ export default function Dashboard() {
             <div className="flex items-center justify-center h-full">
               <Loader2 className="h-8 w-8 animate-spin" />
             </div>
-          ) : oiChangeData && graphData && ltpData ? (
+          ) : oiChangeData && graphData && ltpData.nifty && ltpData.banknifty ? (
             <div className="p-6 space-y-6">
               {/* LTP Banner */}
-              <LtpBanner data={ltpData} />
+              <LtpBanner data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty! }} />
 
               {/* Totals Badges */}
               <TotalsBadges totals={oiChangeData.oiChangeTotalValues} />
