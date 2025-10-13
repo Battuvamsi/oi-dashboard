@@ -1,6 +1,8 @@
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface GraphDataPoint {
   dateTime: string;
@@ -21,6 +23,7 @@ interface GraphProps {
 export default function Graph({ data }: GraphProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isExpanded, setIsExpanded] = useState(true);
   const [tooltip, setTooltip] = useState<{
     x: number;
     y: number;
@@ -31,7 +34,7 @@ export default function Graph({ data }: GraphProps) {
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
-    if (!canvas || !container || !data.values.length) return;
+    if (!canvas || !container || !data.values.length || !isExpanded) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -162,24 +165,53 @@ export default function Graph({ data }: GraphProps) {
 
     canvas.addEventListener("mousemove", handleMouseMove);
     return () => canvas.removeEventListener("mousemove", handleMouseMove);
-  }, [data]);
+  }, [data, isExpanded]);
 
   return (
     <Card className="p-4">
-      <h3 className="text-lg font-bold tracking-tight mb-4">Total Imbalance Over Time</h3>
-      <div ref={containerRef} className="relative w-full">
-        <canvas ref={canvasRef} className="w-full" />
-        {tooltip.visible && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="fixed bg-black text-white text-xs p-2 rounded shadow-lg pointer-events-none z-50 whitespace-pre-line"
-            style={{ left: tooltip.x + 10, top: tooltip.y + 10 }}
-          >
-            {tooltip.content}
-          </motion.div>
-        )}
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-bold tracking-tight">Total Imbalance Over Time</h3>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="cursor-pointer"
+        >
+          {isExpanded ? (
+            <>
+              <ChevronUp className="h-4 w-4 mr-2" />
+              Collapse
+            </>
+          ) : (
+            <>
+              <ChevronDown className="h-4 w-4 mr-2" />
+              Expand
+            </>
+          )}
+        </Button>
       </div>
+      {isExpanded && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ duration: 0.3 }}
+          ref={containerRef}
+          className="relative w-full"
+        >
+          <canvas ref={canvasRef} className="w-full" />
+          {tooltip.visible && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="fixed bg-black text-white text-xs p-2 rounded shadow-lg pointer-events-none z-50 whitespace-pre-line"
+              style={{ left: tooltip.x + 10, top: tooltip.y + 10 }}
+            >
+              {tooltip.content}
+            </motion.div>
+          )}
+        </motion.div>
+      )}
     </Card>
   );
 }
