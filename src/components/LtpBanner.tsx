@@ -32,8 +32,8 @@ const InstrumentCard = ({ label, data }: { label: string; data: LtpData }) => {
 
   return (
     <div className="flex-1 min-w-[300px]">
-      <div className="mb-3">
-        <p className="text-xs text-muted-foreground font-semibold uppercase tracking-wide">{label}</p>
+      <div className="mb-4">
+        <p className="text-sm text-muted-foreground font-bold uppercase tracking-wider">{label}</p>
       </div>
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-4">
@@ -84,14 +84,14 @@ const InstrumentCard = ({ label, data }: { label: string; data: LtpData }) => {
 
 export default function LtpBanner({ data }: LtpBannerProps) {
   return (
-    <Card className="p-4">
+    <Card className="p-6 shadow-lg border-primary/20">
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col lg:flex-row gap-6 divide-y lg:divide-y-0 lg:divide-x"
+        className="flex flex-col lg:flex-row gap-8 divide-y lg:divide-y-0 lg:divide-x divide-border/50"
       >
         <InstrumentCard label="NIFTY" data={data.nifty} />
-        <div className="lg:pl-6 pt-6 lg:pt-0">
+        <div className="lg:pl-8 pt-8 lg:pt-0">
           <InstrumentCard label="BANKNIFTY" data={data.banknifty} />
         </div>
       </motion.div>

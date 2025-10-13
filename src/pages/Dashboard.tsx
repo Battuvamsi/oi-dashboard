@@ -195,13 +195,17 @@ export default function Dashboard() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-background"
+      className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5"
     >
       <div className="flex h-screen">
         {/* Left Pane - Keys List */}
-        <div className="w-64 border-r bg-card flex-shrink-0">
-          <div className="p-4 border-b">
-            <h2 className="text-lg font-bold tracking-tight">OI Change Dashboard</h2>
+        <div className="w-64 border-r bg-card/80 backdrop-blur-sm flex-shrink-0 shadow-sm">
+          <div className="p-6 border-b bg-gradient-to-r from-primary/10 to-transparent">
+            <div className="flex items-center gap-2 mb-1">
+              <img src="./logo.svg" alt="Logo" width={28} height={28} className="rounded" />
+              <h2 className="text-lg font-bold tracking-tight">OI Dashboard</h2>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Select an instrument</p>
           </div>
           <KeysList
             keys={keys}
@@ -211,13 +215,16 @@ export default function Dashboard() {
         </div>
 
         {/* Right Pane - Data Display */}
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto bg-background">
           {loadingData ? (
             <div className="flex items-center justify-center h-full">
-              <Loader2 className="h-8 w-8 animate-spin" />
+              <div className="text-center space-y-4">
+                <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" />
+                <p className="text-muted-foreground">Loading market data...</p>
+              </div>
             </div>
           ) : oiChangeData && graphData && ltpData.nifty && ltpData.banknifty ? (
-            <div className="p-6 space-y-6">
+            <div className="p-8 space-y-6 max-w-[1600px] mx-auto">
               {/* LTP Banner */}
               <LtpBanner data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty! }} />
 
