@@ -5,6 +5,7 @@ import KeysList from "@/components/KeysList";
 import TotalsBadges from "@/components/TotalsBadges";
 import OiTable from "@/components/OiTable";
 import Graph from "@/components/Graph";
+import LtpBanner from "@/components/LtpBanner";
 import { toast } from "sonner";
 
 interface OiChangeTotalValues {
@@ -58,11 +59,28 @@ interface GraphData {
   values: GraphDataPoint[];
 }
 
+interface LtpData {
+  instrumentToken: number;
+  ltp: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  change: number;
+  lastTradedQuantity: number;
+  averageTradePrice: number;
+  volumeTradedToday: number;
+  oi: number;
+  openInterestDayHigh: number;
+  openInterestDayLow: number;
+}
+
 export default function Dashboard() {
   const [keys, setKeys] = useState<string[]>([]);
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [oiChangeData, setOiChangeData] = useState<OiChangeData | null>(null);
   const [graphData, setGraphData] = useState<GraphData | null>(null);
+  const [ltpData, setLtpData] = useState<LtpData | null>(null);
   const [loadingKeys, setLoadingKeys] = useState(true);
   const [loadingData, setLoadingData] = useState(false);
 
@@ -97,20 +115,23 @@ export default function Dashboard() {
     const fetchData = async () => {
       setLoadingData(true);
       try {
-        const [oiResponse, graphResponse] = await Promise.all([
+        const [oiResponse, graphResponse, ltpResponse] = await Promise.all([
           fetch(`${API_BASE}/cache/getOiChange/${selectedKey}`),
           fetch(`${API_BASE}/cache/graph/${selectedKey}`),
+          fetch(`${API_BASE}/cache/ltp/${selectedKey}`),
         ]);
 
-        if (!oiResponse.ok || !graphResponse.ok) {
+        if (!oiResponse.ok || !graphResponse.ok || !ltpResponse.ok) {
           throw new Error("Failed to fetch data");
         }
 
         const oiData = await oiResponse.json();
         const gData = await graphResponse.json();
+        const lData = await ltpResponse.json();
 
         setOiChangeData(oiData);
         setGraphData(gData);
+        setLtpData(lData);
       } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Failed to load data for selected key");
@@ -155,8 +176,11 @@ export default function Dashboard() {
             <div className="flex items-center justify-center h-full">
               <Loader2 className="h-8 w-8 animate-spin" />
             </div>
-          ) : oiChangeData && graphData ? (
+          ) : oiChangeData && graphData && ltpData ? (
             <div className="p-6 space-y-6">
+              {/* LTP Banner */}
+              <LtpBanner data={ltpData} />
+
               {/* Totals Badges */}
               <TotalsBadges totals={oiChangeData.oiChangeTotalValues} />
 
