@@ -203,7 +203,7 @@ export default function Dashboard() {
           <div className="p-6 border-b bg-gradient-to-r from-primary/10 to-transparent">
             <div className="flex items-center gap-2 mb-1">
               <img src="./logo.svg" alt="Logo" width={28} height={28} className="rounded" />
-              <h2 className="text-lg font-bold tracking-tight">OI Dashboard</h2>
+              <h2 className="text-lg font-bold tracking-tight text-primary">OI Dashboard</h2>
             </div>
             <p className="text-xs text-muted-foreground mt-1">Select an instrument</p>
           </div>
