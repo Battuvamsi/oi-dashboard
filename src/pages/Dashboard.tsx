@@ -115,10 +115,13 @@ export default function Dashboard() {
     const fetchData = async () => {
       setLoadingData(true);
       try {
+        // Determine LTP token based on selected key
+        const ltpToken = selectedKey.toUpperCase().includes("BANKNIFTY") ? "260105" : "256265";
+        
         const [oiResponse, graphResponse, ltpResponse] = await Promise.all([
           fetch(`${API_BASE}/cache/getOiChange/${selectedKey}`),
           fetch(`${API_BASE}/cache/graph/${selectedKey}`),
-          fetch(`${API_BASE}/cache/ltp/256265`),
+          fetch(`${API_BASE}/cache/ltp/${ltpToken}`),
         ]);
 
         if (!oiResponse.ok || !graphResponse.ok || !ltpResponse.ok) {
