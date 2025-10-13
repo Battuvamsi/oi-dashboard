@@ -118,7 +118,7 @@ export default function Dashboard() {
         const [oiResponse, graphResponse, ltpResponse] = await Promise.all([
           fetch(`${API_BASE}/cache/getOiChange/${selectedKey}`),
           fetch(`${API_BASE}/cache/graph/${selectedKey}`),
-          fetch(`${API_BASE}/cache/ltp/${selectedKey}`),
+          fetch(`${API_BASE}/cache/ltp/256265`),
         ]);
 
         if (!oiResponse.ok || !graphResponse.ok || !ltpResponse.ok) {
