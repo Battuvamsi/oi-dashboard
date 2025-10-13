@@ -77,10 +77,10 @@ export default function LtpBanner({ data, showOHLC = false }: LtpBannerProps) {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col gap-4 divide-y divide-border"
+        className="flex flex-col gap-4"
       >
         <InstrumentCard label="NIFTY" data={data.nifty} showOHLC={showOHLC} />
-        <div className="pt-4">
+        <div className="border-t border-border pt-4">
           <InstrumentCard label="BANKNIFTY" data={data.banknifty} showOHLC={showOHLC} />
         </div>
       </motion.div>
