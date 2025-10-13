@@ -65,30 +65,30 @@ export default function Graph({ data }: GraphProps) {
 
     // Draw grid lines and Y-axis labels
     ctx.lineWidth = 1;
-    ctx.font = "12px sans-serif";
+    ctx.font = "13px sans-serif";
 
     const yValues = [-120, -90, -60, -30, 0, 30, 60, 90, 120];
     yValues.forEach((val) => {
       const y = padding.top + ((120 - val) / 240) * graphHeight;
 
-      // Grid line color
+      // Grid line color - enhanced visibility
       if (val === 30) ctx.strokeStyle = "#22c55e";
       else if (val === -30) ctx.strokeStyle = "#ef4444";
-      else if (val === 0) ctx.strokeStyle = "#6b7280";
-      else ctx.strokeStyle = "#374151";
+      else if (val === 0) ctx.strokeStyle = "#9ca3af";
+      else ctx.strokeStyle = "#4b5563";
 
       ctx.beginPath();
       ctx.moveTo(padding.left, y);
       ctx.lineTo(padding.left + graphWidth, y);
       ctx.stroke();
 
-      // Y-axis label
-      ctx.fillStyle = "#9ca3af";
+      // Y-axis label - brighter for better visibility
+      ctx.fillStyle = "#d1d5db";
       ctx.textAlign = "right";
       ctx.fillText(val.toString(), padding.left - 10, y + 4);
     });
 
-    // Draw X-axis labels
+    // Draw X-axis labels - brighter for better visibility
     const timeLabels = [0, 0.25, 0.5, 0.75, 1].map((ratio) => {
       const index = Math.floor(ratio * (clampedData.length - 1));
       const point = clampedData[index];
@@ -99,7 +99,7 @@ export default function Graph({ data }: GraphProps) {
       };
     });
 
-    ctx.fillStyle = "#9ca3af";
+    ctx.fillStyle = "#d1d5db";
     ctx.textAlign = "center";
     timeLabels.forEach((label) => {
       ctx.fillText(label.label, label.x, height - padding.bottom + 20);
@@ -203,7 +203,7 @@ export default function Graph({ data }: GraphProps) {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="fixed bg-card border border-border text-foreground text-xs p-3 rounded-lg shadow-xl pointer-events-none z-50 whitespace-pre-line"
+              className="fixed bg-card/95 backdrop-blur-sm border-2 border-primary/50 text-foreground text-sm p-3 rounded-lg shadow-2xl pointer-events-none z-50 whitespace-pre-line font-medium"
               style={{ left: tooltip.x + 10, top: tooltip.y + 10 }}
             >
               {tooltip.content}
