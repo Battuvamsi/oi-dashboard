@@ -58,7 +58,7 @@ export default function Landing() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5"
+      className="dark min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5"
     >
       {/* Navigation */}
       <nav className="border-b bg-card/80 backdrop-blur-md sticky top-0 z-50">

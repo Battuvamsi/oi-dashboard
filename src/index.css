@@ -3,6 +3,11 @@
 @import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
 
+/* Force dark mode by default */
+:root {
+  color-scheme: dark;
+}
+
 /* DO NOT CHANGE */
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

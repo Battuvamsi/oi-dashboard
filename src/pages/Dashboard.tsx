@@ -195,7 +195,7 @@ export default function Dashboard() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5"
+      className="dark min-h-screen bg-gradient-to-br from-background via-background to-primary/5"
     >
       <div className="flex h-screen">
         {/* Left Pane - Keys List */}

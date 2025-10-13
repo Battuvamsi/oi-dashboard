@@ -31,51 +31,37 @@ const InstrumentCard = ({ label, data }: { label: string; data: LtpData }) => {
   const isPositive = difference >= 0;
 
   return (
-    <div className="flex-1 min-w-[300px]">
-      <div className="mb-4">
-        <p className="text-sm text-muted-foreground font-bold uppercase tracking-wider">{label}</p>
-      </div>
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div className="flex items-center gap-4">
-          <div>
-            <p className="text-sm text-muted-foreground mb-1">LTP</p>
-            <p className="text-2xl font-bold tracking-tight">{data.ltp.toFixed(2)}</p>
-          </div>
-          
-          <div className={`flex items-center gap-2 ${isPositive ? "text-green-600" : "text-red-600"}`}>
-            {isPositive ? (
-              <TrendingUp className="h-5 w-5" />
-            ) : (
-              <TrendingDown className="h-5 w-5" />
-            )}
-            <div>
-              <p className="text-xl font-bold">
-                {isPositive ? "+" : ""}{difference.toFixed(2)}
-              </p>
-              <p className="text-xs font-semibold">
-                ({isPositive ? "+" : ""}{changePercentage.toFixed(2)}%)
-              </p>
-            </div>
+    <div className="flex items-center justify-between gap-4 flex-1">
+      <div className="flex items-center gap-3">
+        <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider min-w-[80px]">
+          {label}
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-lg font-bold">{data.ltp.toFixed(2)}</span>
+          <div className={`flex items-center gap-1 text-sm ${isPositive ? "text-green-500" : "text-red-500"}`}>
+            {isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+            <span className="font-semibold">
+              {isPositive ? "+" : ""}{difference.toFixed(2)} ({isPositive ? "+" : ""}{changePercentage.toFixed(2)}%)
+            </span>
           </div>
         </div>
-
-        <div className="flex gap-4 text-xs">
-          <div>
-            <p className="text-muted-foreground">Open</p>
-            <p className="font-semibold">{data.open.toFixed(2)}</p>
-          </div>
-          <div>
-            <p className="text-muted-foreground">High</p>
-            <p className="font-semibold text-green-600">{data.high.toFixed(2)}</p>
-          </div>
-          <div>
-            <p className="text-muted-foreground">Low</p>
-            <p className="font-semibold text-red-600">{data.low.toFixed(2)}</p>
-          </div>
-          <div>
-            <p className="text-muted-foreground">Close</p>
-            <p className="font-semibold">{data.close.toFixed(2)}</p>
-          </div>
+      </div>
+      <div className="flex gap-3 text-xs">
+        <div className="text-center">
+          <p className="text-muted-foreground">O</p>
+          <p className="font-semibold">{data.open.toFixed(2)}</p>
+        </div>
+        <div className="text-center">
+          <p className="text-muted-foreground">H</p>
+          <p className="font-semibold text-green-500">{data.high.toFixed(2)}</p>
+        </div>
+        <div className="text-center">
+          <p className="text-muted-foreground">L</p>
+          <p className="font-semibold text-red-500">{data.low.toFixed(2)}</p>
+        </div>
+        <div className="text-center">
+          <p className="text-muted-foreground">C</p>
+          <p className="font-semibold">{data.close.toFixed(2)}</p>
         </div>
       </div>
     </div>
@@ -84,14 +70,14 @@ const InstrumentCard = ({ label, data }: { label: string; data: LtpData }) => {
 
 export default function LtpBanner({ data }: LtpBannerProps) {
   return (
-    <Card className="p-6 shadow-lg border-primary/20">
+    <Card className="p-4 border-primary/20">
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col lg:flex-row gap-8 divide-y lg:divide-y-0 lg:divide-x divide-border/50"
+        className="flex flex-col lg:flex-row gap-4 divide-y lg:divide-y-0 lg:divide-x divide-border/50"
       >
         <InstrumentCard label="NIFTY" data={data.nifty} />
-        <div className="lg:pl-8 pt-8 lg:pt-0">
+        <div className="lg:pl-4 pt-4 lg:pt-0">
           <InstrumentCard label="BANKNIFTY" data={data.banknifty} />
         </div>
       </motion.div>
