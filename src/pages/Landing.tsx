@@ -162,7 +162,7 @@ export default function Landing() {
                 <div className={`inline-flex p-3 rounded-lg bg-primary/10 mb-4 ${feature.color}`}>
                   <feature.icon className="h-8 w-8" />
                 </div>
-                <h3 className="text-xl font-bold tracking-tight mb-3">{feature.title}</h3>
+                <h3 className="text-xl font-bold tracking-tight mb-3 text-foreground">{feature.title}</h3>
                 <p className="text-muted-foreground leading-relaxed">
                   {feature.description}
                 </p>
