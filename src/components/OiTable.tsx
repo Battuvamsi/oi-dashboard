@@ -51,33 +51,33 @@ export default function OiTable({ data }: OiTableProps) {
         <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-muted/50">
-              <TableHead className="text-center font-semibold text-foreground">PUT COI</TableHead>
-              <TableHead className="text-center font-semibold text-foreground">PUT OI</TableHead>
-              <TableHead className="text-center font-semibold text-foreground">PUT ΔOI</TableHead>
-              <TableHead className="text-center font-semibold text-foreground">PUT LTP</TableHead>
-              <TableHead className="text-center font-bold text-primary">STRIKE</TableHead>
-              <TableHead className="text-center font-semibold text-foreground">CALL LTP</TableHead>
-              <TableHead className="text-center font-semibold text-foreground">CALL ΔOI</TableHead>
-              <TableHead className="text-center font-semibold text-foreground">CALL OI</TableHead>
-              <TableHead className="text-center font-semibold text-foreground">CALL COI</TableHead>
-              <TableHead className="text-center font-semibold text-foreground">Imbalance</TableHead>
-              <TableHead className="text-center font-semibold text-foreground">PCR</TableHead>
+              <TableHead className="text-center font-semibold text-red-400">PUT COI</TableHead>
+              <TableHead className="text-center font-semibold text-red-400">PUT OI</TableHead>
+              <TableHead className="text-center font-semibold text-red-400">PUT ΔOI</TableHead>
+              <TableHead className="text-center font-semibold text-red-400">PUT LTP</TableHead>
+              <TableHead className="text-center font-bold text-primary bg-primary/10">STRIKE</TableHead>
+              <TableHead className="text-center font-semibold text-green-400">CALL LTP</TableHead>
+              <TableHead className="text-center font-semibold text-green-400">CALL ΔOI</TableHead>
+              <TableHead className="text-center font-semibold text-green-400">CALL OI</TableHead>
+              <TableHead className="text-center font-semibold text-green-400">CALL COI</TableHead>
+              <TableHead className="text-center font-semibold text-blue-400">Imbalance</TableHead>
+              <TableHead className="text-center font-semibold text-purple-400">PCR</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.map((row) => (
               <TableRow key={row.strikePrice} className="border-border hover:bg-muted/30">
-                <TableCell className="text-center text-foreground">{formatDecimal(row.putCoi)}</TableCell>
-                <TableCell className="text-center text-foreground">{formatNumber(row.pe?.oi)}</TableCell>
-                <TableCell className="text-center text-foreground">{formatNumber(row.pe?.oiChange)}</TableCell>
-                <TableCell className="text-center text-foreground">{formatDecimal(row.pe?.ltp)}</TableCell>
-                <TableCell className="text-center font-bold text-primary">{row.strikePrice}</TableCell>
-                <TableCell className="text-center text-foreground">{formatDecimal(row.ce?.ltp)}</TableCell>
-                <TableCell className="text-center text-foreground">{formatNumber(row.ce?.oiChange)}</TableCell>
-                <TableCell className="text-center text-foreground">{formatNumber(row.ce?.oi)}</TableCell>
-                <TableCell className="text-center text-foreground">{formatDecimal(row.callCoi)}</TableCell>
-                <TableCell className="text-center text-foreground">{formatDecimal(row.imbalance)}</TableCell>
-                <TableCell className="text-center text-foreground">{formatDecimal(row.pcr, 4)}</TableCell>
+                <TableCell className="text-center text-red-300">{formatDecimal(row.putCoi)}</TableCell>
+                <TableCell className="text-center text-red-300">{formatNumber(row.pe?.oi)}</TableCell>
+                <TableCell className="text-center text-red-300">{formatNumber(row.pe?.oiChange)}</TableCell>
+                <TableCell className="text-center text-red-300">{formatDecimal(row.pe?.ltp)}</TableCell>
+                <TableCell className="text-center font-bold text-primary bg-primary/5">{row.strikePrice}</TableCell>
+                <TableCell className="text-center text-green-300">{formatDecimal(row.ce?.ltp)}</TableCell>
+                <TableCell className="text-center text-green-300">{formatNumber(row.ce?.oiChange)}</TableCell>
+                <TableCell className="text-center text-green-300">{formatNumber(row.ce?.oi)}</TableCell>
+                <TableCell className="text-center text-green-300">{formatDecimal(row.callCoi)}</TableCell>
+                <TableCell className="text-center text-blue-300">{formatDecimal(row.imbalance)}</TableCell>
+                <TableCell className="text-center text-purple-300">{formatDecimal(row.pcr, 4)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
