@@ -150,6 +150,8 @@ export default function Graph({ data }: GraphProps) {
       let found = false;
       let closestIndex = -1;
       let closestDistance = Infinity;
+      let pointScreenX = 0;
+      let pointScreenY = 0;
 
       clampedData.forEach((point, index) => {
         const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
@@ -159,6 +161,8 @@ export default function Graph({ data }: GraphProps) {
         if (distance < 15 && distance < closestDistance) {
           closestDistance = distance;
           closestIndex = index;
+          pointScreenX = x + rect.left;
+          pointScreenY = y + rect.top;
           found = true;
         }
       });
@@ -167,7 +171,7 @@ export default function Graph({ data }: GraphProps) {
         const point = clampedData[closestIndex];
         const date = new Date(point.dateTime);
         const content = `Time: ${date.toLocaleTimeString()}\nRaw: ${point.rawValue.toFixed(2)}\nClamped: ${point.clampedValue.toFixed(2)}`;
-        setTooltip({ x: e.clientX, y: e.clientY, content, visible: true, dataIndex: closestIndex });
+        setTooltip({ x: pointScreenX, y: pointScreenY, content, visible: true, dataIndex: closestIndex });
       } else {
         setTooltip((prev) => ({ ...prev, visible: false, dataIndex: -1 }));
       }
