@@ -29,7 +29,8 @@ export default function Graph({ data }: GraphProps) {
     y: number;
     content: string;
     visible: boolean;
-  }>({ x: 0, y: 0, content: "", visible: false });
+    dataIndex: number;
+  }>({ x: 0, y: 0, content: "", visible: false, dataIndex: -1 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -123,48 +124,66 @@ export default function Graph({ data }: GraphProps) {
 
     ctx.stroke();
 
-    // Draw dots
+    // Draw dots with hover state
     clampedData.forEach((point, index) => {
       const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
       const y = padding.top + ((120 - point.clampedValue) / 240) * graphHeight;
 
+      const isHovered = tooltip.visible && tooltip.dataIndex === index;
+      const isLast = index === clampedData.length - 1;
+      
       ctx.beginPath();
-      ctx.arc(x, y, index === clampedData.length - 1 ? 6 : 4, 0, 2 * Math.PI);
-      ctx.fillStyle = index === clampedData.length - 1 ? "#f87171" : "#93c5fd";
+      ctx.arc(x, y, isHovered ? 8 : (isLast ? 6 : 4), 0, 2 * Math.PI);
+      ctx.fillStyle = isHovered ? "#fbbf24" : (isLast ? "#f87171" : "#93c5fd");
       ctx.fill();
-      ctx.strokeStyle = "#0a0a0a";
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = isHovered ? "#ffffff" : "#0a0a0a";
+      ctx.lineWidth = isHovered ? 3 : 2;
       ctx.stroke();
     });
 
-    // Mouse move handler for tooltip
+    // Mouse move handler for tooltip with improved detection
     const handleMouseMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
       const mouseX = e.clientX - rect.left;
       const mouseY = e.clientY - rect.top;
 
       let found = false;
+      let closestIndex = -1;
+      let closestDistance = Infinity;
+
       clampedData.forEach((point, index) => {
         const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
         const y = padding.top + ((120 - point.clampedValue) / 240) * graphHeight;
 
         const distance = Math.sqrt((mouseX - x) ** 2 + (mouseY - y) ** 2);
-        if (distance < 10) {
-          const date = new Date(point.dateTime);
-          const content = `Time: ${date.toLocaleTimeString()}\nRaw: ${point.rawValue.toFixed(2)}\nClamped: ${point.clampedValue.toFixed(2)}`;
-          setTooltip({ x: e.clientX, y: e.clientY, content, visible: true });
+        if (distance < 15 && distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
           found = true;
         }
       });
 
-      if (!found) {
-        setTooltip((prev) => ({ ...prev, visible: false }));
+      if (found && closestIndex !== -1) {
+        const point = clampedData[closestIndex];
+        const date = new Date(point.dateTime);
+        const content = `Time: ${date.toLocaleTimeString()}\nRaw: ${point.rawValue.toFixed(2)}\nClamped: ${point.clampedValue.toFixed(2)}`;
+        setTooltip({ x: e.clientX, y: e.clientY, content, visible: true, dataIndex: closestIndex });
+      } else {
+        setTooltip((prev) => ({ ...prev, visible: false, dataIndex: -1 }));
       }
     };
 
+    const handleMouseLeave = () => {
+      setTooltip((prev) => ({ ...prev, visible: false, dataIndex: -1 }));
+    };
+
     canvas.addEventListener("mousemove", handleMouseMove);
-    return () => canvas.removeEventListener("mousemove", handleMouseMove);
-  }, [data, isExpanded]);
+    canvas.addEventListener("mouseleave", handleMouseLeave);
+    return () => {
+      canvas.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("mouseleave", handleMouseLeave);
+    };
+  }, [data, isExpanded, tooltip.dataIndex]);
 
   return (
     <Card className="p-3 bg-card/80 backdrop-blur-sm">
@@ -201,10 +220,16 @@ export default function Graph({ data }: GraphProps) {
           <canvas ref={canvasRef} className="w-full rounded-lg" />
           {tooltip.visible && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="fixed bg-card/95 backdrop-blur-sm border-2 border-primary/50 text-foreground text-sm p-3 rounded-lg shadow-2xl pointer-events-none z-50 whitespace-pre-line font-medium"
-              style={{ left: tooltip.x + 10, top: tooltip.y + 10 }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.15 }}
+              className="fixed bg-card/95 backdrop-blur-md border-2 border-primary/60 text-foreground text-sm p-3 rounded-lg shadow-2xl pointer-events-none z-50 whitespace-pre-line font-semibold"
+              style={{ 
+                left: tooltip.x + 15, 
+                top: tooltip.y - 60,
+                boxShadow: "0 10px 40px rgba(0, 0, 0, 0.5)"
+              }}
             >
               {tooltip.content}
             </motion.div>
