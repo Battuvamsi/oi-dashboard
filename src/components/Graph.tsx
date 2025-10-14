@@ -49,8 +49,8 @@ export default function Graph({ data }: GraphProps) {
     const graphWidth = width - padding.left - padding.right;
     const graphHeight = height - padding.top - padding.bottom;
 
-    // Clear canvas with dark background
-    ctx.fillStyle = "#1a1a1a";
+    // Clear canvas with darker background for better contrast
+    ctx.fillStyle = "#0a0a0a";
     ctx.fillRect(0, 0, width, height);
 
     // Clamp values
@@ -71,11 +71,11 @@ export default function Graph({ data }: GraphProps) {
     yValues.forEach((val) => {
       const y = padding.top + ((120 - val) / 240) * graphHeight;
 
-      // Grid line color - enhanced visibility
-      if (val === 30) ctx.strokeStyle = "#22c55e";
-      else if (val === -30) ctx.strokeStyle = "#ef4444";
-      else if (val === 0) ctx.strokeStyle = "#9ca3af";
-      else ctx.strokeStyle = "#4b5563";
+      // Grid line color - maximum visibility
+      if (val === 30) ctx.strokeStyle = "#34d399";
+      else if (val === -30) ctx.strokeStyle = "#f87171";
+      else if (val === 0) ctx.strokeStyle = "#d1d5db";
+      else ctx.strokeStyle = "#6b7280";
 
       ctx.beginPath();
       ctx.moveTo(padding.left, y);
@@ -105,9 +105,9 @@ export default function Graph({ data }: GraphProps) {
       ctx.fillText(label.label, label.x, height - padding.bottom + 20);
     });
 
-    // Draw line and dots
-    ctx.strokeStyle = "#60a5fa";
-    ctx.lineWidth = 2;
+    // Draw line and dots with brighter color
+    ctx.strokeStyle = "#93c5fd";
+    ctx.lineWidth = 2.5;
     ctx.beginPath();
 
     clampedData.forEach((point, index) => {
@@ -130,9 +130,9 @@ export default function Graph({ data }: GraphProps) {
 
       ctx.beginPath();
       ctx.arc(x, y, index === clampedData.length - 1 ? 6 : 4, 0, 2 * Math.PI);
-      ctx.fillStyle = index === clampedData.length - 1 ? "#ef4444" : "#60a5fa";
+      ctx.fillStyle = index === clampedData.length - 1 ? "#f87171" : "#93c5fd";
       ctx.fill();
-      ctx.strokeStyle = "#1a1a1a";
+      ctx.strokeStyle = "#0a0a0a";
       ctx.lineWidth = 2;
       ctx.stroke();
     });
