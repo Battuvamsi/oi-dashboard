@@ -32,58 +32,59 @@ const InstrumentCard = ({ label, data, showOHLC = false }: { label: string; data
   const isPositive = difference >= 0;
 
   return (
-    <div className="flex items-center justify-between gap-4 flex-1">
-      <div className="flex items-center gap-3">
-        <div className="text-sm font-bold text-foreground uppercase tracking-wider min-w-[90px]">
-          {label}
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="text-2xl font-bold text-foreground">{data.ltp.toFixed(2)}</span>
-          <div className={`flex items-center gap-1 text-sm font-semibold ${isPositive ? "text-green-400" : "text-red-400"}`}>
-            {isPositive ? <TrendingUp className="h-4 w-4" /> : <TrendingDown className="h-4 w-4" />}
-            <span>
-              {isPositive ? "+" : ""}{difference.toFixed(2)} ({isPositive ? "+" : ""}{changePercentage.toFixed(2)}%)
-            </span>
+    <div className="flex-1 p-2 sm:p-2.5 rounded-md border border-primary/30 bg-gradient-to-br from-primary/5 to-card/70 backdrop-blur-sm hover:border-primary/50 transition-all duration-300">
+      <motion.div
+        initial={{ opacity: 0, y: -5 }}
+        animate={{ opacity: 1, y: 0 }}
+        className={`flex ${showOHLC ? "md:flex-row md:items-start md:justify-between" : "flex-col"} gap-1 sm:gap-1.5`}
+      >
+        <div className="flex flex-col gap-1 sm:gap-1.5 flex-1">
+          <div className="text-[10px] sm:text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+            {label}
+          </div>
+          <div className="flex items-baseline gap-1 sm:gap-1.5">
+            <span className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">{data.ltp.toFixed(2)}</span>
+            <div className={`flex items-center gap-0.5 text-xs sm:text-sm font-semibold ${isPositive ? "text-green-400" : "text-red-400"}`}>
+              {isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+              <span>
+                {isPositive ? "+" : ""}{difference.toFixed(2)}
+              </span>
+            </div>
+          </div>
+          <div className={`text-[10px] sm:text-xs font-semibold ${isPositive ? "text-green-400" : "text-red-400"}`}>
+            {isPositive ? "+" : ""}{changePercentage.toFixed(2)}%
           </div>
         </div>
-      </div>
-      {showOHLC && (
-        <div className="flex gap-4 text-xs">
-          <div className="text-center">
-            <p className="text-muted-foreground font-medium mb-1">O</p>
-            <p className="font-semibold text-foreground">{data.open.toFixed(2)}</p>
+        {showOHLC && (
+          <div className="hidden md:flex flex-col gap-1 text-right">
+            <div>
+              <p className="text-muted-foreground font-semibold text-[8px]">O</p>
+              <p className="font-bold text-foreground text-[10px]">{data.open.toFixed(2)}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground font-semibold text-[8px]">H</p>
+              <p className="font-bold text-green-400 text-[10px]">{data.high.toFixed(2)}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground font-semibold text-[8px]">L</p>
+              <p className="font-bold text-red-400 text-[10px]">{data.low.toFixed(2)}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground font-semibold text-[8px]">C</p>
+              <p className="font-bold text-foreground text-[10px]">{data.close.toFixed(2)}</p>
+            </div>
           </div>
-          <div className="text-center">
-            <p className="text-muted-foreground font-medium mb-1">H</p>
-            <p className="font-semibold text-green-400">{data.high.toFixed(2)}</p>
-          </div>
-          <div className="text-center">
-            <p className="text-muted-foreground font-medium mb-1">L</p>
-            <p className="font-semibold text-red-400">{data.low.toFixed(2)}</p>
-          </div>
-          <div className="text-center">
-            <p className="text-muted-foreground font-medium mb-1">C</p>
-            <p className="font-semibold text-foreground">{data.close.toFixed(2)}</p>
-          </div>
-        </div>
-      )}
+        )}
+      </motion.div>
     </div>
   );
 };
 
 export default function LtpBanner({ data, showOHLC = false }: LtpBannerProps) {
   return (
-    <Card className="p-3 border-primary/30 bg-card/80 backdrop-blur-sm">
-      <motion.div
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col gap-2"
-      >
-        <InstrumentCard label="NIFTY" data={data.nifty} showOHLC={showOHLC} />
-        <div className="border-t border-border pt-2">
-          <InstrumentCard label="BANKNIFTY" data={data.banknifty} showOHLC={showOHLC} />
-        </div>
-      </motion.div>
-    </Card>
+    <div className="flex gap-2 sm:gap-3 md:gap-4 lg:gap-6 w-full md:max-w-2xl lg:max-w-3xl mx-auto justify-center">
+      <InstrumentCard label="NIFTY" data={data.nifty} showOHLC={showOHLC} />
+      <InstrumentCard label="BANKNIFTY" data={data.banknifty} showOHLC={showOHLC} />
+    </div>
   );
 }

@@ -10,8 +10,8 @@ interface KeysListProps {
 
 export default function KeysList({ keys, selectedKey, onSelectKey }: KeysListProps) {
   return (
-    <ScrollArea className="h-[calc(100vh-73px)]">
-      <div className="p-2 space-y-1">
+    <ScrollArea className="h-full">
+      <div className="p-1 sm:p-1.5 md:p-2 space-y-0.5 sm:space-y-1">
         {keys.map((key, index) => (
           <motion.div
             key={key}
@@ -21,7 +21,7 @@ export default function KeysList({ keys, selectedKey, onSelectKey }: KeysListPro
           >
             <Button
               variant={selectedKey === key ? "default" : "ghost"}
-              className="w-full justify-start cursor-pointer text-foreground hover:text-foreground"
+              className="w-full justify-start cursor-pointer text-foreground hover:text-foreground text-xs sm:text-sm py-1 sm:py-1.5 h-7 sm:h-8 md:h-9 truncate"
               onClick={() => onSelectKey(key)}
             >
               {key}

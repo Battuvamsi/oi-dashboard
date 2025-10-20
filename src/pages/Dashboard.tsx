@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
+import { Loader2, LogOut, ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router";
 import KeysList from "@/components/KeysList";
 import TotalsBadges from "@/components/TotalsBadges";
 import OiTable from "@/components/OiTable";
 import Graph from "@/components/Graph";
 import LtpBanner from "@/components/LtpBanner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 
 interface OiChangeTotalValues {
@@ -50,6 +59,7 @@ interface GraphDataPoint {
   oichangeFinalResult: {
     oiChangeTotalValues: {
       totalImbalance: number;
+      pcr?: number;
     };
   };
 }
@@ -87,7 +97,30 @@ export default function Dashboard() {
   const [loadingKeys, setLoadingKeys] = useState(true);
   const [loadingData, setLoadingData] = useState(false);
 
-  const API_BASE = "http://localhost:8080";
+  const API_BASE = "https://ticker.pollenprints.in";
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    toast.success("Logged out successfully");
+    navigate("/");
+  };
+
+  // Add authentication check
+  useEffect(() => {
+    const userData = localStorage.getItem("user");
+    if (!userData) {
+      toast.error("Please log in to access the dashboard");
+      window.location.href = "/login";
+      return;
+    }
+
+    const parsedUser = JSON.parse(userData);
+    if (parsedUser.role !== "user") {
+      toast.error("Access denied. User privileges required.");
+      window.location.href = "/login";
+    }
+  }, []);
 
   // Fetch keys on mount
   useEffect(() => {
@@ -197,34 +230,72 @@ export default function Dashboard() {
       animate={{ opacity: 1 }}
       className="dark min-h-screen bg-gradient-to-br from-background via-background to-primary/5"
     >
-      <div className="flex h-screen">
-        {/* Left Pane - Keys List */}
-        <div className="w-64 border-r bg-card/80 backdrop-blur-sm flex-shrink-0 shadow-sm">
-          <div className="p-6 border-b bg-gradient-to-r from-primary/10 to-transparent">
-            <div className="flex items-center gap-2 mb-1">
-              <img src="./logo.svg" alt="Logo" width={28} height={28} className="rounded" />
-              <h2 className="text-lg font-bold tracking-tight text-primary">OI Dashboard</h2>
+      <div className="flex h-screen flex-col lg:flex-row overflow-hidden">
+        {/* Mobile Dropdown for Keys */}
+        <div className="lg:hidden w-full p-2 sm:p-3 border-b bg-card/80 backdrop-blur-sm flex items-center justify-between gap-2">
+          <Select value={selectedKey || ""} onValueChange={setSelectedKey}>
+            <SelectTrigger className="flex-1 h-8 sm:h-9 text-xs sm:text-sm">
+              <SelectValue placeholder="Select an instrument">
+                {selectedKey && <span className="text-foreground font-medium">{selectedKey}</span>}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              {keys.map((key) => (
+                <SelectItem key={key} value={key}>
+                  {key}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Button
+            onClick={handleLogout}
+            variant="outline"
+            size="sm"
+            className="cursor-pointer flex items-center justify-center gap-1 text-white hover:text-white text-xs py-1 h-8 sm:h-9 flex-shrink-0"
+          >
+            <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+          </Button>
+        </div>
+
+        {/* Left Pane - Keys List (Desktop only) */}
+        <div className="hidden lg:flex lg:w-56 border-b lg:border-b-0 lg:border-r bg-card/80 backdrop-blur-sm flex-shrink-0 shadow-sm flex-col">
+          <div className="p-2 sm:p-3 md:p-4 border-b bg-gradient-to-r from-primary/10 to-transparent">
+            <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
+              <img src="./logo.svg" alt="Logo" width={24} height={24} className="rounded w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
+              <h2 className="text-xs sm:text-sm md:text-base font-bold tracking-tight text-primary truncate">OI Dashboard</h2>
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Select an instrument</p>
+            <p className="text-xs text-muted-foreground mt-0.5">Select instrument</p>
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              size="sm"
+              className="cursor-pointer w-full mt-2 flex items-center justify-center gap-1 text-white hover:text-white text-xs py-1 h-7 sm:h-8"
+            >
+              <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Logout</span>
+              <span className="sm:hidden">Out</span>
+            </Button>
           </div>
-          <KeysList
-            keys={keys}
-            selectedKey={selectedKey}
-            onSelectKey={setSelectedKey}
-          />
+          <div className="flex-1 overflow-y-auto min-h-0">
+            <KeysList
+              keys={keys}
+              selectedKey={selectedKey}
+              onSelectKey={setSelectedKey}
+            />
+          </div>
         </div>
 
         {/* Right Pane - Data Display */}
-        <div className="flex-1 overflow-auto bg-background">
+        <div className="flex-1 overflow-auto bg-background w-full">
           {loadingData ? (
             <div className="flex items-center justify-center h-full">
-              <div className="text-center space-y-4">
-                <Loader2 className="h-12 w-12 animate-spin mx-auto text-primary" />
-                <p className="text-muted-foreground">Loading market data...</p>
+              <div className="text-center space-y-2 sm:space-y-4 px-2">
+                <Loader2 className="h-8 w-8 sm:h-12 sm:w-12 animate-spin mx-auto text-primary" />
+                <p className="text-xs sm:text-sm text-muted-foreground">Loading market data...</p>
               </div>
             </div>
           ) : oiChangeData && graphData && ltpData.nifty && ltpData.banknifty ? (
-            <div className="p-4 space-y-3 max-w-[1600px] mx-auto">
+            <div className="p-1 sm:p-2 md:p-3 lg:p-4 space-y-1 sm:space-y-2 md:space-y-3 max-w-[1600px] mx-auto w-full">
               {/* LTP Banner - with OHLC */}
               <LtpBanner data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty! }} showOHLC={true} />
 
@@ -241,7 +312,7 @@ export default function Dashboard() {
               />
             </div>
           ) : (
-            <div className="flex items-center justify-center h-full text-muted-foreground">
+            <div className="flex items-center justify-center h-full text-xs sm:text-sm text-muted-foreground px-2">
               Select a key to view data
             </div>
           )}

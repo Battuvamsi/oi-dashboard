@@ -1,4 +1,8 @@
-const [niftyLtpResponse, bankniftyLtpResponse] = await Promise.all([
-  fetch(`${API_BASE}/cache/ltp/256265`),
-  fetch(`${API_BASE}/cache/ltp/260105`),
-]);
+interface GraphDataPoint {
+  dateTime: string;
+  oichangeFinalResult: {
+    oiChangeTotalValues: {
+      totalImbalance: number;
+    };
+  };
+}
