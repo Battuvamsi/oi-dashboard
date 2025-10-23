@@ -129,9 +129,37 @@ export default function Dashboard() {
         const response = await fetch(`${API_BASE}/cache/keys`);
         if (!response.ok) throw new Error("Failed to fetch keys");
         const data = await response.json();
-        setKeys(data);
-        if (data.length > 0) {
-          setSelectedKey(data[0]);
+        
+        // Get current date in IST (UTC+5:30)
+        const now = new Date();
+        const istOffset = 5.5 * 60 * 60 * 1000;
+        const istNow = new Date(now.getTime() + istOffset);
+        const istYear = istNow.getUTCFullYear();
+        const istMonth = istNow.getUTCMonth();
+        const istDate = istNow.getUTCDate();
+        
+        const filteredKeys = data.filter((key: string) => {
+          // Extract date from key (assuming format like "NIFTY_2024-01-15" or similar)
+          const dateMatch = key.match(/(\d{4})-(\d{2})-(\d{2})/);
+          if (dateMatch) {
+            const keyYear = parseInt(dateMatch[1], 10);
+            const keyMonth = parseInt(dateMatch[2], 10) - 1; // Month is 0-indexed
+            const keyDay = parseInt(dateMatch[3], 10);
+            
+            // Compare year, month, and day
+            if (keyYear > istYear) return true;
+            if (keyYear < istYear) return false;
+            if (keyMonth > istMonth) return true;
+            if (keyMonth < istMonth) return false;
+            return keyDay >= istDate;
+          }
+          // If no date found in key, include it by default
+          return true;
+        });
+        
+        setKeys(filteredKeys);
+        if (filteredKeys.length > 0) {
+          setSelectedKey(filteredKeys[0]);
         }
       } catch (error) {
         console.error("Error fetching keys:", error);

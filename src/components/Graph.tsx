@@ -118,14 +118,16 @@ export default function Graph({ data }: GraphProps) {
       });
     }
 
-    // Draw X-axis labels - brighter for better visibility
+    // Draw X-axis labels - converted to IST
     const timeLabels = [0, 0.25, 0.5, 0.75, 1].map((ratio) => {
       const index = Math.floor(ratio * (clampedData.length - 1));
       const point = clampedData[index];
-      const date = new Date(point.dateTime);
+      const utcDate = new Date(point.dateTime);
+      // Convert UTC to IST by adding 5.5 hours (5 hours 30 minutes)
+      const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
       return {
         x: padding.left + ratio * graphWidth,
-        label: date.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false }),
+        label: istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false }),
       };
     });
 
@@ -197,9 +199,10 @@ export default function Graph({ data }: GraphProps) {
       ctx.lineWidth = isHovered ? 3 : 2;
       ctx.stroke();
 
-      // Display value at 30-minute intervals
-      const date = new Date(point.dateTime);
-      const minutes = date.getMinutes();
+      // Display value at 30-minute intervals - using IST
+      const utcDate = new Date(point.dateTime);
+      const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+      const minutes = istDate.getMinutes();
       const shouldShowValue = minutes === 0 || minutes === 30 || isLast;
       
       if (shouldShowValue) {
@@ -234,9 +237,10 @@ export default function Graph({ data }: GraphProps) {
           ctx.lineWidth = isHovered ? 3 : 2;
           ctx.stroke();
 
-          // Display PCR value at 30-minute intervals
-          const date = new Date(point.dateTime);
-          const minutes = date.getMinutes();
+          // Display PCR value at 30-minute intervals - using IST
+          const utcDate = new Date(point.dateTime);
+          const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+          const minutes = istDate.getMinutes();
           const shouldShowValue = minutes === 0 || minutes === 30 || isLast;
           
           if (shouldShowValue) {
@@ -285,12 +289,14 @@ export default function Graph({ data }: GraphProps) {
     
     if (dataIndex >= 0 && dataIndex < clampedData.length) {
       const point = clampedData[dataIndex];
-      const date = new Date(data.values[dataIndex].dateTime);
-      const timeStr = date.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
+      const utcDate = new Date(data.values[dataIndex].dateTime);
+      // Convert UTC to IST for tooltip display
+      const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+      const timeStr = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
       
-      let tooltipContent = `Time: ${timeStr}\nImbalance: ${point.clampedImbalance.toFixed(2)}`;
+      let tooltipContent = `Time: ${timeStr}\\nImbalance: ${point.clampedImbalance.toFixed(2)}`;
       if (point.pcr !== undefined && point.pcr !== null) {
-        tooltipContent += `\nPCR: ${point.pcr.toFixed(4)}`;
+        tooltipContent += `\\nPCR: ${point.pcr.toFixed(4)}`;
       }
 
       // Calculate the exact position of the data point on the canvas
