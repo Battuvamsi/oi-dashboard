@@ -61,8 +61,25 @@ export default function Graph({ data }: GraphProps) {
     ctx.fillStyle = "#0a0a0a";
     ctx.fillRect(0, 0, width, height);
 
+    // Filter data to only show 9 AM to 4 PM IST
+    const filteredData = data.values.filter((point) => {
+      const utcDate = new Date(point.dateTime);
+      const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+      const hours = istDate.getHours();
+      return hours >= 9 && hours < 16; // 9 AM to 4 PM (16:00 is 4 PM, so < 16 means up to 3:59 PM)
+    });
+
+    // If no data in the time range, show empty graph
+    if (filteredData.length === 0) {
+      ctx.fillStyle = "#d1d5db";
+      ctx.font = "14px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("No data available for 9 AM - 4 PM IST", width / 2, height / 2);
+      return;
+    }
+
     // Clamp imbalance values
-    const clampedData = data.values.map((point) => ({
+    const clampedData = filteredData.map((point) => ({
       ...point,
       rawImbalance: point.oichangeFinalResult.oiChangeTotalValues.totalImbalance,
       clampedImbalance: Math.max(
@@ -274,8 +291,21 @@ export default function Graph({ data }: GraphProps) {
       return;
     }
 
+    // Filter data to only show 9 AM to 4 PM IST
+    const filteredData = data.values.filter((point) => {
+      const utcDate = new Date(point.dateTime);
+      const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+      const hours = istDate.getHours();
+      return hours >= 9 && hours < 16;
+    });
+
+    if (filteredData.length === 0) {
+      setTooltip({ x: 0, y: 0, content: "", visible: false, dataIndex: -1 });
+      return;
+    }
+
     // Find closest data point
-    const clampedData = data.values.map((point) => ({
+    const clampedData = filteredData.map((point) => ({
       ...point,
       clampedImbalance: Math.max(
         -120,
@@ -289,7 +319,7 @@ export default function Graph({ data }: GraphProps) {
     
     if (dataIndex >= 0 && dataIndex < clampedData.length) {
       const point = clampedData[dataIndex];
-      const utcDate = new Date(data.values[dataIndex].dateTime);
+      const utcDate = new Date(filteredData[dataIndex].dateTime);
       // Convert UTC to IST for tooltip display
       const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
       const timeStr = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
