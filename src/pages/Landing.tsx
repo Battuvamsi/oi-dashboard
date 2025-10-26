@@ -23,10 +23,9 @@ interface LtpData {
 
 export default function Landing() {
   const navigate = useNavigate();
-  const [ltpData, setLtpData] = useState<{ nifty: LtpData | null; banknifty: LtpData | null; sensex: LtpData | null }>({
+  const [ltpData, setLtpData] = useState<{ nifty: LtpData | null; banknifty: LtpData | null }>({
     nifty: null,
     banknifty: null,
-    sensex: null,
   });
   const [theme, setTheme] = useState<"light" | "dark">("dark");
 
@@ -46,17 +45,15 @@ export default function Landing() {
   useEffect(() => {
     const fetchLtpData = async () => {
       try {
-        const [niftyResponse, bankniftyResponse, sensexResponse] = await Promise.all([
+        const [niftyResponse, bankniftyResponse] = await Promise.all([
           fetch(`${API_BASE}/cache/ltp/256265`),
           fetch(`${API_BASE}/cache/ltp/260105`),
-          fetch(`${API_BASE}/cache/ltp/265`),
         ]);
 
-        if (niftyResponse.ok && bankniftyResponse.ok && sensexResponse.ok) {
+        if (niftyResponse.ok && bankniftyResponse.ok) {
           const niftyData = await niftyResponse.json();
           const bankniftyData = await bankniftyResponse.json();
-          const sensexData = await sensexResponse.json();
-          setLtpData({ nifty: niftyData, banknifty: bankniftyData, sensex: sensexData });
+          setLtpData({ nifty: niftyData, banknifty: bankniftyData });
         }
       } catch (error) {
         console.error("Error fetching LTP data:", error);
@@ -135,14 +132,14 @@ export default function Landing() {
           </motion.div>
 
           {/* LTP Banner - with OHLC */}
-          {ltpData.nifty && ltpData.banknifty && ltpData.sensex && (
+          {ltpData.nifty && ltpData.banknifty && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               className="w-full px-0"
             >
-              <LtpBanner data={{ nifty: ltpData.nifty, banknifty: ltpData.banknifty, sensex: ltpData.sensex }} showOHLC={true} />
+              <LtpBanner data={{ nifty: ltpData.nifty, banknifty: ltpData.banknifty }} showOHLC={true} />
             </motion.div>
           )}
 
