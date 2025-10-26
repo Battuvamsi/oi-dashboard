@@ -90,9 +90,10 @@ export default function Dashboard() {
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [oiChangeData, setOiChangeData] = useState<OiChangeData | null>(null);
   const [graphData, setGraphData] = useState<GraphData | null>(null);
-  const [ltpData, setLtpData] = useState<{ nifty: LtpData | null; banknifty: LtpData | null }>({
+  const [ltpData, setLtpData] = useState<{ nifty: LtpData | null; banknifty: LtpData | null; sensex: LtpData | null }>({
     nifty: null,
     banknifty: null,
+    sensex: null,
   });
   const [loadingKeys, setLoadingKeys] = useState(true);
   const [loadingData, setLoadingData] = useState(false);
@@ -214,17 +215,20 @@ export default function Dashboard() {
 
     const fetchLtpData = async () => {
       try {
-        const [niftyResponse, bankniftyResponse] = await Promise.all([
+        const [niftyResponse, bankniftyResponse, sensexResponse] = await Promise.all([
           fetch(`${API_BASE}/cache/ltp/256265`),
           fetch(`${API_BASE}/cache/ltp/260105`),
+          fetch(`${API_BASE}/cache/ltp/265`),
         ]);
 
-        if (niftyResponse.ok && bankniftyResponse.ok) {
+        if (niftyResponse.ok && bankniftyResponse.ok && sensexResponse.ok) {
           const niftyData = await niftyResponse.json();
           const bankniftyData = await bankniftyResponse.json();
+          const sensexData = await sensexResponse.json();
           setLtpData({
             nifty: niftyData,
             banknifty: bankniftyData,
+            sensex: sensexData,
           });
         }
       } catch (error) {
@@ -352,10 +356,10 @@ export default function Dashboard() {
                 <p className="text-xs sm:text-sm text-muted-foreground">Loading market data...</p>
               </div>
             </div>
-          ) : oiChangeData && graphData && ltpData.nifty && ltpData.banknifty ? (
+          ) : oiChangeData && graphData && ltpData.nifty && ltpData.banknifty && ltpData.sensex ? (
             <div className="p-1 sm:p-2 md:p-3 lg:p-4 space-y-1 sm:space-y-2 md:space-y-3 max-w-[1600px] mx-auto w-full">
               {/* LTP Banner - compact without OHLC */}
-              <LtpBanner data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty! }} showOHLC={false} compact={true} />
+              <LtpBanner data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty!, sensex: ltpData.sensex! }} showOHLC={false} compact={true} />
 
               {/* Totals Badges */}
               <TotalsBadges totals={oiChangeData.oiChangeTotalValues} />
