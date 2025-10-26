@@ -299,7 +299,7 @@ export default function Dashboard() {
             onClick={handleLogout}
             variant="outline"
             size="sm"
-            className="cursor-pointer flex items-center justify-center gap-1 text-white hover:text-white text-xs py-1 h-8 sm:h-9 flex-shrink-0"
+            className="cursor-pointer flex items-center justify-center gap-1 text-red-400 hover:text-red-300 border-red-400 hover:border-red-300 text-xs py-1 h-8 sm:h-9 flex-shrink-0"
           >
             <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
           </Button>
@@ -326,7 +326,7 @@ export default function Dashboard() {
                 onClick={handleLogout}
                 variant="outline"
                 size="sm"
-                className="cursor-pointer flex-1 flex items-center justify-center gap-1 text-white hover:text-white text-xs py-1 h-7 sm:h-8"
+                className="cursor-pointer flex-1 flex items-center justify-center gap-1 text-red-400 hover:text-red-300 border-red-400 hover:border-red-300 text-xs py-1 h-7 sm:h-8"
               >
                 <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="hidden sm:inline">Logout</span>
