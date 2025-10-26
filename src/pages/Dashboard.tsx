@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 
 interface OiChangeTotalValues {
@@ -98,6 +99,7 @@ export default function Dashboard() {
   const [loadingKeys, setLoadingKeys] = useState(true);
   const [loadingData, setLoadingData] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
+  const [activeTab, setActiveTab] = useState("today");
 
   const API_BASE = "https://ticker.pollenprints.in";
   const navigate = useNavigate();
@@ -275,7 +277,7 @@ export default function Dashboard() {
       className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5"
     >
       <div className="flex h-screen flex-col lg:flex-row overflow-hidden">
-        {/* Mobile Dropdown for Keys */}
+        {/* Mobile Header with Dropdown */}
         <div className="lg:hidden w-full p-2 sm:p-3 border-b bg-card/80 backdrop-blur-sm flex items-center justify-between gap-2">
           <Select value={selectedKey || ""} onValueChange={setSelectedKey}>
             <SelectTrigger className="flex-1 h-8 sm:h-9 text-xs sm:text-sm">
@@ -347,37 +349,60 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Right Pane - Data Display */}
-        <div className="flex-1 overflow-auto bg-background w-full">
-          {loadingData ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center space-y-2 sm:space-y-4 px-2">
-                <Loader2 className="h-8 w-8 sm:h-12 sm:w-12 animate-spin mx-auto text-primary" />
-                <p className="text-xs sm:text-sm text-muted-foreground">Loading market data...</p>
+        {/* Right Pane - Data Display with Tabs */}
+        <div className="flex-1 overflow-auto bg-background w-full flex flex-col">
+          {/* Navbar with Tabs */}
+          <div className="border-b bg-card/80 backdrop-blur-sm px-2 sm:px-4 py-2">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="grid w-full max-w-md grid-cols-2">
+                <TabsTrigger value="today" className="text-xs sm:text-sm">Today</TabsTrigger>
+                <TabsTrigger value="history" className="text-xs sm:text-sm">History</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+
+          {/* Tab Content */}
+          <div className="flex-1 overflow-auto">
+            {activeTab === "today" ? (
+              loadingData ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center space-y-2 sm:space-y-4 px-2">
+                    <Loader2 className="h-8 w-8 sm:h-12 sm:w-12 animate-spin mx-auto text-primary" />
+                    <p className="text-xs sm:text-sm text-muted-foreground">Loading market data...</p>
+                  </div>
+                </div>
+              ) : oiChangeData && graphData && ltpData.nifty && ltpData.banknifty && ltpData.sensex ? (
+                <div className="p-1 sm:p-2 md:p-3 lg:p-4 space-y-1 sm:space-y-2 md:space-y-3 max-w-[1600px] mx-auto w-full">
+                  {/* LTP Banner - compact without OHLC */}
+                  <LtpBanner data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty!, sensex: ltpData.sensex! }} showOHLC={false} compact={true} />
+
+                  {/* Totals Badges */}
+                  <TotalsBadges totals={oiChangeData.oiChangeTotalValues} />
+
+                  {/* Graph */}
+                  <Graph data={graphData} />
+
+                  {/* Table */}
+                  <OiTable
+                    data={oiChangeData.filteredResults}
+                    totals={oiChangeData.oiChangeTotalValues}
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-full text-xs sm:text-sm text-muted-foreground px-2">
+                  Select a key to view data
+                </div>
+              )
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center space-y-4 px-4">
+                  <div className="text-6xl">🚧</div>
+                  <h2 className="text-2xl font-bold text-foreground">Under Construction</h2>
+                  <p className="text-muted-foreground">History feature coming soon...</p>
+                </div>
               </div>
-            </div>
-          ) : oiChangeData && graphData && ltpData.nifty && ltpData.banknifty && ltpData.sensex ? (
-            <div className="p-1 sm:p-2 md:p-3 lg:p-4 space-y-1 sm:space-y-2 md:space-y-3 max-w-[1600px] mx-auto w-full">
-              {/* LTP Banner - compact without OHLC */}
-              <LtpBanner data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty!, sensex: ltpData.sensex! }} showOHLC={false} compact={true} />
-
-              {/* Totals Badges */}
-              <TotalsBadges totals={oiChangeData.oiChangeTotalValues} />
-
-              {/* Graph */}
-              <Graph data={graphData} />
-
-              {/* Table */}
-              <OiTable
-                data={oiChangeData.filteredResults}
-                totals={oiChangeData.oiChangeTotalValues}
-              />
-            </div>
-          ) : (
-            <div className="flex items-center justify-center h-full text-xs sm:text-sm text-muted-foreground px-2">
-              Select a key to view data
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </motion.div>
