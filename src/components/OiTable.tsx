@@ -102,9 +102,9 @@ export default function OiTable({ data }: OiTableProps) {
                   <TableCell className="text-center text-red-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm">{formatNumber(row.pe?.oiChange)}</TableCell>
                   <TableCell className="text-center text-red-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm">{formatNumber(row.pe?.oi)}</TableCell>
                   <TableCell className="text-center text-red-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm">{formatDecimal(row.putCoi)}</TableCell>
-                  <TableCell className="text-center text-blue-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm bg-blue-500/5">{formatDecimal(row.imbalance)}</TableCell>
-                  <TableCell className="text-center text-purple-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm bg-purple-500/5 border-r border-border">{formatDecimal(row.pcr, 4)}</TableCell>
-                  <TableCell className={`text-center font-bold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm ${
+                  <TableCell className="text-center text-blue-400 font-bold px-2 sm:px-3 py-1.5 sm:py-2.5 text-sm sm:text-base bg-blue-500/5">{formatDecimal(row.imbalance)}</TableCell>
+                  <TableCell className="text-center text-purple-400 font-bold px-2 sm:px-3 py-1.5 sm:py-2.5 text-sm sm:text-base bg-purple-500/5">{formatDecimal(row.pcr, 4)}</TableCell>
+                  <TableCell className={`text-center font-bold px-2 sm:px-3 py-1.5 sm:py-2.5 text-sm sm:text-base ${
                     row.imbalance >= 30 
                       ? 'text-green-400 bg-green-500/10' 
                       : row.imbalance <= -30 
