@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
-import { BarChart3, TrendingUp, Activity, ArrowRight, Sparkles } from "lucide-react";
+import { BarChart3, TrendingUp, Activity, ArrowRight, Sparkles, Moon, Sun } from "lucide-react";
 import LtpBanner from "@/components/LtpBanner";
 import { useEffect, useState } from "react";
 
@@ -27,8 +27,22 @@ export default function Landing() {
     nifty: null,
     banknifty: null,
   });
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   const API_BASE = "https://ticker.pollenprints.in";
+
+  useEffect(() => {
+    // Check system preference on mount
+    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    setTheme(isDark ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", isDark);
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    document.documentElement.classList.toggle("dark", newTheme === "dark");
+  };
 
   useEffect(() => {
     const fetchLtpData = async () => {
@@ -74,6 +88,9 @@ export default function Landing() {
               <span className="text-base sm:text-base md:text-lg font-bold tracking-tight bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent truncate">OI Change</span>
             </motion.div>
             <div className="flex gap-1 sm:gap-2 flex-shrink-0">
+              <Button onClick={toggleTheme} variant="outline" size="icon" className="cursor-pointer h-7 w-7 sm:h-8 sm:w-8 md:h-10 md:w-10">
+                {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </Button>
               <Button onClick={() => navigate("/login")} variant="outline" className="cursor-pointer text-white hover:text-white text-xs px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 h-7 sm:h-8 md:h-10">
                 Login
               </Button>

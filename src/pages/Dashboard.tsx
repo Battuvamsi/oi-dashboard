@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Loader2, LogOut, ChevronDown } from "lucide-react";
+import { Loader2, LogOut, ChevronDown, Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import KeysList from "@/components/KeysList";
@@ -96,6 +96,7 @@ export default function Dashboard() {
   });
   const [loadingKeys, setLoadingKeys] = useState(true);
   const [loadingData, setLoadingData] = useState(false);
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
 
   const API_BASE = "https://ticker.pollenprints.in";
   const navigate = useNavigate();
@@ -104,6 +105,19 @@ export default function Dashboard() {
     localStorage.removeItem("user");
     toast.success("Logged out successfully");
     navigate("/");
+  };
+
+  useEffect(() => {
+    // Check system preference on mount
+    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    setTheme(isDark ? "dark" : "light");
+    document.documentElement.classList.toggle("dark", isDark);
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    document.documentElement.classList.toggle("dark", newTheme === "dark");
   };
 
   // Add authentication check
@@ -276,6 +290,14 @@ export default function Dashboard() {
             </SelectContent>
           </Select>
           <Button
+            onClick={toggleTheme}
+            variant="outline"
+            size="sm"
+            className="cursor-pointer flex items-center justify-center h-8 sm:h-9 w-8 sm:w-9 flex-shrink-0 p-0"
+          >
+            {theme === "dark" ? <Sun className="h-3 w-3 sm:h-4 sm:w-4" /> : <Moon className="h-3 w-3 sm:h-4 sm:w-4" />}
+          </Button>
+          <Button
             onClick={handleLogout}
             variant="outline"
             size="sm"
@@ -293,16 +315,26 @@ export default function Dashboard() {
               <h2 className="text-xs sm:text-sm md:text-base font-bold tracking-tight text-primary truncate">OI Dashboard</h2>
             </div>
             <p className="text-xs text-muted-foreground mt-0.5">Select instrument</p>
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              size="sm"
-              className="cursor-pointer w-full mt-2 flex items-center justify-center gap-1 text-white hover:text-white text-xs py-1 h-7 sm:h-8"
-            >
-              <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Logout</span>
-              <span className="sm:hidden">Out</span>
-            </Button>
+            <div className="flex gap-1 mt-2">
+              <Button
+                onClick={toggleTheme}
+                variant="outline"
+                size="sm"
+                className="cursor-pointer flex items-center justify-center h-7 sm:h-8 w-7 sm:w-8 p-0"
+              >
+                {theme === "dark" ? <Sun className="h-3 w-3 sm:h-4 sm:w-4" /> : <Moon className="h-3 w-3 sm:h-4 sm:w-4" />}
+              </Button>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                size="sm"
+                className="cursor-pointer flex-1 flex items-center justify-center gap-1 text-white hover:text-white text-xs py-1 h-7 sm:h-8"
+              >
+                <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="hidden sm:inline">Logout</span>
+                <span className="sm:hidden">Out</span>
+              </Button>
+            </div>
           </div>
           <div className="flex-1 overflow-y-auto min-h-0">
             <KeysList
