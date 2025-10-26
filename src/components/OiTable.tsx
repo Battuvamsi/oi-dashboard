@@ -61,8 +61,11 @@ export default function OiTable({ data }: OiTableProps) {
                 <TableHead colSpan={4} className="text-center font-bold text-red-400 bg-red-500/20 px-1 sm:px-2 py-2 text-sm border-r border-border">
                   PUTS
                 </TableHead>
-                <TableHead colSpan={2} className="text-center font-bold text-blue-400 bg-blue-500/20 px-1 sm:px-2 py-2 text-sm">
+                <TableHead colSpan={2} className="text-center font-bold text-blue-400 bg-blue-500/20 px-1 sm:px-2 py-2 text-sm border-r border-border">
                   FINAL DATA
+                </TableHead>
+                <TableHead colSpan={1} className="text-center font-bold text-yellow-400 bg-yellow-500/20 px-1 sm:px-2 py-2 text-sm">
+                  TREND
                 </TableHead>
               </TableRow>
               <TableRow className="border-border hover:bg-muted/50 bg-muted/20">
@@ -76,7 +79,8 @@ export default function OiTable({ data }: OiTableProps) {
                 <TableHead className="text-center font-bold text-red-400 bg-red-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs sm:text-sm">PUT OI</TableHead>
                 <TableHead className="text-center font-bold text-red-400 bg-red-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs sm:text-sm">PUT COI</TableHead>
                 <TableHead className="text-center font-bold text-blue-400 bg-blue-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs sm:text-sm">Imbalance</TableHead>
-                <TableHead className="text-center font-bold text-purple-400 bg-purple-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs sm:text-sm">PCR</TableHead>
+                <TableHead className="text-center font-bold text-purple-400 bg-purple-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs sm:text-sm border-r border-border">PCR</TableHead>
+                <TableHead className="text-center font-bold text-yellow-400 bg-yellow-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs sm:text-sm">TREND</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -102,7 +106,16 @@ export default function OiTable({ data }: OiTableProps) {
                   <TableCell className="text-center text-red-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm">{formatNumber(row.pe?.oi)}</TableCell>
                   <TableCell className="text-center text-red-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm">{formatDecimal(row.putCoi)}</TableCell>
                   <TableCell className="text-center text-blue-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm bg-blue-500/5">{formatDecimal(row.imbalance)}</TableCell>
-                  <TableCell className="text-center text-purple-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm bg-purple-500/5">{formatDecimal(row.pcr, 4)}</TableCell>
+                  <TableCell className="text-center text-purple-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm bg-purple-500/5 border-r border-border">{formatDecimal(row.pcr, 4)}</TableCell>
+                  <TableCell className={`text-center font-bold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm ${
+                    row.imbalance >= 30 
+                      ? 'text-green-400 bg-green-500/10' 
+                      : row.imbalance <= -30 
+                      ? 'text-red-400 bg-red-500/10' 
+                      : 'text-muted-foreground bg-muted/10'
+                  }`}>
+                    {row.imbalance >= 30 ? 'BULLISH' : row.imbalance <= -30 ? 'BEARISH' : 'NEUTRAL'}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
