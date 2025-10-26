@@ -82,12 +82,12 @@ export default function OiTable({ data }: OiTableProps) {
             <TableBody>
               {data.map((row) => (
                 <TableRow key={row.strikePrice} className="border-border hover:bg-muted/40 transition-colors">
-                  <TableCell className="text-center text-green-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs">{formatDecimal(row.callCoi)}</TableCell>
-                  <TableCell className="text-center text-green-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs">{formatNumber(row.ce?.oi)}</TableCell>
-                  <TableCell className="text-center text-green-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs">{formatNumber(row.ce?.oiChange)}</TableCell>
-                  <TableCell className="text-center text-green-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs">{formatDecimal(row.ce?.ltp)}</TableCell>
+                  <TableCell className="text-center text-green-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[10px] sm:text-xs md:text-sm lg:text-base">{formatDecimal(row.callCoi)}</TableCell>
+                  <TableCell className="text-center text-green-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[10px] sm:text-xs md:text-sm lg:text-base">{formatNumber(row.ce?.oi)}</TableCell>
+                  <TableCell className="text-center text-green-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[10px] sm:text-xs md:text-sm lg:text-base">{formatNumber(row.ce?.oiChange)}</TableCell>
+                  <TableCell className="text-center text-green-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[10px] sm:text-xs md:text-sm lg:text-base">{formatDecimal(row.ce?.ltp)}</TableCell>
                   <TableCell 
-                    className={`text-center font-bold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs border-x border-primary/30 ${
+                    className={`text-center font-bold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[10px] sm:text-xs md:text-sm lg:text-base border-x border-primary/30 ${
                       row.imbalance >= 70 
                         ? 'bg-green-500/20 text-green-300' 
                         : row.imbalance <= -70 
@@ -97,13 +97,13 @@ export default function OiTable({ data }: OiTableProps) {
                   >
                     {row.strikePrice}
                   </TableCell>
-                  <TableCell className="text-center text-red-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs">{formatDecimal(row.pe?.ltp)}</TableCell>
-                  <TableCell className="text-center text-red-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs">{formatNumber(row.pe?.oiChange)}</TableCell>
-                  <TableCell className="text-center text-red-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs">{formatNumber(row.pe?.oi)}</TableCell>
-                  <TableCell className="text-center text-red-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs">{formatDecimal(row.putCoi)}</TableCell>
-                  <TableCell className="text-center text-blue-400 font-bold px-0.5 sm:px-1.5 md:px-2 lg:px-2.5 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs bg-blue-500/5">{formatDecimal(row.imbalance)}</TableCell>
-                  <TableCell className="text-center text-purple-400 font-bold px-0.5 sm:px-1.5 md:px-2 lg:px-2.5 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs bg-purple-500/5">{formatDecimal(row.pcr, 4)}</TableCell>
-                  <TableCell className={`text-center font-bold px-0.5 sm:px-1.5 md:px-2 lg:px-2.5 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[8px] sm:text-[9px] md:text-[10px] lg:text-xs ${
+                  <TableCell className="text-center text-red-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[10px] sm:text-xs md:text-sm lg:text-base">{formatDecimal(row.pe?.ltp)}</TableCell>
+                  <TableCell className="text-center text-red-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[10px] sm:text-xs md:text-sm lg:text-base">{formatNumber(row.pe?.oiChange)}</TableCell>
+                  <TableCell className="text-center text-red-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[10px] sm:text-xs md:text-sm lg:text-base">{formatNumber(row.pe?.oi)}</TableCell>
+                  <TableCell className="text-center text-red-400 font-semibold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[10px] sm:text-xs md:text-sm lg:text-base">{formatDecimal(row.putCoi)}</TableCell>
+                  <TableCell className="text-center text-blue-400 font-bold px-0.5 sm:px-1.5 md:px-2 lg:px-2.5 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[10px] sm:text-xs md:text-sm lg:text-base bg-blue-500/5">{formatDecimal(row.imbalance)}</TableCell>
+                  <TableCell className="text-center text-purple-400 font-bold px-0.5 sm:px-1.5 md:px-2 lg:px-2.5 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[10px] sm:text-xs md:text-sm lg:text-base bg-purple-500/5">{formatDecimal(row.pcr, 4)}</TableCell>
+                  <TableCell className={`text-center font-bold px-0.5 sm:px-1.5 md:px-2 lg:px-2.5 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[10px] sm:text-xs md:text-sm lg:text-base ${
                     row.imbalance >= 30 
                       ? 'text-green-400 bg-green-500/10' 
                       : row.imbalance <= -30 
