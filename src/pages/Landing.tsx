@@ -32,10 +32,8 @@ export default function Landing() {
   const API_BASE = "https://ticker.pollenprints.in";
 
   useEffect(() => {
-    // Check system preference on mount
-    const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    setTheme(isDark ? "dark" : "light");
-    document.documentElement.classList.toggle("dark", isDark);
+    // Default to dark mode on mount
+    document.documentElement.classList.add("dark");
   }, []);
 
   const toggleTheme = () => {
