@@ -282,15 +282,38 @@ export default function Dashboard() {
           <Select value={selectedKey || ""} onValueChange={setSelectedKey}>
             <SelectTrigger className="flex-1 h-8 sm:h-9 text-xs sm:text-sm">
               <SelectValue placeholder="Select an instrument">
-                {selectedKey && <span className="text-foreground font-medium">{selectedKey}</span>}
+                {selectedKey && (
+                  <span className="text-foreground font-bold tracking-wide">{selectedKey.split('_')[0]}</span>
+                )}
               </SelectValue>
             </SelectTrigger>
             <SelectContent>
-              {keys.map((key) => (
-                <SelectItem key={key} value={key}>
-                  {key}
-                </SelectItem>
-              ))}
+              {keys.map((key) => {
+                const parts = key.split('_');
+                const index = parts[0];
+                const dateStr = parts[1];
+                let formattedDate = '';
+                
+                if (dateStr) {
+                  const dateParts = dateStr.split('-');
+                  if (dateParts.length === 3) {
+                    const [year, month, day] = dateParts;
+                    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    formattedDate = `${day} ${monthNames[parseInt(month) - 1]} ${year}`;
+                  }
+                }
+                
+                return (
+                  <SelectItem key={key} value={key}>
+                    <div className="flex flex-col">
+                      <span className="font-bold text-sm">{index}</span>
+                      {formattedDate && (
+                        <span className="text-xs text-muted-foreground">{formattedDate}</span>
+                      )}
+                    </div>
+                  </SelectItem>
+                );
+              })}
             </SelectContent>
           </Select>
           <Button
