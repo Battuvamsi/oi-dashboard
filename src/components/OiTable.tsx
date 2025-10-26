@@ -77,7 +77,7 @@ export default function OiTable({ data }: OiTableProps) {
                 <TableHead className="text-center font-bold text-red-400 bg-red-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs sm:text-sm">PUT COI</TableHead>
                 <TableHead className="text-center font-bold text-blue-400 bg-blue-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs sm:text-sm">Imbalance</TableHead>
                 <TableHead className="text-center font-bold text-purple-400 bg-purple-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs sm:text-sm">PCR</TableHead>
-                <TableHead className="text-center font-bold text-yellow-400 bg-yellow-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs sm:text-sm">TREND</TableHead>
+                <TableHead className="text-center font-bold text-cyan-400 bg-cyan-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs sm:text-sm">TREND</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
