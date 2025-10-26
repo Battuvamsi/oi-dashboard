@@ -61,12 +61,19 @@ export default function Graph({ data }: GraphProps) {
     ctx.fillStyle = "#0a0a0a";
     ctx.fillRect(0, 0, width, height);
 
-    // Filter data to only show 9 AM to 4 PM IST
+    // Filter data to only show 8:59 AM to 4:00 PM IST
     const filteredData = data.values.filter((point) => {
       const utcDate = new Date(point.dateTime);
       const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
       const hours = istDate.getHours();
-      return hours >= 9 && hours < 16; // 9 AM to 4 PM (16:00 is 4 PM, so < 16 means up to 3:59 PM)
+      const minutes = istDate.getMinutes();
+      
+      // Include data from 8:59 AM onwards (hour 8 with minutes >= 59, or hour >= 9)
+      // Up to 4:00 PM (hour < 16, or hour === 16 with minutes === 0)
+      if (hours === 8 && minutes >= 59) return true;
+      if (hours > 8 && hours < 16) return true;
+      if (hours === 16 && minutes === 0) return true;
+      return false;
     });
 
     // If no data in the time range, show empty graph
@@ -74,7 +81,7 @@ export default function Graph({ data }: GraphProps) {
       ctx.fillStyle = "#d1d5db";
       ctx.font = "14px sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("No data available for 9 AM - 4 PM IST", width / 2, height / 2);
+      ctx.fillText("No data available for 8:59 AM - 4:00 PM IST", width / 2, height / 2);
       return;
     }
 
@@ -91,6 +98,25 @@ export default function Graph({ data }: GraphProps) {
 
     // Check if PCR data exists
     const hasPCR = clampedData.some(point => point.pcr !== undefined && point.pcr !== null);
+
+    // Draw gradient shaded regions first (so they appear behind grid lines)
+    // Green gradient above 30 - fades from opaque at 30 line to transparent at top
+    const y30 = padding.top + ((120 - 30) / 240) * graphHeight;
+    const yTop = padding.top;
+    const greenGradient = ctx.createLinearGradient(0, y30, 0, yTop);
+    greenGradient.addColorStop(0, "rgba(52, 211, 153, 0.2)"); // More opaque at 30 line
+    greenGradient.addColorStop(1, "rgba(52, 211, 153, 0)"); // Transparent at top
+    ctx.fillStyle = greenGradient;
+    ctx.fillRect(padding.left, yTop, graphWidth, y30 - yTop);
+
+    // Red gradient below -30 - fades from opaque at -30 line to transparent at bottom
+    const yMinus30 = padding.top + ((120 - (-30)) / 240) * graphHeight;
+    const yBottom = padding.top + graphHeight;
+    const redGradient = ctx.createLinearGradient(0, yMinus30, 0, yBottom);
+    redGradient.addColorStop(0, "rgba(248, 113, 113, 0.2)"); // More opaque at -30 line
+    redGradient.addColorStop(1, "rgba(248, 113, 113, 0)"); // Transparent at bottom
+    ctx.fillStyle = redGradient;
+    ctx.fillRect(padding.left, yMinus30, graphWidth, yBottom - yMinus30);
 
     // Draw grid lines and Y-axis labels for Imbalance (left axis)
     ctx.lineWidth = 1;
@@ -134,25 +160,6 @@ export default function Graph({ data }: GraphProps) {
         ctx.fillText(pcrValue.toFixed(2), padding.left + graphWidth + 10, y + 4);
       });
     }
-
-    // Draw X-axis labels - converted to IST
-    const timeLabels = [0, 0.25, 0.5, 0.75, 1].map((ratio) => {
-      const index = Math.floor(ratio * (clampedData.length - 1));
-      const point = clampedData[index];
-      const utcDate = new Date(point.dateTime);
-      // Convert UTC to IST by adding 5.5 hours (5 hours 30 minutes)
-      const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
-      return {
-        x: padding.left + ratio * graphWidth,
-        label: istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false }),
-      };
-    });
-
-    ctx.fillStyle = "#d1d5db";
-    ctx.textAlign = "center";
-    timeLabels.forEach((label) => {
-      ctx.fillText(label.label, label.x, height - padding.bottom + 20);
-    });
 
     // Draw Imbalance line
     ctx.strokeStyle = "#93c5fd";
@@ -270,6 +277,49 @@ export default function Graph({ data }: GraphProps) {
       });
     }
 
+    // Draw X-axis labels at hourly intervals - converted to IST (drawn last for visibility)
+    ctx.fillStyle = "#d1d5db";
+    ctx.textAlign = "center";
+    ctx.font = isMobile ? "10px sans-serif" : "12px sans-serif";
+    
+    // Guard against divide-by-zero
+    if (clampedData.length > 1) {
+      // Track which hours we've already labeled to avoid duplicates
+      const labeledHours = new Set<number>();
+      
+      clampedData.forEach((point, index) => {
+        const utcDate = new Date(point.dateTime);
+        const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+        const hours = istDate.getHours();
+        const minutes = istDate.getMinutes();
+        
+        // Show labels when:
+        // 1. Minutes are 0 (top of the hour)
+        // 2. First data point and minutes <= 5 (to catch early morning start)
+        // 3. Minutes >= 55 and we haven't labeled the next hour yet (to prevent gaps)
+        const shouldLabel = 
+          minutes === 0 || 
+          (minutes <= 5 && index === 0) || 
+          (minutes >= 55 && !labeledHours.has(hours + 1));
+        
+        if (!labeledHours.has(hours) && shouldLabel) {
+          labeledHours.add(hours);
+          const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
+          const label = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
+          const yPosition = height - padding.bottom + 20; // Position below the graph, above canvas bottom
+          ctx.fillText(label, x, yPosition);
+        }
+      });
+    } else if (clampedData.length === 1) {
+      // Single data point - center the label
+      const utcDate = new Date(clampedData[0].dateTime);
+      const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+      const label = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
+      const x = padding.left + graphWidth / 2;
+      const yPosition = height - padding.bottom + 20;
+      ctx.fillText(label, x, yPosition);
+    }
+
   }, [data, isExpanded, tooltip.visible, tooltip.dataIndex]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -291,12 +341,19 @@ export default function Graph({ data }: GraphProps) {
       return;
     }
 
-    // Filter data to only show 9 AM to 4 PM IST
+    // Filter data to only show 8:59 AM to 4:00 PM IST
     const filteredData = data.values.filter((point) => {
       const utcDate = new Date(point.dateTime);
       const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
       const hours = istDate.getHours();
-      return hours >= 9 && hours < 16;
+      const minutes = istDate.getMinutes();
+      
+      // Include data from 8:59 AM onwards (hour 8 with minutes >= 59, or hour >= 9)
+      // Up to 4:00 PM (hour < 16, or hour === 16 with minutes === 0)
+      if (hours === 8 && minutes >= 59) return true;
+      if (hours > 8 && hours < 16) return true;
+      if (hours === 16 && minutes === 0) return true;
+      return false;
     });
 
     if (filteredData.length === 0) {
@@ -401,14 +458,16 @@ export default function Graph({ data }: GraphProps) {
           />
           {tooltip.visible && (
             <div
-              className="absolute z-50 px-3 py-2 text-sm bg-card border border-border rounded-lg shadow-lg pointer-events-none whitespace-pre-line"
+              className="absolute z-50 px-3 py-2 text-sm bg-card border border-border rounded-lg shadow-lg pointer-events-none"
               style={{
                 left: `${tooltip.x + 10}px`,
                 top: `${tooltip.y}px`,
                 transform: 'translateY(-100%)',
               }}
             >
-              {tooltip.content}
+              {tooltip.content.split('\\n').map((line, index) => (
+                <div key={index}>{line}</div>
+              ))}
             </div>
           )}
         </motion.div>

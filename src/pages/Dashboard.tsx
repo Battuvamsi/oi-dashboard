@@ -324,8 +324,8 @@ export default function Dashboard() {
             </div>
           ) : oiChangeData && graphData && ltpData.nifty && ltpData.banknifty ? (
             <div className="p-1 sm:p-2 md:p-3 lg:p-4 space-y-1 sm:space-y-2 md:space-y-3 max-w-[1600px] mx-auto w-full">
-              {/* LTP Banner - with OHLC */}
-              <LtpBanner data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty! }} showOHLC={true} />
+              {/* LTP Banner - compact without OHLC */}
+              <LtpBanner data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty! }} showOHLC={false} compact={true} />
 
               {/* Totals Badges */}
               <TotalsBadges totals={oiChangeData.oiChangeTotalValues} />
