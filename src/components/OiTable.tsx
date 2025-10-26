@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface FilteredResult {
   strikePrice: number;
@@ -45,10 +44,10 @@ export default function OiTable({ data }: OiTableProps) {
   };
 
   return (
-    <Card className="p-1 sm:p-2 md:p-4 bg-card/80 backdrop-blur-sm w-full">
+    <Card className="p-1 sm:p-2 md:p-4 bg-card/80 backdrop-blur-sm w-full overflow-hidden">
       <h3 className="text-xs sm:text-sm md:text-lg lg:text-xl font-bold tracking-tight mb-2 sm:mb-3 md:mb-4 text-foreground px-1 sm:px-2">Options Chain</h3>
-      <ScrollArea className="h-[300px] sm:h-[400px] md:h-[500px] rounded-md w-full">
-        <div className="overflow-x-auto w-full pb-2">
+      <div className="overflow-x-auto overflow-y-auto h-[300px] sm:h-[400px] md:h-[500px] rounded-md w-full">
+        <div className="pb-2">
           <Table className="text-xs sm:text-xs md:text-sm min-w-[1400px] w-max">
             <TableHeader>
               <TableRow className="border-border bg-muted/30">
@@ -118,7 +117,7 @@ export default function OiTable({ data }: OiTableProps) {
             </TableBody>
           </Table>
         </div>
-      </ScrollArea>
+      </div>
     </Card>
   );
 }
