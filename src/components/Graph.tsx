@@ -68,8 +68,6 @@ export default function Graph({ data }: GraphProps) {
       const hours = istDate.getHours();
       const minutes = istDate.getMinutes();
       
-      // Include data from 8:59 AM onwards (hour 8 with minutes >= 59, or hour >= 9)
-      // Up to 4:00 PM (hour < 16, or hour === 16 with minutes === 0)
       if (hours === 8 && minutes >= 59) return true;
       if (hours > 8 && hours < 16) return true;
       if (hours === 16 && minutes === 0) return true;
@@ -104,8 +102,8 @@ export default function Graph({ data }: GraphProps) {
     const y30 = padding.top + ((120 - 30) / 240) * graphHeight;
     const yTop = padding.top;
     const greenGradient = ctx.createLinearGradient(0, y30, 0, yTop);
-    greenGradient.addColorStop(0, "rgba(52, 211, 153, 0.2)"); // More opaque at 30 line
-    greenGradient.addColorStop(1, "rgba(52, 211, 153, 0)"); // Transparent at top
+    greenGradient.addColorStop(0, "rgba(52, 211, 153, 0.2)");
+    greenGradient.addColorStop(1, "rgba(52, 211, 153, 0)");
     ctx.fillStyle = greenGradient;
     ctx.fillRect(padding.left, yTop, graphWidth, y30 - yTop);
 
@@ -113,8 +111,8 @@ export default function Graph({ data }: GraphProps) {
     const yMinus30 = padding.top + ((120 - (-30)) / 240) * graphHeight;
     const yBottom = padding.top + graphHeight;
     const redGradient = ctx.createLinearGradient(0, yMinus30, 0, yBottom);
-    redGradient.addColorStop(0, "rgba(248, 113, 113, 0.2)"); // More opaque at -30 line
-    redGradient.addColorStop(1, "rgba(248, 113, 113, 0)"); // Transparent at bottom
+    redGradient.addColorStop(0, "rgba(248, 113, 113, 0.2)");
+    redGradient.addColorStop(1, "rgba(248, 113, 113, 0)");
     ctx.fillStyle = redGradient;
     ctx.fillRect(padding.left, yMinus30, graphWidth, yBottom - yMinus30);
 
@@ -293,10 +291,6 @@ export default function Graph({ data }: GraphProps) {
         const hours = istDate.getHours();
         const minutes = istDate.getMinutes();
         
-        // Show labels when:
-        // 1. Minutes are 0 (top of the hour)
-        // 2. First data point and minutes <= 5 (to catch early morning start)
-        // 3. Minutes >= 55 and we haven't labeled the next hour yet (to prevent gaps)
         const shouldLabel = 
           minutes === 0 || 
           (minutes <= 5 && index === 0) || 
@@ -306,12 +300,11 @@ export default function Graph({ data }: GraphProps) {
           labeledHours.add(hours);
           const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
           const label = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
-          const yPosition = height - padding.bottom + 20; // Position below the graph, above canvas bottom
+          const yPosition = height - padding.bottom + 20;
           ctx.fillText(label, x, yPosition);
         }
       });
     } else if (clampedData.length === 1) {
-      // Single data point - center the label
       const utcDate = new Date(clampedData[0].dateTime);
       const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
       const label = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -348,8 +341,6 @@ export default function Graph({ data }: GraphProps) {
       const hours = istDate.getHours();
       const minutes = istDate.getMinutes();
       
-      // Include data from 8:59 AM onwards (hour 8 with minutes >= 59, or hour >= 9)
-      // Up to 4:00 PM (hour < 16, or hour === 16 with minutes === 0)
       if (hours === 8 && minutes >= 59) return true;
       if (hours > 8 && hours < 16) return true;
       if (hours === 16 && minutes === 0) return true;
@@ -419,6 +410,14 @@ export default function Graph({ data }: GraphProps) {
             <div className="flex items-center gap-2">
               <div className="w-4 h-0.5 bg-[#fbbf24]"></div>
               <span className="text-muted-foreground">PCR</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-3 bg-green-500/20 border border-green-500/40 rounded"></div>
+              <span className="text-muted-foreground text-xs">Bullish (+30)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-3 bg-red-500/20 border border-red-500/40 rounded"></div>
+              <span className="text-muted-foreground text-xs">Bearish (-30)</span>
             </div>
           </div>
         </div>
