@@ -86,6 +86,17 @@ export default function OiTable({ data }: OiTableProps) {
                   <TableCell className="text-center text-green-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm">{formatNumber(row.ce?.oi)}</TableCell>
                   <TableCell className="text-center text-green-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm">{formatNumber(row.ce?.oiChange)}</TableCell>
                   <TableCell className="text-center text-green-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm">{formatDecimal(row.ce?.ltp)}</TableCell>
+                  <TableCell 
+                    className={`text-center font-bold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm border-x border-primary/30 ${
+                      row.imbalance >= 70 
+                        ? 'bg-green-500/20 text-green-300' 
+                        : row.imbalance <= -70 
+                        ? 'bg-red-500/20 text-red-300' 
+                        : 'bg-primary/10 text-primary'
+                    }`}
+                  >
+                    {row.strikePrice}
+                  </TableCell>
                   <TableCell className="text-center text-red-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm">{formatDecimal(row.pe?.ltp)}</TableCell>
                   <TableCell className="text-center text-red-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm">{formatNumber(row.pe?.oiChange)}</TableCell>
                   <TableCell className="text-center text-red-400 font-semibold px-1 sm:px-2 py-1.5 sm:py-2.5 text-xs sm:text-sm">{formatNumber(row.pe?.oi)}</TableCell>
