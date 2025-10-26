@@ -22,6 +22,7 @@ interface LtpBannerProps {
   data: {
     nifty: LtpData;
     banknifty: LtpData;
+    sensex: LtpData;
   };
   showOHLC?: boolean;
   compact?: boolean;
@@ -93,6 +94,7 @@ export default function LtpBanner({ data, showOHLC = false, compact = false }: L
     <div className={`flex ${compact ? 'gap-1.5 sm:gap-2 md:gap-3' : 'gap-2 sm:gap-3 md:gap-4 lg:gap-6'} w-full ${compact ? 'md:max-w-2xl lg:max-w-4xl' : 'md:max-w-3xl lg:max-w-5xl'} mx-auto justify-center flex-wrap`}>
       <InstrumentCard label="NIFTY" data={data.nifty} showOHLC={showOHLC} compact={compact} />
       <InstrumentCard label="BANKNIFTY" data={data.banknifty} showOHLC={showOHLC} compact={compact} />
+      <InstrumentCard label="SENSEX" data={data.sensex} showOHLC={showOHLC} compact={compact} />
     </div>
   );
 }
