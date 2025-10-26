@@ -52,15 +52,15 @@ export default function OiTable({ data }: OiTableProps) {
           <Table className="text-xs sm:text-xs md:text-sm">
             <TableHeader>
               <TableRow className="border-border hover:bg-muted/50 bg-muted/20">
-                <TableHead className="text-center font-bold text-red-400 bg-red-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">PUT COI</TableHead>
-                <TableHead className="text-center font-bold text-red-400 bg-red-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">PUT OI</TableHead>
-                <TableHead className="text-center font-bold text-red-400 bg-red-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">PUT ΔOI</TableHead>
-                <TableHead className="text-center font-bold text-red-400 bg-red-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">PUT LTP</TableHead>
-                <TableHead className="text-center font-bold text-primary bg-primary/20 border-x border-primary/30 px-1 sm:px-2 py-1 sm:py-2 text-xs">STRIKE</TableHead>
-                <TableHead className="text-center font-bold text-green-400 bg-green-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">CALL LTP</TableHead>
-                <TableHead className="text-center font-bold text-green-400 bg-green-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">CALL ΔOI</TableHead>
-                <TableHead className="text-center font-bold text-green-400 bg-green-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">CALL OI</TableHead>
                 <TableHead className="text-center font-bold text-green-400 bg-green-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">CALL COI</TableHead>
+                <TableHead className="text-center font-bold text-green-400 bg-green-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">CALL OI</TableHead>
+                <TableHead className="text-center font-bold text-green-400 bg-green-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">CALL ΔOI</TableHead>
+                <TableHead className="text-center font-bold text-green-400 bg-green-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">CALL LTP</TableHead>
+                <TableHead className="text-center font-bold text-primary bg-primary/20 border-x border-primary/30 px-1 sm:px-2 py-1 sm:py-2 text-xs">STRIKE</TableHead>
+                <TableHead className="text-center font-bold text-red-400 bg-red-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">PUT LTP</TableHead>
+                <TableHead className="text-center font-bold text-red-400 bg-red-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">PUT ΔOI</TableHead>
+                <TableHead className="text-center font-bold text-red-400 bg-red-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">PUT OI</TableHead>
+                <TableHead className="text-center font-bold text-red-400 bg-red-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">PUT COI</TableHead>
                 <TableHead className="text-center font-bold text-blue-400 bg-blue-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">Imbalance</TableHead>
                 <TableHead className="text-center font-bold text-purple-400 bg-purple-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">PCR</TableHead>
               </TableRow>
@@ -68,15 +68,15 @@ export default function OiTable({ data }: OiTableProps) {
             <TableBody>
               {data.map((row) => (
                 <TableRow key={row.strikePrice} className="border-border hover:bg-muted/40 transition-colors">
-                  <TableCell className="text-center text-red-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatDecimal(row.putCoi)}</TableCell>
-                  <TableCell className="text-center text-red-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatNumber(row.pe?.oi)}</TableCell>
-                  <TableCell className="text-center text-red-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatNumber(row.pe?.oiChange)}</TableCell>
-                  <TableCell className="text-center text-red-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatDecimal(row.pe?.ltp)}</TableCell>
-                  <TableCell className="text-center font-bold text-primary bg-primary/10 border-x border-primary/20 px-1 sm:px-2 py-1 sm:py-2 text-xs">{row.strikePrice}</TableCell>
-                  <TableCell className="text-center text-green-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatDecimal(row.ce?.ltp)}</TableCell>
-                  <TableCell className="text-center text-green-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatNumber(row.ce?.oiChange)}</TableCell>
-                  <TableCell className="text-center text-green-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatNumber(row.ce?.oi)}</TableCell>
                   <TableCell className="text-center text-green-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatDecimal(row.callCoi)}</TableCell>
+                  <TableCell className="text-center text-green-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatNumber(row.ce?.oi)}</TableCell>
+                  <TableCell className="text-center text-green-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatNumber(row.ce?.oiChange)}</TableCell>
+                  <TableCell className="text-center text-green-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatDecimal(row.ce?.ltp)}</TableCell>
+                  <TableCell className="text-center font-bold text-primary bg-primary/10 border-x border-primary/20 px-1 sm:px-2 py-1 sm:py-2 text-xs">{row.strikePrice}</TableCell>
+                  <TableCell className="text-center text-red-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatDecimal(row.pe?.ltp)}</TableCell>
+                  <TableCell className="text-center text-red-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatNumber(row.pe?.oiChange)}</TableCell>
+                  <TableCell className="text-center text-red-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatNumber(row.pe?.oi)}</TableCell>
+                  <TableCell className="text-center text-red-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatDecimal(row.putCoi)}</TableCell>
                   <TableCell className="text-center text-blue-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatDecimal(row.imbalance)}</TableCell>
                   <TableCell className="text-center text-purple-300 font-medium px-1 sm:px-2 py-1 sm:py-2 text-xs">{formatDecimal(row.pcr, 4)}</TableCell>
                 </TableRow>
