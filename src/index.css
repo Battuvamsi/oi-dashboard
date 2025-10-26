@@ -3,9 +3,9 @@
 @import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
 
-/* Force dark mode by default */
+/* Support both light and dark modes */
 :root {
-  color-scheme: dark;
+  color-scheme: light dark;
 }
 
 /* DO NOT CHANGE */
