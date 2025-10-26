@@ -48,8 +48,8 @@ export default function OiTable({ data }: OiTableProps) {
     <Card className="p-1 sm:p-2 md:p-4 bg-card/80 backdrop-blur-sm w-full overflow-hidden">
       <h3 className="text-xs sm:text-sm md:text-lg lg:text-xl font-bold tracking-tight mb-2 sm:mb-3 md:mb-4 text-foreground px-1 sm:px-2">Options Chain</h3>
       <ScrollArea className="h-[300px] sm:h-[400px] md:h-[500px] rounded-md">
-        <div className="min-w-full">
-          <Table className="text-xs sm:text-xs md:text-sm">
+        <div className="overflow-x-auto">
+          <Table className="text-xs sm:text-xs md:text-sm min-w-[1200px]">
             <TableHeader>
               <TableRow className="border-border bg-muted/30">
                 <TableHead colSpan={4} className="text-center font-bold text-green-400 bg-green-500/20 px-1 sm:px-2 py-2 text-sm border-r border-border">
