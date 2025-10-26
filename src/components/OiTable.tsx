@@ -51,6 +51,20 @@ export default function OiTable({ data }: OiTableProps) {
         <div className="min-w-full">
           <Table className="text-xs sm:text-xs md:text-sm">
             <TableHeader>
+              <TableRow className="border-border bg-muted/30">
+                <TableHead colSpan={4} className="text-center font-bold text-green-400 bg-green-500/20 px-1 sm:px-2 py-2 text-sm border-r border-border">
+                  CALLS
+                </TableHead>
+                <TableHead colSpan={1} className="text-center font-bold text-primary bg-primary/30 px-1 sm:px-2 py-2 text-sm border-x border-primary/30">
+                  STRIKE PRICE
+                </TableHead>
+                <TableHead colSpan={4} className="text-center font-bold text-red-400 bg-red-500/20 px-1 sm:px-2 py-2 text-sm border-r border-border">
+                  PUTS
+                </TableHead>
+                <TableHead colSpan={2} className="text-center font-bold text-blue-400 bg-blue-500/20 px-1 sm:px-2 py-2 text-sm">
+                  FINAL DATA
+                </TableHead>
+              </TableRow>
               <TableRow className="border-border hover:bg-muted/50 bg-muted/20">
                 <TableHead className="text-center font-bold text-green-400 bg-green-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">CALL COI</TableHead>
                 <TableHead className="text-center font-bold text-green-400 bg-green-500/10 px-1 sm:px-2 py-1 sm:py-2 text-xs">CALL OI</TableHead>
