@@ -275,29 +275,26 @@ export default function Graph({ data }: GraphProps) {
       });
     }
 
-    // Draw X-axis labels at hourly intervals - converted to IST (drawn last for visibility)
+    // Draw X-axis labels dynamically - converted to IST (drawn last for visibility)
     ctx.fillStyle = "#d1d5db";
     ctx.textAlign = "center";
     ctx.font = isMobile ? "10px sans-serif" : "12px sans-serif";
     
     // Guard against divide-by-zero
     if (clampedData.length > 1) {
-      // Track which hours we've already labeled to avoid duplicates
-      const labeledHours = new Set<number>();
+      // Calculate optimal number of labels based on screen width
+      const maxLabels = isMobile ? 4 : isTablet ? 6 : 8;
+      const labelInterval = Math.max(1, Math.floor(clampedData.length / maxLabels));
       
       clampedData.forEach((point, index) => {
-        const utcDate = new Date(point.dateTime);
-        const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
-        const hours = istDate.getHours();
-        const minutes = istDate.getMinutes();
+        // Show first, last, and evenly spaced labels
+        const shouldLabel = index === 0 || 
+                           index === clampedData.length - 1 || 
+                           index % labelInterval === 0;
         
-        const shouldLabel = 
-          minutes === 0 || 
-          (minutes <= 5 && index === 0) || 
-          (minutes >= 55 && !labeledHours.has(hours + 1));
-        
-        if (!labeledHours.has(hours) && shouldLabel) {
-          labeledHours.add(hours);
+        if (shouldLabel) {
+          const utcDate = new Date(point.dateTime);
+          const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
           const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
           const label = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
           const yPosition = height - padding.bottom + 20;
