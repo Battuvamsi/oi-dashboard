@@ -449,7 +449,7 @@ export default function Dashboard() {
           </div>
           <div className="flex-1 overflow-y-auto min-h-0">
             <KeysList
-              keys={keys}
+              keys={activeTab === "history" ? historicalKeys : keys}
               selectedKey={selectedKey}
               onSelectKey={setSelectedKey}
             />
@@ -561,22 +561,6 @@ export default function Dashboard() {
 
                     {!loadingHistoricalKeys && historicalKeys.length > 0 && (
                       <div className="w-full space-y-4">
-                        <div>
-                          <label className="block text-sm font-medium mb-2">Select Instrument</label>
-                          <Select value={selectedKey || ""} onValueChange={setSelectedKey}>
-                            <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Select an instrument" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {historicalKeys.map((key) => (
-                                <SelectItem key={key} value={key}>
-                                  {key}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
-
                         {loadingData ? (
                           <div className="flex items-center justify-center py-8">
                             <div className="text-center space-y-2">
@@ -588,7 +572,11 @@ export default function Dashboard() {
                           <div className="space-y-4">
                             <Graph data={graphData} />
                           </div>
-                        ) : null}
+                        ) : (
+                          <div className="text-center text-muted-foreground">
+                            Select an instrument from the left sidebar
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
