@@ -504,7 +504,7 @@ export default function Dashboard() {
                             setSelectedDate(undefined);
                           }
                         }}
-                        className="w-full px-4 py-2 border rounded-md bg-background text-foreground"
+                        className="w-full px-4 py-2 border border-border rounded-md bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
                         max={new Date().toISOString().split('T')[0]}
                       />
                     </div>
