@@ -101,7 +101,7 @@ export default function Dashboard() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [activeTab, setActiveTab] = useState("today");
 
-  const API_BASE = "http://localhost:3000";
+  const API_BASE = "http://localhost:8080";
   const navigate = useNavigate();
 
   const handleLogout = () => {
