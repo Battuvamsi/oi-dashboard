@@ -205,7 +205,7 @@ export default function Graph({ data }: GraphProps) {
       ctx.stroke();
     }
 
-    // Draw dots for Imbalance with values
+    // Draw dots for Imbalance only on hover or last point
     clampedData.forEach((point, index) => {
       const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
       const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
@@ -213,13 +213,16 @@ export default function Graph({ data }: GraphProps) {
       const isLast = index === clampedData.length - 1;
       const isHovered = tooltip.visible && tooltip.dataIndex === index;
       
-      ctx.beginPath();
-      ctx.arc(x, y, isHovered ? 8 : (isLast ? 6 : 4), 0, 2 * Math.PI);
-      ctx.fillStyle = isHovered ? "#60a5fa" : (isLast ? "#f87171" : "#93c5fd");
-      ctx.fill();
-      ctx.strokeStyle = isHovered ? "#ffffff" : "#0a0a0a";
-      ctx.lineWidth = isHovered ? 3 : 2;
-      ctx.stroke();
+      // Only draw dot if hovered or last point
+      if (isHovered || isLast) {
+        ctx.beginPath();
+        ctx.arc(x, y, isHovered ? 8 : 6, 0, 2 * Math.PI);
+        ctx.fillStyle = isHovered ? "#60a5fa" : "#f87171";
+        ctx.fill();
+        ctx.strokeStyle = isHovered ? "#ffffff" : "#0a0a0a";
+        ctx.lineWidth = isHovered ? 3 : 2;
+        ctx.stroke();
+      }
 
       // Display value at 30-minute intervals - using IST
       const utcDate = new Date(point.dateTime);
@@ -235,7 +238,7 @@ export default function Graph({ data }: GraphProps) {
       }
     });
 
-    // Draw dots for PCR with values if available
+    // Draw dots for PCR only on hover or last point if available
     if (hasPCR) {
       const pcrValues = clampedData.map(d => d.pcr).filter(p => p !== undefined) as number[];
       const minPCR = Math.min(...pcrValues);
@@ -251,13 +254,16 @@ export default function Graph({ data }: GraphProps) {
           const isLast = index === clampedData.length - 1;
           const isHovered = tooltip.visible && tooltip.dataIndex === index;
           
-          ctx.beginPath();
-          ctx.arc(x, y, isHovered ? 8 : (isLast ? 6 : 4), 0, 2 * Math.PI);
-          ctx.fillStyle = isHovered ? "#fcd34d" : (isLast ? "#f87171" : "#fbbf24");
-          ctx.fill();
-          ctx.strokeStyle = isHovered ? "#ffffff" : "#0a0a0a";
-          ctx.lineWidth = isHovered ? 3 : 2;
-          ctx.stroke();
+          // Only draw dot if hovered or last point
+          if (isHovered || isLast) {
+            ctx.beginPath();
+            ctx.arc(x, y, isHovered ? 8 : 6, 0, 2 * Math.PI);
+            ctx.fillStyle = isHovered ? "#fcd34d" : "#f87171";
+            ctx.fill();
+            ctx.strokeStyle = isHovered ? "#ffffff" : "#0a0a0a";
+            ctx.lineWidth = isHovered ? 3 : 2;
+            ctx.stroke();
+          }
 
           // Display PCR value at 30-minute intervals - using IST
           const utcDate = new Date(point.dateTime);
