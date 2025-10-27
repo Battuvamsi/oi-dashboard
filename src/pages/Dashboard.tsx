@@ -357,23 +357,22 @@ export default function Dashboard() {
         </div>
 
         {/* Left Pane - Keys List (Desktop only) */}
-        <div className="hidden lg:flex lg:w-56 border-b lg:border-b-0 lg:border-r bg-card/80 backdrop-blur-sm flex-shrink-0 shadow-sm flex-col">
-          <div className="p-2 sm:p-3 md:p-4 border-b bg-gradient-to-r from-primary/10 to-transparent">
-            <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
-              <img src="./logo.svg" alt="Logo" width={24} height={24} className="rounded w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" />
-              <h2 className="text-xs sm:text-sm md:text-base font-bold tracking-tight text-primary truncate">OI Dashboard</h2>
+        <div className="hidden lg:flex lg:w-48 border-b lg:border-b-0 lg:border-r bg-card/80 backdrop-blur-sm flex-shrink-0 shadow-sm flex-col">
+          <div className="p-2 border-b bg-gradient-to-r from-primary/10 to-transparent">
+            <div className="flex items-center gap-1.5 mb-1">
+              <img src="./logo.svg" alt="Logo" width={20} height={20} className="rounded w-5 h-5" />
+              <h2 className="text-xs font-bold tracking-tight text-primary truncate">OI Dashboard</h2>
             </div>
-            <p className="text-xs text-muted-foreground mt-0.5">Select instrument</p>
-            <div className="flex gap-1 mt-2">
+            <p className="text-[10px] text-muted-foreground mt-0.5">Select instrument</p>
+            <div className="flex gap-1 mt-1.5">
               <Button
                 onClick={handleLogout}
                 variant="outline"
                 size="sm"
-                className="cursor-pointer flex-1 flex items-center justify-center gap-1 text-red-400 hover:text-red-300 border-red-400 hover:border-red-300 text-xs py-1 h-7 sm:h-8"
+                className="cursor-pointer flex-1 flex items-center justify-center gap-1 text-red-400 hover:text-red-300 border-red-400 hover:border-red-300 text-[10px] py-1 h-7"
               >
-                <LogOut className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Logout</span>
-                <span className="sm:hidden">Out</span>
+                <LogOut className="h-3 w-3" />
+                <span>Logout</span>
               </Button>
             </div>
           </div>
@@ -384,15 +383,15 @@ export default function Dashboard() {
               onSelectKey={setSelectedKey}
             />
           </div>
-          <div className="p-2 border-t">
+          <div className="p-1.5 border-t">
             <Button
               onClick={toggleTheme}
               variant="outline"
               size="sm"
-              className="cursor-pointer w-full flex items-center justify-center gap-2 h-8"
+              className="cursor-pointer w-full flex items-center justify-center gap-1.5 h-7"
             >
-              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              <span className="text-xs">{theme === "dark" ? "Light" : "Dark"} Mode</span>
+              {theme === "dark" ? <Sun className="h-3 w-3" /> : <Moon className="h-3 w-3" />}
+              <span className="text-[10px]">{theme === "dark" ? "Light" : "Dark"} Mode</span>
             </Button>
           </div>
         </div>
