@@ -36,15 +36,7 @@ export default function KeysList({ keys, selectedKey, onSelectKey }: KeysListPro
   // Function to get color based on instrument type
   const getInstrumentColor = (indexName: string) => {
     const upperIndex = indexName.toUpperCase();
-    if (upperIndex.includes('NIFTY')) {
-      return {
-        bg: 'bg-blue-500/10',
-        bgSelected: 'bg-blue-500',
-        border: 'border-blue-500/30',
-        text: 'text-blue-600 dark:text-blue-400',
-        textSelected: 'text-white',
-      };
-    } else if (upperIndex.includes('BANKNIFTY')) {
+    if (upperIndex.includes('BANKNIFTY')) {
       return {
         bg: 'bg-purple-500/10',
         bgSelected: 'bg-purple-500',
