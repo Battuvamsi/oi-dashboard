@@ -144,12 +144,13 @@ export default function Dashboard() {
   useEffect(() => {
     if (!selectedDate || activeTab !== "history") return;
 
-    const fetchHistoricalKeys = async () => {
+      const fetchHistoricalKeys = async () => {
       setLoadingHistoricalKeys(true);
       try {
-        const year = selectedDate.getFullYear();
-        const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
-        const day = String(selectedDate.getDate()).padStart(2, '0');
+        // Use UTC methods to avoid timezone issues
+        const year = selectedDate.getUTCFullYear();
+        const month = String(selectedDate.getUTCMonth() + 1).padStart(2, '0');
+        const day = String(selectedDate.getUTCDate()).padStart(2, '0');
         const dateStr = `${year}-${month}-${day}`;
         
         const response = await fetch(`${API_BASE}/api/oi-graph/symbols/${dateStr}`);
@@ -241,9 +242,10 @@ export default function Dashboard() {
       try {
         // For history tab, use the new API endpoint
         if (activeTab === "history" && selectedDate) {
-          const year = selectedDate.getFullYear();
-          const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
-          const day = String(selectedDate.getDate()).padStart(2, '0');
+          // Use UTC methods to avoid timezone issues
+          const year = selectedDate.getUTCFullYear();
+          const month = String(selectedDate.getUTCMonth() + 1).padStart(2, '0');
+          const day = String(selectedDate.getUTCDate()).padStart(2, '0');
           const dateStr = `${year}-${month}-${day}`;
           
           const response = await fetch(`${API_BASE}/api/oi-graph/data/${dateStr}/${selectedKey}`);
