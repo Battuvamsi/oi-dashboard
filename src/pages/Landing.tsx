@@ -30,7 +30,7 @@ export default function Landing() {
   });
   const [theme, setTheme] = useState<"light" | "dark">("dark");
 
-  const API_BASE = "https://ticker.pollenprints.in";
+  const API_BASE = "http://localhost:3000";
 
   useEffect(() => {
     // Default to dark mode on mount
