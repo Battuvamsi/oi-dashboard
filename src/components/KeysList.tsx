@@ -35,7 +35,7 @@ export default function KeysList({ keys, selectedKey, onSelectKey }: KeysListPro
 
   return (
     <ScrollArea className="h-full">
-      <div className="p-1 space-y-0.5">
+      <div className="p-1.5 space-y-1">
         {keys.map((key, index) => {
           const { index: indexName, date } = formatKey(key);
           const isSelected = selectedKey === key;
@@ -48,15 +48,15 @@ export default function KeysList({ keys, selectedKey, onSelectKey }: KeysListPro
             >
               <Button
                 variant={isSelected ? "default" : "ghost"}
-                className={`w-full justify-start cursor-pointer py-1.5 h-auto px-2 transition-all duration-200 ${
+                className={`w-full justify-start cursor-pointer py-2 h-auto px-2.5 transition-all duration-200 ${
                   isSelected 
                     ? "bg-primary text-primary-foreground shadow-md" 
                     : "hover:bg-primary/10 hover:border-primary/30 border border-transparent"
                 }`}
                 onClick={() => onSelectKey(key)}
               >
-                <div className="flex items-center gap-1.5 w-full">
-                  <div className={`p-1 rounded ${isSelected ? "bg-primary-foreground/20" : "bg-primary/10"}`}>
+                <div className="flex items-center gap-2 w-full">
+                  <div className={`p-1.5 rounded ${isSelected ? "bg-primary-foreground/20" : "bg-primary/10"}`}>
                     <TrendingUp className={`h-2.5 w-2.5 ${isSelected ? "text-primary-foreground" : "text-primary"}`} />
                   </div>
                   <div className="flex flex-col items-start flex-1 min-w-0">
