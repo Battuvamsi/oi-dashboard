@@ -101,7 +101,7 @@ export default function Dashboard() {
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [activeTab, setActiveTab] = useState("today");
 
-  const API_BASE = "http://localhost:8080";
+  const API_BASE = "https://ticker.pollenprints.in";
   const navigate = useNavigate();
 
   const handleLogout = () => {
