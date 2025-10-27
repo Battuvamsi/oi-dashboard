@@ -541,7 +541,7 @@ export default function Dashboard() {
                             setSelectedDate(undefined);
                           }
                         }}
-                        className="w-full px-4 py-2 border-2 border-primary/40 rounded-md bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary [color-scheme:dark]"
+                        className="w-full px-4 py-2 border-2 border-primary/40 rounded-md bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary [color-scheme:dark] [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:filter [&::-webkit-calendar-picker-indicator]:brightness-0 [&::-webkit-calendar-picker-indicator]:saturate-100 [&::-webkit-calendar-picker-indicator]:invert-[0.5] [&::-webkit-calendar-picker-indicator]:sepia-[1] [&::-webkit-calendar-picker-indicator]:hue-rotate-[200deg]"
                         max={new Date().toISOString().split('T')[0]}
                       />
                     </div>
