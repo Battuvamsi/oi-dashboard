@@ -523,16 +523,16 @@ export default function Dashboard() {
                 </div>
               )
             ) : (
-              <div className="p-2 sm:p-3 md:p-4 max-w-6xl mx-auto h-full flex flex-col">
-                <div className="space-y-3">
-                  <div className="text-center space-y-1">
-                    <h2 className="text-lg font-bold text-foreground">Historical Data</h2>
-                    <p className="text-sm text-muted-foreground">Select a date to view historical options data</p>
+              <div className="p-2 sm:p-2 md:p-3 max-w-6xl mx-auto h-full flex flex-col">
+                <div className="space-y-2">
+                  <div className="text-center space-y-0.5">
+                    <h2 className="text-base font-bold text-foreground">Historical Data</h2>
+                    <p className="text-xs text-muted-foreground">Select a date to view historical options data</p>
                   </div>
                   
-                  <div className="flex flex-col items-center gap-3">
+                  <div className="flex flex-col items-center gap-2">
                     <div className="w-full max-w-sm">
-                      <label className="block text-xs font-medium mb-1.5">Select Date</label>
+                      <label className="block text-xs font-medium mb-1">Select Date</label>
                       <input
                         type="date"
                         value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
@@ -551,14 +551,14 @@ export default function Dashboard() {
                     </div>
 
                     {loadingHistoricalKeys && (
-                      <div className="text-center space-y-1.5">
-                        <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary" />
-                        <p className="text-xs text-muted-foreground">Loading historical data...</p>
+                      <div className="text-center space-y-1">
+                        <Loader2 className="h-5 w-5 animate-spin mx-auto text-primary" />
+                        <p className="text-[10px] text-muted-foreground">Loading historical data...</p>
                       </div>
                     )}
 
                     {!loadingHistoricalKeys && selectedDate && historicalKeys.length === 0 && (
-                      <div className="text-center text-xs text-muted-foreground">
+                      <div className="text-center text-[10px] text-muted-foreground">
                         No data available for the selected date
                       </div>
                     )}
@@ -566,18 +566,18 @@ export default function Dashboard() {
                     {!loadingHistoricalKeys && historicalKeys.length > 0 && (
                       <div className="w-full flex-1 min-h-0">
                         {loadingData ? (
-                          <div className="flex items-center justify-center py-4">
-                            <div className="text-center space-y-1.5">
-                              <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary" />
-                              <p className="text-xs text-muted-foreground">Loading data...</p>
+                          <div className="flex items-center justify-center py-2">
+                            <div className="text-center space-y-1">
+                              <Loader2 className="h-5 w-5 animate-spin mx-auto text-primary" />
+                              <p className="text-[10px] text-muted-foreground">Loading data...</p>
                             </div>
                           </div>
                         ) : graphData ? (
-                          <div className="space-y-2">
+                          <div className="space-y-1">
                             <Graph data={graphData} />
                           </div>
                         ) : (
-                          <div className="text-center text-xs text-muted-foreground">
+                          <div className="text-center text-[10px] text-muted-foreground">
                             Select an instrument from the left sidebar
                           </div>
                         )}
