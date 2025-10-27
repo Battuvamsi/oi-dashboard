@@ -100,6 +100,9 @@ export default function Dashboard() {
   const [loadingData, setLoadingData] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [activeTab, setActiveTab] = useState("today");
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [historicalKeys, setHistoricalKeys] = useState<string[]>([]);
+  const [loadingHistoricalKeys, setLoadingHistoricalKeys] = useState(false);
 
   const API_BASE = "https://ticker.pollenprints.in";
   const navigate = useNavigate();
@@ -136,6 +139,37 @@ export default function Dashboard() {
       window.location.href = "/login";
     }
   }, []);
+
+  // Fetch historical keys when date is selected
+  useEffect(() => {
+    if (!selectedDate || activeTab !== "history") return;
+
+    const fetchHistoricalKeys = async () => {
+      setLoadingHistoricalKeys(true);
+      try {
+        const year = selectedDate.getFullYear();
+        const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+        const day = String(selectedDate.getDate()).padStart(2, '0');
+        const dateStr = `${year}-${month}-${day}`;
+        
+        const response = await fetch(`${API_BASE}/api/oi-graph/symbols/${dateStr}`);
+        if (!response.ok) throw new Error("Failed to fetch historical keys");
+        const data = await response.json();
+        setHistoricalKeys(data);
+        if (data.length > 0) {
+          setSelectedKey(data[0]);
+        }
+      } catch (error) {
+        console.error("Error fetching historical keys:", error);
+        toast.error("Failed to load historical data for selected date");
+        setHistoricalKeys([]);
+      } finally {
+        setLoadingHistoricalKeys(false);
+      }
+    };
+
+    fetchHistoricalKeys();
+  }, [selectedDate, activeTab]);
 
   // Fetch keys on mount
   useEffect(() => {
@@ -450,11 +484,82 @@ export default function Dashboard() {
                 </div>
               )
             ) : (
-              <div className="flex items-center justify-center h-full">
-                <div className="text-center space-y-4 px-4">
-                  <div className="text-6xl">🚧</div>
-                  <h2 className="text-2xl font-bold text-foreground">Under Construction</h2>
-                  <p className="text-muted-foreground">History feature coming soon...</p>
+              <div className="p-4 sm:p-6 md:p-8 max-w-4xl mx-auto">
+                <div className="space-y-6">
+                  <div className="text-center space-y-2">
+                    <h2 className="text-2xl font-bold text-foreground">Historical Data</h2>
+                    <p className="text-muted-foreground">Select a date to view historical options data</p>
+                  </div>
+                  
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="w-full max-w-sm">
+                      <label className="block text-sm font-medium mb-2">Select Date</label>
+                      <input
+                        type="date"
+                        value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            setSelectedDate(new Date(e.target.value + 'T00:00:00'));
+                          } else {
+                            setSelectedDate(undefined);
+                          }
+                        }}
+                        className="w-full px-4 py-2 border rounded-md bg-background text-foreground"
+                        max={new Date().toISOString().split('T')[0]}
+                      />
+                    </div>
+
+                    {loadingHistoricalKeys && (
+                      <div className="text-center space-y-2">
+                        <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+                        <p className="text-sm text-muted-foreground">Loading historical data...</p>
+                      </div>
+                    )}
+
+                    {!loadingHistoricalKeys && selectedDate && historicalKeys.length === 0 && (
+                      <div className="text-center text-muted-foreground">
+                        No data available for the selected date
+                      </div>
+                    )}
+
+                    {!loadingHistoricalKeys && historicalKeys.length > 0 && (
+                      <div className="w-full space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium mb-2">Select Instrument</label>
+                          <Select value={selectedKey || ""} onValueChange={setSelectedKey}>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select an instrument" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {historicalKeys.map((key) => (
+                                <SelectItem key={key} value={key}>
+                                  {key}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        {loadingData ? (
+                          <div className="flex items-center justify-center py-8">
+                            <div className="text-center space-y-2">
+                              <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+                              <p className="text-sm text-muted-foreground">Loading data...</p>
+                            </div>
+                          </div>
+                        ) : oiChangeData && graphData ? (
+                          <div className="space-y-4">
+                            <TotalsBadges totals={oiChangeData.oiChangeTotalValues} />
+                            <Graph data={graphData} />
+                            <OiTable
+                              data={oiChangeData.filteredResults}
+                              totals={oiChangeData.oiChangeTotalValues}
+                            />
+                          </div>
+                        ) : null}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
