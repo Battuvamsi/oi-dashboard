@@ -185,7 +185,7 @@ export default function Graph({ data }: GraphProps) {
       const pcrRange = maxPCR - minPCR || 1;
 
       ctx.strokeStyle = "#fbbf24";
-      ctx.lineWidth = 2.5;
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
 
       clampedData.forEach((point, index) => {
