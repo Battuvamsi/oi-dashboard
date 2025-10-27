@@ -283,9 +283,10 @@ export default function Dashboard() {
             onClick={toggleTheme}
             variant="outline"
             size="sm"
-            className="cursor-pointer flex items-center justify-center h-8 sm:h-9 w-8 sm:w-9 flex-shrink-0 p-0"
+            className="cursor-pointer flex items-center justify-center gap-1 sm:gap-2 h-8 sm:h-9 flex-shrink-0 px-2 sm:px-3"
           >
             {theme === "dark" ? <Sun className="h-3 w-3 sm:h-4 sm:w-4" /> : <Moon className="h-3 w-3 sm:h-4 sm:w-4" />}
+            <span className="text-xs sm:text-sm">{theme === "dark" ? "Light" : "Dark"} Mode</span>
           </Button>
           <Select value={selectedKey || ""} onValueChange={setSelectedKey}>
             <SelectTrigger className="flex-1 h-8 sm:h-9 text-xs sm:text-sm">
@@ -410,9 +411,10 @@ export default function Dashboard() {
               onClick={toggleTheme}
               variant="outline"
               size="sm"
-              className="cursor-pointer hidden lg:flex items-center justify-center h-8 w-8 p-0"
+              className="cursor-pointer hidden lg:flex items-center justify-center gap-2 h-8 px-3"
             >
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              <span className="text-xs">{theme === "dark" ? "Light" : "Dark"} Mode</span>
             </Button>
           </div>
 
