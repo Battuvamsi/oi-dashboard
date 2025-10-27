@@ -239,10 +239,39 @@ export default function Dashboard() {
 
     const fetchGraphData = async () => {
       try {
-        const response = await fetch(`${API_BASE}/cache/graph/${selectedKey}`);
-        if (!response.ok) throw new Error("Failed to fetch graph data");
-        const data = await response.json();
-        setGraphData(data);
+        // For history tab, use the new API endpoint
+        if (activeTab === "history" && selectedDate) {
+          const year = selectedDate.getFullYear();
+          const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+          const day = String(selectedDate.getDate()).padStart(2, '0');
+          const dateStr = `${year}-${month}-${day}`;
+          
+          const response = await fetch(`${API_BASE}/api/oi-graph/data/${dateStr}/${selectedKey}`);
+          if (!response.ok) throw new Error("Failed to fetch historical graph data");
+          const data = await response.json();
+          
+          // Transform the response to match Graph component's expected format
+          const transformedData = {
+            key: selectedKey,
+            values: data.map((item: any) => ({
+              dateTime: item.keyDateTime,
+              oichangeFinalResult: {
+                oiChangeTotalValues: {
+                  totalImbalance: item.totalImbalance,
+                  pcr: item.pcr
+                }
+              }
+            }))
+          };
+          
+          setGraphData(transformedData);
+        } else {
+          // For today tab, use the existing endpoint
+          const response = await fetch(`${API_BASE}/cache/graph/${selectedKey}`);
+          if (!response.ok) throw new Error("Failed to fetch graph data");
+          const data = await response.json();
+          setGraphData(data);
+        }
       } catch (error) {
         console.error("Error fetching graph data:", error);
         toast.error("Failed to load graph data");
@@ -276,7 +305,13 @@ export default function Dashboard() {
     const initialFetch = async () => {
       setLoadingData(true);
       try {
-        await Promise.all([fetchOiData(), fetchGraphData(), fetchLtpData()]);
+        if (activeTab === "history") {
+          // For history, only fetch graph data (no OI data or LTP)
+          await fetchGraphData();
+        } else {
+          // For today, fetch all data
+          await Promise.all([fetchOiData(), fetchGraphData(), fetchLtpData()]);
+        }
       } finally {
         setLoadingData(false);
       }
@@ -284,17 +319,19 @@ export default function Dashboard() {
 
     initialFetch();
 
-    // Set up intervals for each data type
-    const ltpInterval = setInterval(fetchLtpData, 3000); // Every 3 seconds
-    const oiInterval = setInterval(fetchOiData, 5000); // Every 5 seconds
-    const graphInterval = setInterval(fetchGraphData, 60000); // Every 1 minute
+    // Set up intervals only for "today" tab
+    if (activeTab === "today") {
+      const ltpInterval = setInterval(fetchLtpData, 3000); // Every 3 seconds
+      const oiInterval = setInterval(fetchOiData, 5000); // Every 5 seconds
+      const graphInterval = setInterval(fetchGraphData, 60000); // Every 1 minute
 
-    return () => {
-      clearInterval(ltpInterval);
-      clearInterval(oiInterval);
-      clearInterval(graphInterval);
-    };
-  }, [selectedKey]);
+      return () => {
+        clearInterval(ltpInterval);
+        clearInterval(oiInterval);
+        clearInterval(graphInterval);
+      };
+    }
+  }, [selectedKey, activeTab, selectedDate]);
 
   if (loadingKeys) {
     return (
@@ -547,14 +584,9 @@ export default function Dashboard() {
                               <p className="text-sm text-muted-foreground">Loading data...</p>
                             </div>
                           </div>
-                        ) : oiChangeData && graphData ? (
+                        ) : graphData ? (
                           <div className="space-y-4">
-                            <TotalsBadges totals={oiChangeData.oiChangeTotalValues} />
                             <Graph data={graphData} />
-                            <OiTable
-                              data={oiChangeData.filteredResults}
-                              totals={oiChangeData.oiChangeTotalValues}
-                            />
                           </div>
                         ) : null}
                       </div>
