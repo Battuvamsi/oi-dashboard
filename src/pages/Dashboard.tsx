@@ -521,16 +521,16 @@ export default function Dashboard() {
                 </div>
               )
             ) : (
-              <div className="p-4 sm:p-6 md:p-8 max-w-4xl mx-auto">
-                <div className="space-y-6">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-2xl font-bold text-foreground">Historical Data</h2>
-                    <p className="text-muted-foreground">Select a date to view historical options data</p>
+              <div className="p-2 sm:p-3 md:p-4 max-w-6xl mx-auto h-full flex flex-col">
+                <div className="space-y-3">
+                  <div className="text-center space-y-1">
+                    <h2 className="text-xl font-bold text-foreground">Historical Data</h2>
+                    <p className="text-sm text-muted-foreground">Select a date to view historical options data</p>
                   </div>
                   
-                  <div className="flex flex-col items-center gap-4">
+                  <div className="flex flex-col items-center gap-3">
                     <div className="w-full max-w-sm">
-                      <label className="block text-sm font-medium mb-2">Select Date</label>
+                      <label className="block text-sm font-medium mb-1.5">Select Date</label>
                       <input
                         type="date"
                         value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
@@ -547,33 +547,33 @@ export default function Dashboard() {
                     </div>
 
                     {loadingHistoricalKeys && (
-                      <div className="text-center space-y-2">
-                        <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-                        <p className="text-sm text-muted-foreground">Loading historical data...</p>
+                      <div className="text-center space-y-1.5">
+                        <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary" />
+                        <p className="text-xs text-muted-foreground">Loading historical data...</p>
                       </div>
                     )}
 
                     {!loadingHistoricalKeys && selectedDate && historicalKeys.length === 0 && (
-                      <div className="text-center text-muted-foreground">
+                      <div className="text-center text-sm text-muted-foreground">
                         No data available for the selected date
                       </div>
                     )}
 
                     {!loadingHistoricalKeys && historicalKeys.length > 0 && (
-                      <div className="w-full space-y-4">
+                      <div className="w-full space-y-2 flex-1 min-h-0">
                         {loadingData ? (
-                          <div className="flex items-center justify-center py-8">
-                            <div className="text-center space-y-2">
-                              <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-                              <p className="text-sm text-muted-foreground">Loading data...</p>
+                          <div className="flex items-center justify-center py-4">
+                            <div className="text-center space-y-1.5">
+                              <Loader2 className="h-6 w-6 animate-spin mx-auto text-primary" />
+                              <p className="text-xs text-muted-foreground">Loading data...</p>
                             </div>
                           </div>
                         ) : graphData ? (
-                          <div className="space-y-4">
+                          <div className="space-y-2">
                             <Graph data={graphData} />
                           </div>
                         ) : (
-                          <div className="text-center text-muted-foreground">
+                          <div className="text-center text-sm text-muted-foreground">
                             Select an instrument from the left sidebar
                           </div>
                         )}
