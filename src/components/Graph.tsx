@@ -161,7 +161,7 @@ export default function Graph({ data }: GraphProps) {
 
     // Draw Imbalance line
     ctx.strokeStyle = "#93c5fd";
-    ctx.lineWidth = 2.5;
+    ctx.lineWidth = 3;
     ctx.beginPath();
 
     clampedData.forEach((point, index) => {
