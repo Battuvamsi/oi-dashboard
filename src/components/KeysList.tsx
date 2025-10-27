@@ -33,12 +33,52 @@ export default function KeysList({ keys, selectedKey, onSelectKey }: KeysListPro
     return { index: key, date: null };
   };
 
+  // Function to get color based on instrument type
+  const getInstrumentColor = (indexName: string) => {
+    const upperIndex = indexName.toUpperCase();
+    if (upperIndex.includes('NIFTY')) {
+      return {
+        bg: 'bg-blue-500/10',
+        bgSelected: 'bg-blue-500',
+        border: 'border-blue-500/30',
+        text: 'text-blue-600 dark:text-blue-400',
+        textSelected: 'text-white',
+      };
+    } else if (upperIndex.includes('BANKNIFTY')) {
+      return {
+        bg: 'bg-purple-500/10',
+        bgSelected: 'bg-purple-500',
+        border: 'border-purple-500/30',
+        text: 'text-purple-600 dark:text-purple-400',
+        textSelected: 'text-white',
+      };
+    } else if (upperIndex.includes('SENSEX')) {
+      return {
+        bg: 'bg-green-500/10',
+        bgSelected: 'bg-green-500',
+        border: 'border-green-500/30',
+        text: 'text-green-600 dark:text-green-400',
+        textSelected: 'text-white',
+      };
+    }
+    // Default color for other instruments
+    return {
+      bg: 'bg-primary/10',
+      bgSelected: 'bg-primary',
+      border: 'border-primary/30',
+      text: 'text-primary',
+      textSelected: 'text-primary-foreground',
+    };
+  };
+
   return (
     <ScrollArea className="h-full">
       <div className="p-1.5 space-y-1">
         {keys.map((key, index) => {
           const { index: indexName, date } = formatKey(key);
           const isSelected = selectedKey === key;
+          const colors = getInstrumentColor(indexName);
+          
           return (
             <motion.div
               key={key}
@@ -50,23 +90,23 @@ export default function KeysList({ keys, selectedKey, onSelectKey }: KeysListPro
                 variant={isSelected ? "default" : "ghost"}
                 className={`w-full justify-start cursor-pointer py-2 h-auto px-2.5 transition-all duration-200 ${
                   isSelected 
-                    ? "bg-primary text-primary-foreground shadow-md" 
-                    : "hover:bg-primary/10 hover:border-primary/30 border border-transparent"
+                    ? `${colors.bgSelected} ${colors.textSelected} shadow-md` 
+                    : `hover:${colors.bg} hover:${colors.border} border border-transparent ${colors.bg}`
                 }`}
                 onClick={() => onSelectKey(key)}
               >
                 <div className="flex items-center gap-2 w-full">
-                  <div className={`p-1.5 rounded ${isSelected ? "bg-primary-foreground/20" : "bg-primary/10"}`}>
-                    <TrendingUp className={`h-2.5 w-2.5 ${isSelected ? "text-primary-foreground" : "text-primary"}`} />
+                  <div className={`p-1.5 rounded ${isSelected ? 'bg-white/20' : colors.bg}`}>
+                    <TrendingUp className={`h-2.5 w-2.5 ${isSelected ? colors.textSelected : colors.text}`} />
                   </div>
                   <div className="flex flex-col items-start flex-1 min-w-0">
-                    <span className={`font-bold text-[10px] tracking-wide ${isSelected ? "text-primary-foreground" : "text-foreground"}`}>
+                    <span className={`font-bold text-[10px] tracking-wide ${isSelected ? colors.textSelected : colors.text}`}>
                       {indexName}
                     </span>
                     {date && (
                       <div className="flex items-center gap-0.5 mt-0.5">
-                        <Calendar className={`h-2 w-2 ${isSelected ? "text-primary-foreground/70" : "text-muted-foreground"}`} />
-                        <span className={`text-[9px] font-medium ${isSelected ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                        <Calendar className={`h-2 w-2 ${isSelected ? `${colors.textSelected} opacity-70` : 'text-muted-foreground'}`} />
+                        <span className={`text-[9px] font-medium ${isSelected ? `${colors.textSelected} opacity-80` : 'text-muted-foreground'}`}>
                           {date}
                         </span>
                       </div>
