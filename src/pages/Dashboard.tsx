@@ -538,7 +538,10 @@ export default function Dashboard() {
                         value={selectedDate ? selectedDate.toISOString().split('T')[0] : ''}
                         onChange={(e) => {
                           if (e.target.value) {
-                            setSelectedDate(new Date(e.target.value + 'T00:00:00'));
+                            // Parse the date string as UTC to avoid timezone shifts
+                            const [year, month, day] = e.target.value.split('-').map(Number);
+                            const utcDate = new Date(Date.UTC(year, month - 1, day));
+                            setSelectedDate(utcDate);
                           } else {
                             setSelectedDate(undefined);
                           }
