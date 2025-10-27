@@ -279,6 +279,14 @@ export default function Dashboard() {
       <div className="flex h-screen flex-col lg:flex-row overflow-hidden">
         {/* Mobile Header with Dropdown */}
         <div className="lg:hidden w-full p-2 sm:p-3 border-b bg-card/80 backdrop-blur-sm flex items-center justify-between gap-2">
+          <Button
+            onClick={toggleTheme}
+            variant="outline"
+            size="sm"
+            className="cursor-pointer flex items-center justify-center h-8 sm:h-9 w-8 sm:w-9 flex-shrink-0 p-0"
+          >
+            {theme === "dark" ? <Sun className="h-3 w-3 sm:h-4 sm:w-4" /> : <Moon className="h-3 w-3 sm:h-4 sm:w-4" />}
+          </Button>
           <Select value={selectedKey || ""} onValueChange={setSelectedKey}>
             <SelectTrigger className="flex-1 h-8 sm:h-9 text-xs sm:text-sm">
               <SelectValue placeholder="Select an instrument">
@@ -338,14 +346,6 @@ export default function Dashboard() {
             </SelectContent>
           </Select>
           <Button
-            onClick={toggleTheme}
-            variant="outline"
-            size="sm"
-            className="cursor-pointer flex items-center justify-center h-8 sm:h-9 w-8 sm:w-9 flex-shrink-0 p-0"
-          >
-            {theme === "dark" ? <Sun className="h-3 w-3 sm:h-4 sm:w-4" /> : <Moon className="h-3 w-3 sm:h-4 sm:w-4" />}
-          </Button>
-          <Button
             onClick={handleLogout}
             variant="outline"
             size="sm"
@@ -365,14 +365,6 @@ export default function Dashboard() {
             <p className="text-xs text-muted-foreground mt-0.5">Select instrument</p>
             <div className="flex gap-1 mt-2">
               <Button
-                onClick={toggleTheme}
-                variant="outline"
-                size="sm"
-                className="cursor-pointer flex items-center justify-center h-7 sm:h-8 w-7 sm:w-8 p-0"
-              >
-                {theme === "dark" ? <Sun className="h-3 w-3 sm:h-4 sm:w-4" /> : <Moon className="h-3 w-3 sm:h-4 sm:w-4" />}
-              </Button>
-              <Button
                 onClick={handleLogout}
                 variant="outline"
                 size="sm"
@@ -391,18 +383,37 @@ export default function Dashboard() {
               onSelectKey={setSelectedKey}
             />
           </div>
+          <div className="p-2 border-t">
+            <Button
+              onClick={toggleTheme}
+              variant="outline"
+              size="sm"
+              className="cursor-pointer w-full flex items-center justify-center gap-2 h-8"
+            >
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              <span className="text-xs">{theme === "dark" ? "Light" : "Dark"} Mode</span>
+            </Button>
+          </div>
         </div>
 
         {/* Right Pane - Data Display with Tabs */}
         <div className="flex-1 overflow-auto bg-background w-full flex flex-col">
           {/* Navbar with Tabs */}
-          <div className="border-b bg-card/80 backdrop-blur-sm px-2 sm:px-4 py-2">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <div className="border-b bg-card/80 backdrop-blur-sm px-2 sm:px-4 py-2 flex items-center justify-between gap-4">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
               <TabsList className="grid w-full max-w-md grid-cols-2">
                 <TabsTrigger value="today" className="text-xs sm:text-sm">Today</TabsTrigger>
                 <TabsTrigger value="history" className="text-xs sm:text-sm">History</TabsTrigger>
               </TabsList>
             </Tabs>
+            <Button
+              onClick={toggleTheme}
+              variant="outline"
+              size="sm"
+              className="cursor-pointer hidden lg:flex items-center justify-center h-8 w-8 p-0"
+            >
+              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </Button>
           </div>
 
           {/* Tab Content */}
