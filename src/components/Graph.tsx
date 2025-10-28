@@ -61,15 +61,15 @@ export default function Graph({ data }: GraphProps) {
     ctx.fillStyle = "#0a0a0a";
     ctx.fillRect(0, 0, width, height);
 
-    // Filter data to only show 8:59 AM to 4:00 PM IST
+    // Filter data to only show 9:15 AM to 4:00 PM IST
     const filteredData = data.values.filter((point) => {
       const utcDate = new Date(point.dateTime);
       const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
       const hours = istDate.getHours();
       const minutes = istDate.getMinutes();
       
-      if (hours === 8 && minutes >= 59) return true;
-      if (hours > 8 && hours < 16) return true;
+      if (hours === 9 && minutes >= 15) return true;
+      if (hours > 9 && hours < 16) return true;
       if (hours === 16 && minutes === 0) return true;
       return false;
     });
@@ -79,7 +79,7 @@ export default function Graph({ data }: GraphProps) {
       ctx.fillStyle = "#d1d5db";
       ctx.font = "14px sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("No data available for 8:59 AM - 4:00 PM IST", width / 2, height / 2);
+      ctx.fillText("No data available for 9:15 AM - 4:00 PM IST", width / 2, height / 2);
       return;
     }
 
@@ -337,15 +337,15 @@ export default function Graph({ data }: GraphProps) {
       return;
     }
 
-    // Filter data to only show 8:59 AM to 4:00 PM IST
+    // Filter data to only show 9:15 AM to 4:00 PM IST
     const filteredData = data.values.filter((point) => {
       const utcDate = new Date(point.dateTime);
       const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
       const hours = istDate.getHours();
       const minutes = istDate.getMinutes();
       
-      if (hours === 8 && minutes >= 59) return true;
-      if (hours > 8 && hours < 16) return true;
+      if (hours === 9 && minutes >= 15) return true;
+      if (hours > 9 && hours < 16) return true;
       if (hours === 16 && minutes === 0) return true;
       return false;
     });
