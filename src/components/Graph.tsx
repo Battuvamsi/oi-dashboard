@@ -163,8 +163,8 @@ export default function Graph({ data }: GraphProps) {
     }
 
     // Draw Imbalance line
-    ctx.strokeStyle = "#60a5fa";
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = "#3b82f6";
+    ctx.lineWidth = 4;
     ctx.beginPath();
 
     clampedData.forEach((point, index) => {
@@ -220,7 +220,7 @@ export default function Graph({ data }: GraphProps) {
       if (isHovered || isLast) {
         ctx.beginPath();
         ctx.arc(x, y, isHovered ? 8 : 6, 0, 2 * Math.PI);
-        ctx.fillStyle = isHovered ? "#60a5fa" : "#f87171";
+        ctx.fillStyle = isHovered ? "#3b82f6" : "#f87171";
         ctx.fill();
         ctx.strokeStyle = isHovered ? "#ffffff" : "#0a0a0a";
         ctx.lineWidth = isHovered ? 3 : 2;
@@ -234,7 +234,7 @@ export default function Graph({ data }: GraphProps) {
       const shouldShowValue = minutes === 0 || minutes === 30 || isLast;
       
       if (shouldShowValue) {
-        ctx.fillStyle = "#60a5fa";
+        ctx.fillStyle = "#3b82f6";
         ctx.font = "11px sans-serif";
         ctx.textAlign = "center";
         ctx.fillText(point.clampedImbalance.toFixed(1), x, y - 10);
@@ -410,7 +410,7 @@ export default function Graph({ data }: GraphProps) {
           <h3 className="text-lg font-bold tracking-tight text-foreground">Total Imbalance & PCR Over Time</h3>
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-0.5 bg-[#60a5fa]"></div>
+              <div className="w-4 h-0.5 bg-[#3b82f6]"></div>
               <span className="text-muted-foreground">Imbalance</span>
             </div>
             <div className="flex items-center gap-2">
