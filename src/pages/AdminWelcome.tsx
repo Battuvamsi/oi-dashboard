@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { Shield, LogOut, User } from "lucide-react";
+import { Shield, LogOut, User, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -82,14 +82,20 @@ export default function AdminWelcome() {
           </Card>
 
           <div className="pt-4 space-y-3">
-            <p className="text-muted-foreground">
-              Admin dashboard features coming soon...
-            </p>
+            <Button
+              onClick={() => navigate("/admin/range-update")}
+              variant="default"
+              size="lg"
+              className="cursor-pointer w-full"
+            >
+              <Settings className="mr-2 h-4 w-4" />
+              Update Range Settings
+            </Button>
             <Button
               onClick={handleLogout}
               variant="outline"
               size="lg"
-              className="cursor-pointer"
+              className="cursor-pointer w-full"
             >
               <LogOut className="mr-2 h-4 w-4" />
               Logout
