@@ -163,7 +163,7 @@ export default function Graph({ data }: GraphProps) {
     }
 
     // Draw Imbalance line
-    ctx.strokeStyle = "#93c5fd";
+    ctx.strokeStyle = "#60a5fa";
     ctx.lineWidth = 3;
     ctx.beginPath();
 
@@ -234,7 +234,7 @@ export default function Graph({ data }: GraphProps) {
       const shouldShowValue = minutes === 0 || minutes === 30 || isLast;
       
       if (shouldShowValue) {
-        ctx.fillStyle = "#93c5fd";
+        ctx.fillStyle = "#60a5fa";
         ctx.font = "11px sans-serif";
         ctx.textAlign = "center";
         ctx.fillText(point.clampedImbalance.toFixed(1), x, y - 10);
@@ -410,7 +410,7 @@ export default function Graph({ data }: GraphProps) {
           <h3 className="text-lg font-bold tracking-tight text-foreground">Total Imbalance & PCR Over Time</h3>
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-0.5 bg-[#93c5fd]"></div>
+              <div className="w-4 h-0.5 bg-[#60a5fa]"></div>
               <span className="text-muted-foreground">Imbalance</span>
             </div>
             <div className="flex items-center gap-2">
