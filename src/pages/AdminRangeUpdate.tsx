@@ -180,6 +180,12 @@ export default function AdminRangeUpdate() {
               </p>
             </Card>
 
+            <Card className="bg-yellow-500/10 border-yellow-500/30 p-4">
+              <p className="text-sm text-yellow-600 dark:text-yellow-400 font-semibold text-center">
+                ⚠️ Warning: Do not update during market hours
+              </p>
+            </Card>
+
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Button
                 type="submit"
