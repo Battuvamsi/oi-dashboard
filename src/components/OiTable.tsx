@@ -89,9 +89,9 @@ export default function OiTable({ data }: OiTableProps) {
                   <TableCell 
                     className={`text-center font-bold px-0.5 sm:px-1 md:px-1.5 lg:px-2 py-0.5 sm:py-1 md:py-1.5 lg:py-2 text-[10px] sm:text-xs md:text-sm lg:text-base border-x border-primary/30 ${
                       row.imbalance >= 70 
-                        ? 'bg-green-500/20 text-green-700 dark:text-green-300' 
+                        ? 'bg-green-600/40 text-green-800 dark:bg-green-600/30 dark:text-green-200' 
                         : row.imbalance <= -70 
-                        ? 'bg-red-500/20 text-red-700 dark:text-red-300' 
+                        ? 'bg-red-600/40 text-red-800 dark:bg-red-600/30 dark:text-red-200' 
                         : 'bg-primary/10 text-primary'
                     }`}
                   >
