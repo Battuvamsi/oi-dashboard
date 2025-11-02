@@ -97,39 +97,41 @@ export default function AdminRangeUpdate() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center p-4"
+      className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-purple-500/10 flex items-center justify-center p-4"
     >
-      <Card className="max-w-2xl w-full p-8 bg-card/80 backdrop-blur-sm">
+      <Card className="max-w-2xl w-full p-8 bg-card/90 backdrop-blur-md shadow-2xl border-primary/20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="space-y-6"
+          className="space-y-8"
         >
           <div className="flex items-center gap-4">
-            <Button
-              onClick={() => navigate("/admin")}
-              variant="ghost"
-              size="icon"
-              className="cursor-pointer"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+              <Button
+                onClick={() => navigate("/admin")}
+                variant="ghost"
+                size="icon"
+                className="cursor-pointer hover:bg-primary/10"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            </motion.div>
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">
+              <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-primary via-blue-400 to-purple-500 bg-clip-text text-transparent">
                 Update Range Settings
               </h1>
-              <p className="text-muted-foreground mt-1">
+              <p className="text-muted-foreground mt-2 text-base">
                 Configure minimum and maximum values for instruments
               </p>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <Label htmlFor="symbol">Symbol</Label>
+            <div className="space-y-3">
+              <Label htmlFor="symbol" className="text-base font-semibold">Symbol</Label>
               <Select value={symbol} onValueChange={setSymbol}>
-                <SelectTrigger id="symbol">
+                <SelectTrigger id="symbol" className="h-12 border-primary/30 focus:border-primary">
                   <SelectValue placeholder="Select symbol" />
                 </SelectTrigger>
                 <SelectContent>
@@ -140,9 +142,9 @@ export default function AdminRangeUpdate() {
               </Select>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="minimum">Minimum Value</Label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                <Label htmlFor="minimum" className="text-base font-semibold">Minimum Value</Label>
                 <Input
                   id="minimum"
                   type="number"
@@ -152,11 +154,12 @@ export default function AdminRangeUpdate() {
                   onChange={(e) => setMinimum(e.target.value)}
                   disabled={isLoading}
                   required
+                  className="h-12 border-primary/30 focus:border-primary"
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="maximum">Maximum Value</Label>
+              <div className="space-y-3">
+                <Label htmlFor="maximum" className="text-base font-semibold">Maximum Value</Label>
                 <Input
                   id="maximum"
                   type="number"
@@ -166,34 +169,37 @@ export default function AdminRangeUpdate() {
                   onChange={(e) => setMaximum(e.target.value)}
                   disabled={isLoading}
                   required
+                  className="h-12 border-primary/30 focus:border-primary"
                 />
               </div>
             </div>
 
-            <div className="bg-muted/50 p-4 rounded-lg">
+            <Card className="bg-gradient-to-br from-muted/50 to-primary/5 p-5 border-primary/20">
               <p className="text-sm text-muted-foreground">
-                <strong>Changed by:</strong> {user.username}
+                <strong className="text-foreground">Changed by:</strong> {user.username}
               </p>
-            </div>
+            </Card>
 
-            <Button
-              type="submit"
-              className="w-full cursor-pointer"
-              disabled={isLoading}
-              size="lg"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating...
-                </>
-              ) : (
-                <>
-                  <Save className="mr-2 h-4 w-4" />
-                  Update Range
-                </>
-              )}
-            </Button>
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                type="submit"
+                className="w-full cursor-pointer shadow-lg bg-gradient-to-r from-primary to-blue-500 hover:from-primary/90 hover:to-blue-500/90"
+                disabled={isLoading}
+                size="lg"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-5 w-5" />
+                    Update Range
+                  </>
+                )}
+              </Button>
+            </motion.div>
           </form>
         </motion.div>
       </Card>
