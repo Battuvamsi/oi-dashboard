@@ -65,7 +65,7 @@ export default function AdminRangeUpdate() {
 
     try {
       const response = await fetch(
-        `https://pollenprints.in/api/minmax/update?symbol=${symbol}&minimum=${minValue}&maximum=${maxValue}&changedBy=${user?.username || "admin"}`,
+        `https://ticker.pollenprints.in/api/minmax/update?symbol=${symbol}&minimum=${minValue}&maximum=${maxValue}&changedBy=${user?.username || "admin"}`,
         {
           method: "PUT",
           headers: {
