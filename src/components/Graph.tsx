@@ -33,6 +33,9 @@ export default function Graph({ data }: GraphProps) {
     dataIndex: number;
   }>({ x: 0, y: 0, content: "", visible: false, dataIndex: -1 });
 
+  // Detect current theme
+  const isDarkMode = document.documentElement.classList.contains('dark');
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
@@ -57,8 +60,8 @@ export default function Graph({ data }: GraphProps) {
     const graphWidth = width - padding.left - padding.right;
     const graphHeight = height - padding.top - padding.bottom;
 
-    // Clear canvas with darker background for better contrast
-    ctx.fillStyle = "#0a0a0a";
+    // Clear canvas with theme-aware background
+    ctx.fillStyle = isDarkMode ? "#0a0a0a" : "#ffffff";
     ctx.fillRect(0, 0, width, height);
 
     // Filter data to only show 9:10 AM to 4:00 PM IST
@@ -76,7 +79,7 @@ export default function Graph({ data }: GraphProps) {
 
     // If no data in the time range, show empty graph
     if (filteredData.length === 0) {
-      ctx.fillStyle = "#d1d5db";
+      ctx.fillStyle = isDarkMode ? "#d1d5db" : "#6b7280";
       ctx.font = "14px sans-serif";
       ctx.textAlign = "center";
       ctx.fillText("No data available for 9:10 AM - 4:00 PM IST", width / 2, height / 2);
@@ -135,8 +138,8 @@ export default function Graph({ data }: GraphProps) {
       ctx.lineTo(padding.left + graphWidth, y);
       ctx.stroke();
 
-      // Y-axis label - brighter for better visibility
-      ctx.fillStyle = "#d1d5db";
+      // Y-axis label - theme-aware
+      ctx.fillStyle = isDarkMode ? "#d1d5db" : "#374151";
       ctx.textAlign = "right";
       ctx.fillText(val.toString(), padding.left - 10, y + 4);
     });
@@ -282,7 +285,7 @@ export default function Graph({ data }: GraphProps) {
     }
 
     // Draw X-axis labels dynamically - converted to IST (drawn last for visibility)
-    ctx.fillStyle = "#d1d5db";
+    ctx.fillStyle = isDarkMode ? "#d1d5db" : "#374151";
     ctx.textAlign = "center";
     ctx.font = isMobile ? "10px sans-serif" : "12px sans-serif";
     
@@ -316,7 +319,7 @@ export default function Graph({ data }: GraphProps) {
       ctx.fillText(label, x, yPosition);
     }
 
-  }, [data, isExpanded, tooltip.visible, tooltip.dataIndex]);
+  }, [data, isExpanded, tooltip.visible, tooltip.dataIndex, isDarkMode]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
