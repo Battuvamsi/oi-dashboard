@@ -127,11 +127,20 @@ export default function Graph({ data }: GraphProps) {
     yValues.forEach((val) => {
       const y = padding.top + ((120 - val) / 240) * graphHeight;
 
-      // Grid line color - maximum visibility
-      if (val === 30) ctx.strokeStyle = "#34d399";
-      else if (val === -30) ctx.strokeStyle = "#f87171";
-      else if (val === 0) ctx.strokeStyle = "#d1d5db";
-      else ctx.strokeStyle = "#6b7280";
+      // Grid line color and thickness - maximum visibility
+      if (val === 30) {
+        ctx.strokeStyle = "#34d399";
+        ctx.lineWidth = 3;
+      } else if (val === -30) {
+        ctx.strokeStyle = "#f87171";
+        ctx.lineWidth = 3;
+      } else if (val === 0) {
+        ctx.strokeStyle = "#d1d5db";
+        ctx.lineWidth = 1;
+      } else {
+        ctx.strokeStyle = "#6b7280";
+        ctx.lineWidth = 1;
+      }
 
       ctx.beginPath();
       ctx.moveTo(padding.left, y);
