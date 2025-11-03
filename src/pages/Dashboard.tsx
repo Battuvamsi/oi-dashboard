@@ -528,6 +528,18 @@ export default function Dashboard() {
                   <div className="text-center space-y-0.5">
                     <h2 className="text-base font-bold text-foreground">Historical Data</h2>
                     <p className="text-xs text-muted-foreground">Select a date to view historical options data</p>
+                    <p className="text-xs text-muted-foreground font-semibold">
+                      Current IST Time: {new Date(new Date().getTime() + (5.5 * 60 * 60 * 1000)).toLocaleString('en-IN', { 
+                        timeZone: 'UTC',
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false
+                      })}
+                    </p>
                   </div>
                   
                   <div className="flex flex-col items-center gap-2">
