@@ -142,9 +142,9 @@ export default function Login() {
         transition={{ duration: 0.6 }}
         className="w-full max-w-md relative z-10"
       >
-        <Card className="border-0 shadow-2xl backdrop-blur-2xl bg-white/40 dark:bg-gray-900/40 overflow-hidden">
+        <Card className="border border-white/20 dark:border-white/10 shadow-2xl backdrop-blur-xl bg-white/10 dark:bg-white/5 overflow-hidden">
           {/* Glassmorphic overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-white/30 to-transparent dark:from-gray-800/60 dark:via-gray-800/30 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-white/10 to-transparent dark:from-white/10 dark:via-white/5 pointer-events-none" />
           
           <CardHeader className="text-center relative z-10 space-y-4 pt-8 pb-6">
             <motion.div
@@ -153,7 +153,7 @@ export default function Login() {
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
               className="flex justify-center"
             >
-              <div className="p-4 rounded-3xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-xl border border-white/20 dark:border-gray-700/30 shadow-lg">
+              <div className="p-4 rounded-3xl bg-gradient-to-br from-blue-400/15 to-purple-400/15 backdrop-blur-lg border border-white/30 dark:border-white/20 shadow-lg">
                 <Lock className="h-10 w-10 text-blue-600 dark:text-blue-400" />
               </div>
             </motion.div>
@@ -190,7 +190,7 @@ export default function Login() {
                   onChange={(e) => setUsername(e.target.value)}
                   disabled={isLoading}
                   required
-                  className="h-12 backdrop-blur-xl bg-white/50 dark:bg-gray-800/50 border-white/30 dark:border-gray-700/30 focus:border-blue-500/50 dark:focus:border-blue-400/50 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-300"
+                  className="h-12 backdrop-blur-md bg-white/20 dark:bg-white/10 border-white/40 dark:border-white/20 focus:border-blue-400/60 dark:focus:border-blue-300/60 focus:ring-2 focus:ring-blue-400/30 dark:focus:ring-blue-300/30 transition-all duration-300 placeholder:text-gray-600 dark:placeholder:text-gray-400"
                 />
               </motion.div>
               
@@ -211,7 +211,7 @@ export default function Login() {
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
                   required
-                  className="h-12 backdrop-blur-xl bg-white/50 dark:bg-gray-800/50 border-white/30 dark:border-gray-700/30 focus:border-blue-500/50 dark:focus:border-blue-400/50 focus:ring-2 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-300"
+                  className="h-12 backdrop-blur-md bg-white/20 dark:bg-white/10 border-white/40 dark:border-white/20 focus:border-blue-400/60 dark:focus:border-blue-300/60 focus:ring-2 focus:ring-blue-400/30 dark:focus:ring-blue-300/30 transition-all duration-300 placeholder:text-gray-600 dark:placeholder:text-gray-400"
                 />
               </motion.div>
               
