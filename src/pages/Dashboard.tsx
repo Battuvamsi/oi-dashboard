@@ -479,15 +479,26 @@ export default function Dashboard() {
                 <TabsTrigger value="history" className="text-xs sm:text-sm">History</TabsTrigger>
               </TabsList>
             </Tabs>
-            <Button
-              onClick={toggleTheme}
-              variant="outline"
-              size="sm"
-              className="cursor-pointer hidden lg:flex items-center justify-center gap-2 h-8 px-3"
-            >
-              {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-              <span className="text-xs">{theme === "dark" ? "Light" : "Dark"} Mode</span>
-            </Button>
+            <div className="hidden lg:flex items-center gap-3">
+              <div className="text-xs font-semibold text-muted-foreground">
+                IST: {new Date(new Date().getTime() + (5.5 * 60 * 60 * 1000)).toLocaleString('en-IN', { 
+                  timeZone: 'UTC',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit',
+                  hour12: false
+                })}
+              </div>
+              <Button
+                onClick={toggleTheme}
+                variant="outline"
+                size="sm"
+                className="cursor-pointer flex items-center justify-center gap-2 h-8 px-3"
+              >
+                {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+                <span className="text-xs">{theme === "dark" ? "Light" : "Dark"} Mode</span>
+              </Button>
+            </div>
           </div>
 
           {/* Tab Content */}
