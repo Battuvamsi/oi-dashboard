@@ -101,21 +101,21 @@ export default function Graph({ data }: GraphProps) {
     const hasPCR = clampedData.some(point => point.pcr !== undefined && point.pcr !== null);
 
     // Draw gradient shaded regions first (so they appear behind grid lines)
-    // Green gradient above 30 - fades from opaque at 30 line to transparent at top
+    // Green gradient above 30 - fades from opaque at 30 line to semi-transparent at top
     const y30 = padding.top + ((120 - 30) / 240) * graphHeight;
     const yTop = padding.top;
     const greenGradient = ctx.createLinearGradient(0, y30, 0, yTop);
-    greenGradient.addColorStop(0, "rgba(52, 211, 153, 0.2)");
-    greenGradient.addColorStop(1, "rgba(52, 211, 153, 0)");
+    greenGradient.addColorStop(0, "rgba(34, 197, 94, 0.35)");
+    greenGradient.addColorStop(1, "rgba(34, 197, 94, 0.15)");
     ctx.fillStyle = greenGradient;
     ctx.fillRect(padding.left, yTop, graphWidth, y30 - yTop);
 
-    // Red gradient below -30 - fades from opaque at -30 line to transparent at bottom
+    // Red gradient below -30 - fades from opaque at -30 line to semi-transparent at bottom
     const yMinus30 = padding.top + ((120 - (-30)) / 240) * graphHeight;
     const yBottom = padding.top + graphHeight;
     const redGradient = ctx.createLinearGradient(0, yMinus30, 0, yBottom);
-    redGradient.addColorStop(0, "rgba(248, 113, 113, 0.2)");
-    redGradient.addColorStop(1, "rgba(248, 113, 113, 0)");
+    redGradient.addColorStop(0, "rgba(239, 68, 68, 0.35)");
+    redGradient.addColorStop(1, "rgba(239, 68, 68, 0.15)");
     ctx.fillStyle = redGradient;
     ctx.fillRect(padding.left, yMinus30, graphWidth, yBottom - yMinus30);
 
