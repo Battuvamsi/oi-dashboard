@@ -196,8 +196,8 @@ export default function Graph({ data }: GraphProps) {
       const maxPCR = Math.max(...pcrValues);
       const pcrRange = maxPCR - minPCR || 1;
 
-      ctx.strokeStyle = "#fbbf24";
-      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = "#d97706";
+      ctx.lineWidth = 2;
       ctx.beginPath();
 
       clampedData.forEach((point, index) => {
@@ -284,7 +284,7 @@ export default function Graph({ data }: GraphProps) {
           const shouldShowValue = minutes === 0 || minutes === 30 || isLast;
           
           if (shouldShowValue) {
-            ctx.fillStyle = "#fbbf24";
+            ctx.fillStyle = "#d97706";
             ctx.font = "11px sans-serif";
             ctx.textAlign = "center";
             ctx.fillText(point.pcr.toFixed(3), x, y + 15);
@@ -423,7 +423,7 @@ export default function Graph({ data }: GraphProps) {
               <span className="text-muted-foreground">Imbalance</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-0.5 bg-[#fbbf24]"></div>
+              <div className="w-4 h-0.5 bg-[#d97706]"></div>
               <span className="text-muted-foreground">PCR</span>
             </div>
             <div className="flex items-center gap-2">
