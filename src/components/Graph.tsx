@@ -189,6 +189,17 @@ export default function Graph({ data }: GraphProps) {
 
     ctx.stroke();
 
+    // Draw dots on the imbalance line
+    clampedData.forEach((point, index) => {
+      const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
+      const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
+
+      ctx.beginPath();
+      ctx.arc(x, y, 2, 0, 2 * Math.PI);
+      ctx.fillStyle = "#3b82f6";
+      ctx.fill();
+    });
+
     // Draw PCR line if available
     if (hasPCR) {
       const pcrValues = clampedData.map(d => d.pcr).filter(p => p !== undefined) as number[];
