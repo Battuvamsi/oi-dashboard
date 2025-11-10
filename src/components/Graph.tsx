@@ -199,7 +199,7 @@ export default function Graph({ data }: GraphProps) {
       if (index > 0) {
         const previousImbalance = clampedData[index - 1].clampedImbalance;
         if (point.clampedImbalance > previousImbalance) {
-          dotColor = "#a855f7"; // Purple for increasing
+          dotColor = "#22c55e"; // Bright green for increasing
         } else if (point.clampedImbalance < previousImbalance) {
           dotColor = "#ef4444"; // Red for decreasing
         }
