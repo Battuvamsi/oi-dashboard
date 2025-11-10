@@ -196,7 +196,7 @@ export default function Graph({ data }: GraphProps) {
 
       ctx.beginPath();
       ctx.arc(x, y, 2, 0, 2 * Math.PI);
-      ctx.fillStyle = "#10b981";
+      ctx.fillStyle = "#ec4899";
       ctx.fill();
     });
 
