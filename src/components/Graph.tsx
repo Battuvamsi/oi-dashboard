@@ -105,8 +105,9 @@ export default function Graph({ data }: GraphProps) {
     const y30 = padding.top + ((120 - 30) / 240) * graphHeight;
     const yTop = padding.top;
     const greenGradient = ctx.createLinearGradient(0, y30, 0, yTop);
-    greenGradient.addColorStop(0, "rgba(34, 197, 94, 0.25)");
-    greenGradient.addColorStop(1, "rgba(34, 197, 94, 0.08)");
+    greenGradient.addColorStop(0, "rgba(34, 197, 94, 0.3)");
+    greenGradient.addColorStop(0.5, "rgba(34, 197, 94, 0.15)");
+    greenGradient.addColorStop(1, "rgba(34, 197, 94, 0.05)");
     ctx.fillStyle = greenGradient;
     ctx.fillRect(padding.left, yTop, graphWidth, y30 - yTop);
 
@@ -114,8 +115,9 @@ export default function Graph({ data }: GraphProps) {
     const yMinus30 = padding.top + ((120 - (-30)) / 240) * graphHeight;
     const yBottom = padding.top + graphHeight;
     const redGradient = ctx.createLinearGradient(0, yMinus30, 0, yBottom);
-    redGradient.addColorStop(0, "rgba(239, 68, 68, 0.25)");
-    redGradient.addColorStop(1, "rgba(239, 68, 68, 0.08)");
+    redGradient.addColorStop(0, "rgba(239, 68, 68, 0.3)");
+    redGradient.addColorStop(0.5, "rgba(239, 68, 68, 0.15)");
+    redGradient.addColorStop(1, "rgba(239, 68, 68, 0.05)");
     ctx.fillStyle = redGradient;
     ctx.fillRect(padding.left, yMinus30, graphWidth, yBottom - yMinus30);
 
