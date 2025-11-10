@@ -195,7 +195,7 @@ export default function Graph({ data }: GraphProps) {
       const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
 
       ctx.beginPath();
-      ctx.arc(x, y, 2, 0, 2 * Math.PI);
+      ctx.arc(x, y, 3, 0, 2 * Math.PI);
       ctx.fillStyle = "#ec4899";
       ctx.fill();
     });
