@@ -189,14 +189,25 @@ export default function Graph({ data }: GraphProps) {
 
     ctx.stroke();
 
-    // Draw dots on the imbalance line
+    // Draw dots on the imbalance line with dynamic colors based on trend
     clampedData.forEach((point, index) => {
       const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
       const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
 
+      // Determine dot color based on trend
+      let dotColor = "#fbbf24"; // Yellow for no change (first point or same value)
+      if (index > 0) {
+        const previousImbalance = clampedData[index - 1].clampedImbalance;
+        if (point.clampedImbalance > previousImbalance) {
+          dotColor = "#10b981"; // Green for increasing
+        } else if (point.clampedImbalance < previousImbalance) {
+          dotColor = "#ef4444"; // Red for decreasing
+        }
+      }
+
       ctx.beginPath();
       ctx.arc(x, y, 3, 0, 2 * Math.PI);
-      ctx.fillStyle = "#ec4899";
+      ctx.fillStyle = dotColor;
       ctx.fill();
     });
 
