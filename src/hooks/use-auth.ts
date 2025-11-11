@@ -6,7 +6,8 @@ import { useEffect, useState } from "react";
 
 export function useAuth() {
   const { isLoading: isAuthLoading, isAuthenticated } = useConvexAuth();
-  const user = useQuery(api.users.currentUser);
+  // @ts-ignore - Temporary workaround for Convex type inference issue
+  const userQuery = useQuery(api.users.currentUser);
   const { signIn, signOut } = useAuthActions();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -14,15 +15,15 @@ export function useAuth() {
   // This effect updates the loading state once auth is loaded and user data is available
   // It ensures we only show content when both authentication state and user data are ready
   useEffect(() => {
-    if (!isAuthLoading && user !== undefined) {
+    if (!isAuthLoading && userQuery !== undefined) {
       setIsLoading(false);
     }
-  }, [isAuthLoading, user]);
+  }, [isAuthLoading, userQuery]);
 
   return {
     isLoading,
     isAuthenticated,
-    user,
+    user: userQuery,
     signIn,
     signOut,
   };
