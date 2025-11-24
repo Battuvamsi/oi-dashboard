@@ -1,10 +1,6 @@
 import { useEffect, useRef, memo } from 'react';
 
-interface TradingViewWidgetProps {
-  theme: "light" | "dark";
-}
-
-function TradingViewWidget({ theme }: TradingViewWidgetProps) {
+function TradingViewWidget() {
   const container = useRef<HTMLDivElement>(null);
 
   useEffect(
@@ -32,9 +28,9 @@ function TradingViewWidget({ theme }: TradingViewWidgetProps) {
             "save_image": true,
             "style": "1",
             "symbol": "BSE:SENSEX",
-            "theme": "${theme}",
+            "theme": "dark",
             "timezone": "Asia/Kolkata",
-            "backgroundColor": "${theme === 'dark' ? '#0F0F0F' : '#FFFFFF'}",
+            "backgroundColor": "#0F0F0F",
             "gridColor": "rgba(242, 242, 242, 0.06)",
             "watchlist": [],
             "withdateranges": false,
@@ -65,7 +61,7 @@ function TradingViewWidget({ theme }: TradingViewWidgetProps) {
         container.current.appendChild(widgetContainer);
       }
     },
-    [theme]
+    []
   );
 
   return (
