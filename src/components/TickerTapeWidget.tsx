@@ -66,7 +66,7 @@ function TickerTapeWidget() {
   );
 
   return (
-    <div className="w-full h-[72px] overflow-hidden border-b border-border">
+    <div className="w-full h-[46px] overflow-hidden border-b border-border">
       <div ref={container} className="tradingview-widget-container" />
     </div>
   );
