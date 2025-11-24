@@ -33,20 +33,20 @@ export default function TotalsBadges({ totals }: TotalsBadgesProps) {
   ];
 
   return (
-    <Card className="p-1.5 sm:p-2 md:p-3 bg-card/80 backdrop-blur-sm">
-      <div className="flex flex-wrap gap-1.5 sm:gap-2 md:gap-4">
+    <Card className="p-1 sm:p-1.5 md:p-2 bg-card/80 backdrop-blur-sm">
+      <div className="flex flex-wrap gap-1 sm:gap-1.5 md:gap-2">
         {badges.map((badge, index) => (
           <motion.div
             key={badge.label}
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
-            className="flex items-center gap-1 sm:gap-2 md:gap-3"
+            className="flex items-center gap-1 sm:gap-1.5 md:gap-2"
           >
-            <Badge className={`${badge.color} text-white font-semibold px-1.5 sm:px-2 md:px-3 py-0.5 sm:py-1 text-xs sm:text-sm transition-colors`}>
+            <Badge className={`${badge.color} text-white font-semibold px-1 sm:px-1.5 md:px-2 py-0 sm:py-0.5 text-[10px] sm:text-xs transition-colors`}>
               {badge.label}
             </Badge>
-            <span className="text-sm sm:text-base md:text-xl font-bold text-foreground truncate">{badge.value}</span>
+            <span className="text-xs sm:text-sm md:text-base font-bold text-foreground truncate">{badge.value}</span>
           </motion.div>
         ))}
       </div>
