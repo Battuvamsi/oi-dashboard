@@ -56,12 +56,7 @@ function TickerTapeWidget() {
         const widget = document.createElement("div");
         widget.className = "tradingview-widget-container__widget";
         
-        const copyright = document.createElement("div");
-        copyright.className = "tradingview-widget-copyright";
-        copyright.innerHTML = `<a href="https://www.tradingview.com/markets/" rel="noopener nofollow" target="_blank"><span class="blue-text">Ticker tape</span></a><span class="trademark"> by TradingView</span>`;
-        
         widgetContainer.appendChild(widget);
-        widgetContainer.appendChild(copyright);
         widgetContainer.appendChild(script);
         
         container.current.appendChild(widgetContainer);
