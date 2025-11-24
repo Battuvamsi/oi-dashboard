@@ -8,6 +8,7 @@ import TotalsBadges from "@/components/TotalsBadges";
 import OiTable from "@/components/OiTable";
 import Graph from "@/components/Graph";
 import LtpBanner from "@/components/LtpBanner";
+import TradingViewWidget from "@/components/TradingViewWidget";
 import {
   Select,
   SelectContent,
@@ -520,6 +521,13 @@ export default function Dashboard() {
 
                   {/* Graph */}
                   <Graph data={graphData} />
+
+                  {/* TradingView Widget for SENSEX */}
+                  {selectedKey && selectedKey.toUpperCase().includes('SENSEX') && (
+                    <div className="w-full h-[600px] rounded-lg overflow-hidden border border-border bg-card/80 backdrop-blur-sm p-1">
+                      <TradingViewWidget />
+                    </div>
+                  )}
 
                   {/* Table */}
                   <OiTable
