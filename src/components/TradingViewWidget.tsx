@@ -1,11 +1,18 @@
 import { useEffect, useRef, memo } from 'react';
 
-function TradingViewWidget() {
+interface TradingViewWidgetProps {
+  theme: "light" | "dark";
+}
+
+function TradingViewWidget({ theme }: TradingViewWidgetProps) {
   const container = useRef<HTMLDivElement>(null);
 
   useEffect(
     () => {
-      if (container.current && !container.current.querySelector("script")) {
+      if (container.current) {
+        // Clear existing widget
+        container.current.innerHTML = "";
+        
         const script = document.createElement("script");
         script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
         script.type = "text/javascript";
@@ -25,9 +32,9 @@ function TradingViewWidget() {
             "save_image": true,
             "style": "1",
             "symbol": "BSE:SENSEX",
-            "theme": "dark",
+            "theme": "${theme}",
             "timezone": "Asia/Kolkata",
-            "backgroundColor": "#0F0F0F",
+            "backgroundColor": "${theme === 'dark' ? '#0F0F0F' : '#FFFFFF'}",
             "gridColor": "rgba(242, 242, 242, 0.06)",
             "watchlist": [],
             "withdateranges": false,
@@ -35,17 +42,34 @@ function TradingViewWidget() {
             "studies": [],
             "autosize": true
           }`;
-        container.current.appendChild(script);
+        
+        // Create the widget structure
+        const widgetContainer = document.createElement("div");
+        widgetContainer.className = "tradingview-widget-container";
+        widgetContainer.style.height = "100%";
+        widgetContainer.style.width = "100%";
+        
+        const widget = document.createElement("div");
+        widget.className = "tradingview-widget-container__widget";
+        widget.style.height = "calc(100% - 32px)";
+        widget.style.width = "100%";
+        
+        const copyright = document.createElement("div");
+        copyright.className = "tradingview-widget-copyright";
+        copyright.innerHTML = `<a href="https://www.tradingview.com/symbols/BSE-SENSEX/" rel="noopener nofollow" target="_blank"><span class="blue-text">SENSEX chart</span></a><span class="trademark"> by TradingView</span>`;
+        
+        widgetContainer.appendChild(widget);
+        widgetContainer.appendChild(copyright);
+        widgetContainer.appendChild(script);
+        
+        container.current.appendChild(widgetContainer);
       }
     },
-    []
+    [theme]
   );
 
   return (
-    <div className="tradingview-widget-container" ref={container} style={{ height: "100%", width: "100%" }}>
-      <div className="tradingview-widget-container__widget" style={{ height: "calc(100% - 32px)", width: "100%" }}></div>
-      <div className="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/BSE-SENSEX/" rel="noopener nofollow" target="_blank"><span className="blue-text">SENSEX chart</span></a><span className="trademark"> by TradingView</span></div>
-    </div>
+    <div ref={container} style={{ height: "100%", width: "100%" }} />
   );
 }
 
