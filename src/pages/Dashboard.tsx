@@ -9,6 +9,7 @@ import OiTable from "@/components/OiTable";
 import Graph from "@/components/Graph";
 import LtpBanner from "@/components/LtpBanner";
 import TradingViewWidget from "@/components/TradingViewWidget";
+import TickerTapeWidget from "@/components/TickerTapeWidget";
 import {
   Select,
   SelectContent,
@@ -472,6 +473,9 @@ export default function Dashboard() {
 
         {/* Right Pane - Data Display with Tabs */}
         <div className="flex-1 overflow-auto bg-background w-full flex flex-col">
+          {/* Ticker Tape Widget */}
+          <TickerTapeWidget />
+          
           {/* Navbar with Tabs */}
           <div className="border-b bg-card/80 backdrop-blur-sm px-2 sm:px-4 py-2 flex items-center justify-between gap-4">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1">
