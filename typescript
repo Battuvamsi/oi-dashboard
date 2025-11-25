@@ -1,8 +1,10 @@
-interface GraphDataPoint {
-  dateTime: string;
-  oichangeFinalResult: {
-    oiChangeTotalValues: {
-      totalImbalance: number;
-    };
-  };
+interface LtpData {
+  instrumentToken: number;
+  ltp: number;   // Current Price
+  change: number; // Percentage Change
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  // ... other fields
 }
