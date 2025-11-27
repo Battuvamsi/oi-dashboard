@@ -36,6 +36,10 @@ export default function Graph({ data }: GraphProps) {
   // Detect current theme
   const isDarkMode = document.documentElement.classList.contains('dark');
 
+  // Animation refs
+  const previousKeyRef = useRef<string>(data.key);
+  const hasAnimatedRef = useRef<boolean>(false);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
@@ -59,10 +63,6 @@ export default function Graph({ data }: GraphProps) {
       : { top: 40, right: 60, bottom: 60, left: 60 };
     const graphWidth = width - padding.left - padding.right;
     const graphHeight = height - padding.top - padding.bottom;
-
-    // Clear canvas with theme-aware background
-    ctx.fillStyle = isDarkMode ? "#0a0a0a" : "#ffffff";
-    ctx.fillRect(0, 0, width, height);
 
     // Filter data to only show 9:10 AM to 4:00 PM IST
     const filteredData = data.values.filter((point) => {
@@ -100,246 +100,296 @@ export default function Graph({ data }: GraphProps) {
     // Check if PCR data exists
     const hasPCR = clampedData.some(point => point.pcr !== undefined && point.pcr !== null);
 
-    // Draw gradient shaded regions first (so they appear behind grid lines)
-    // Green gradient above 30 - fades from opaque at 30 line to semi-transparent at top
-    const y30 = padding.top + ((120 - 30) / 240) * graphHeight;
-    const yTop = padding.top;
-    const greenGradient = ctx.createLinearGradient(0, y30, 0, yTop);
-    greenGradient.addColorStop(0, "rgba(34, 197, 94, 0.3)");
-    greenGradient.addColorStop(0.5, "rgba(34, 197, 94, 0.15)");
-    greenGradient.addColorStop(1, "rgba(34, 197, 94, 0.05)");
-    ctx.fillStyle = greenGradient;
-    ctx.fillRect(padding.left, yTop, graphWidth, y30 - yTop);
+    // Draw function to handle animation frames
+    const draw = (progress: number) => {
+      // Clear canvas with theme-aware background
+      ctx.fillStyle = isDarkMode ? "#0a0a0a" : "#ffffff";
+      ctx.fillRect(0, 0, width, height);
 
-    // Red gradient below -30 - fades from opaque at -30 line to semi-transparent at bottom
-    const yMinus30 = padding.top + ((120 - (-30)) / 240) * graphHeight;
-    const yBottom = padding.top + graphHeight;
-    const redGradient = ctx.createLinearGradient(0, yMinus30, 0, yBottom);
-    redGradient.addColorStop(0, "rgba(239, 68, 68, 0.3)");
-    redGradient.addColorStop(0.5, "rgba(239, 68, 68, 0.15)");
-    redGradient.addColorStop(1, "rgba(239, 68, 68, 0.05)");
-    ctx.fillStyle = redGradient;
-    ctx.fillRect(padding.left, yMinus30, graphWidth, yBottom - yMinus30);
+      // Draw gradient shaded regions first (so they appear behind grid lines)
+      // Green gradient above 30 - fades from opaque at 30 line to semi-transparent at top
+      const y30 = padding.top + ((120 - 30) / 240) * graphHeight;
+      const yTop = padding.top;
+      const greenGradient = ctx.createLinearGradient(0, y30, 0, yTop);
+      greenGradient.addColorStop(0, "rgba(34, 197, 94, 0.3)");
+      greenGradient.addColorStop(0.5, "rgba(34, 197, 94, 0.15)");
+      greenGradient.addColorStop(1, "rgba(34, 197, 94, 0.05)");
+      ctx.fillStyle = greenGradient;
+      ctx.fillRect(padding.left, yTop, graphWidth, y30 - yTop);
 
-    // Draw grid lines and Y-axis labels for Imbalance (left axis)
-    ctx.lineWidth = 1;
-    ctx.font = isMobile ? "11px sans-serif" : "13px sans-serif";
+      // Red gradient below -30 - fades from opaque at -30 line to semi-transparent at bottom
+      const yMinus30 = padding.top + ((120 - (-30)) / 240) * graphHeight;
+      const yBottom = padding.top + graphHeight;
+      const redGradient = ctx.createLinearGradient(0, yMinus30, 0, yBottom);
+      redGradient.addColorStop(0, "rgba(239, 68, 68, 0.3)");
+      redGradient.addColorStop(0.5, "rgba(239, 68, 68, 0.15)");
+      redGradient.addColorStop(1, "rgba(239, 68, 68, 0.05)");
+      ctx.fillStyle = redGradient;
+      ctx.fillRect(padding.left, yMinus30, graphWidth, yBottom - yMinus30);
 
-    const yValues = [-120, -90, -60, -30, 0, 30, 60, 90, 120];
-    yValues.forEach((val) => {
-      const y = padding.top + ((120 - val) / 240) * graphHeight;
+      // Draw grid lines and Y-axis labels for Imbalance (left axis)
+      ctx.lineWidth = 1;
+      ctx.font = isMobile ? "11px sans-serif" : "13px sans-serif";
 
-      // Grid line color and thickness - maximum visibility
-      if (val === 30) {
-        ctx.strokeStyle = "#34d399";
-        ctx.lineWidth = 3;
-      } else if (val === -30) {
-        ctx.strokeStyle = "#f87171";
-        ctx.lineWidth = 3;
-      } else if (val === 0) {
-        ctx.strokeStyle = "#d1d5db";
-        ctx.lineWidth = 1;
-      } else {
-        ctx.strokeStyle = "#6b7280";
-        ctx.lineWidth = 1;
-      }
+      const yValues = [-120, -90, -60, -30, 0, 30, 60, 90, 120];
+      yValues.forEach((val) => {
+        const y = padding.top + ((120 - val) / 240) * graphHeight;
 
-      ctx.beginPath();
-      ctx.moveTo(padding.left, y);
-      ctx.lineTo(padding.left + graphWidth, y);
-      ctx.stroke();
+        // Grid line color and thickness - maximum visibility
+        if (val === 30) {
+          ctx.strokeStyle = "#34d399";
+          ctx.lineWidth = 3;
+        } else if (val === -30) {
+          ctx.strokeStyle = "#f87171";
+          ctx.lineWidth = 3;
+        } else if (val === 0) {
+          ctx.strokeStyle = "#d1d5db";
+          ctx.lineWidth = 1;
+        } else {
+          ctx.strokeStyle = "#6b7280";
+          ctx.lineWidth = 1;
+        }
 
-      // Y-axis label - theme-aware
-      ctx.fillStyle = isDarkMode ? "#d1d5db" : "#374151";
-      ctx.textAlign = "right";
-      ctx.fillText(val.toString(), padding.left - 10, y + 4);
-    });
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(padding.left + graphWidth, y);
+        ctx.stroke();
 
-    // Draw right Y-axis labels for PCR if available
-    if (hasPCR) {
-      const pcrValues = clampedData.map(d => d.pcr).filter(p => p !== undefined) as number[];
-      const minPCR = Math.min(...pcrValues);
-      const maxPCR = Math.max(...pcrValues);
-      const pcrRange = maxPCR - minPCR;
-      
-      // Draw PCR axis labels
-      const pcrSteps = [0, 0.25, 0.5, 0.75, 1];
-      ctx.fillStyle = "#fbbf24";
-      ctx.textAlign = "left";
-      pcrSteps.forEach((ratio) => {
-        const pcrValue = minPCR + ratio * pcrRange;
-        const y = padding.top + (1 - ratio) * graphHeight;
-        ctx.fillText(pcrValue.toFixed(2), padding.left + graphWidth + 10, y + 4);
+        // Y-axis label - theme-aware
+        ctx.fillStyle = isDarkMode ? "#d1d5db" : "#374151";
+        ctx.textAlign = "right";
+        ctx.fillText(val.toString(), padding.left - 10, y + 4);
       });
-    }
 
-    // Draw Imbalance line
-    ctx.strokeStyle = "#3b82f6";
-    ctx.lineWidth = 4;
-    ctx.beginPath();
-
-    clampedData.forEach((point, index) => {
-      const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
-      const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
-
-      if (index === 0) {
-        ctx.moveTo(x, y);
-      } else {
-        ctx.lineTo(x, y);
+      // Draw right Y-axis labels for PCR if available
+      if (hasPCR) {
+        const pcrValues = clampedData.map(d => d.pcr).filter(p => p !== undefined) as number[];
+        const minPCR = Math.min(...pcrValues);
+        const maxPCR = Math.max(...pcrValues);
+        const pcrRange = maxPCR - minPCR;
+        
+        // Draw PCR axis labels
+        const pcrSteps = [0, 0.25, 0.5, 0.75, 1];
+        ctx.fillStyle = "#fbbf24";
+        ctx.textAlign = "left";
+        pcrSteps.forEach((ratio) => {
+          const pcrValue = minPCR + ratio * pcrRange;
+          const y = padding.top + (1 - ratio) * graphHeight;
+          ctx.fillText(pcrValue.toFixed(2), padding.left + graphWidth + 10, y + 4);
+        });
       }
-    });
 
-    ctx.stroke();
+      // Determine visible data based on progress
+      const maxIndex = Math.floor((clampedData.length - 1) * progress);
+      const visibleData = clampedData.slice(0, maxIndex + 1);
 
-    // Draw dots on the imbalance line - theme-aware
-    clampedData.forEach((point, index) => {
-      const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
-      const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
+      if (visibleData.length > 0) {
+        // Draw Imbalance line
+        ctx.strokeStyle = "#3b82f6";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
 
-      ctx.beginPath();
-      ctx.arc(x, y, 3, 0, 2 * Math.PI);
-      ctx.fillStyle = isDarkMode ? "#ffffff" : "#000000";
-      ctx.fill();
-    });
-
-    // Draw PCR line if available
-    if (hasPCR) {
-      const pcrValues = clampedData.map(d => d.pcr).filter(p => p !== undefined) as number[];
-      const minPCR = Math.min(...pcrValues);
-      const maxPCR = Math.max(...pcrValues);
-      const pcrRange = maxPCR - minPCR || 1;
-
-      ctx.strokeStyle = "#f59e0b";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-
-      clampedData.forEach((point, index) => {
-        if (point.pcr !== undefined && point.pcr !== null) {
+        visibleData.forEach((point, index) => {
           const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
-          const normalizedPCR = (point.pcr - minPCR) / pcrRange;
-          const y = padding.top + (1 - normalizedPCR) * graphHeight;
+          const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
 
           if (index === 0) {
             ctx.moveTo(x, y);
           } else {
             ctx.lineTo(x, y);
           }
-        }
-      });
+        });
 
-      ctx.stroke();
-    }
-
-    // Draw dots for Imbalance only on hover or last point
-    clampedData.forEach((point, index) => {
-      const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
-      const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
-
-      const isLast = index === clampedData.length - 1;
-      const isHovered = tooltip.visible && tooltip.dataIndex === index;
-      
-      // Only draw dot if hovered or last point
-      if (isHovered || isLast) {
-        ctx.beginPath();
-        ctx.arc(x, y, isHovered ? 8 : 6, 0, 2 * Math.PI);
-        ctx.fillStyle = isHovered ? "#3b82f6" : "#f87171";
-        ctx.fill();
-        ctx.strokeStyle = isHovered ? "#ffffff" : "#0a0a0a";
-        ctx.lineWidth = isHovered ? 3 : 2;
         ctx.stroke();
-      }
 
-      // Display value at 30-minute intervals - using IST
-      const utcDate = new Date(point.dateTime);
-      const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
-      const minutes = istDate.getMinutes();
-      const shouldShowValue = minutes === 0 || minutes === 30 || isLast;
-      
-      if (shouldShowValue) {
-        ctx.fillStyle = "#3b82f6";
-        ctx.font = "11px sans-serif";
-        ctx.textAlign = "center";
-        ctx.fillText(point.clampedImbalance.toFixed(1), x, y - 10);
-      }
-    });
-
-    // Draw dots for PCR only on hover or last point if available
-    if (hasPCR) {
-      const pcrValues = clampedData.map(d => d.pcr).filter(p => p !== undefined) as number[];
-      const minPCR = Math.min(...pcrValues);
-      const maxPCR = Math.max(...pcrValues);
-      const pcrRange = maxPCR - minPCR || 1;
-
-      clampedData.forEach((point, index) => {
-        if (point.pcr !== undefined && point.pcr !== null) {
+        // Draw dots on the imbalance line - theme-aware
+        visibleData.forEach((point, index) => {
           const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
-          const normalizedPCR = (point.pcr - minPCR) / pcrRange;
-          const y = padding.top + (1 - normalizedPCR) * graphHeight;
+          const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
 
-          const isLast = index === clampedData.length - 1;
+          ctx.beginPath();
+          ctx.arc(x, y, 3, 0, 2 * Math.PI);
+          ctx.fillStyle = isDarkMode ? "#ffffff" : "#000000";
+          ctx.fill();
+        });
+
+        // Draw PCR line if available
+        if (hasPCR) {
+          const pcrValues = clampedData.map(d => d.pcr).filter(p => p !== undefined) as number[];
+          const minPCR = Math.min(...pcrValues);
+          const maxPCR = Math.max(...pcrValues);
+          const pcrRange = maxPCR - minPCR || 1;
+
+          ctx.strokeStyle = "#f59e0b";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+
+          visibleData.forEach((point, index) => {
+            if (point.pcr !== undefined && point.pcr !== null) {
+              const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
+              const normalizedPCR = (point.pcr - minPCR) / pcrRange;
+              const y = padding.top + (1 - normalizedPCR) * graphHeight;
+
+              if (index === 0) {
+                ctx.moveTo(x, y);
+              } else {
+                ctx.lineTo(x, y);
+              }
+            }
+          });
+
+          ctx.stroke();
+        }
+
+        // Draw dots for Imbalance only on hover or last point
+        visibleData.forEach((point, index) => {
+          const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
+          const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
+
+          const isLast = index === visibleData.length - 1;
           const isHovered = tooltip.visible && tooltip.dataIndex === index;
           
           // Only draw dot if hovered or last point
           if (isHovered || isLast) {
             ctx.beginPath();
             ctx.arc(x, y, isHovered ? 8 : 6, 0, 2 * Math.PI);
-            ctx.fillStyle = isHovered ? "#fcd34d" : "#f87171";
+            ctx.fillStyle = isHovered ? "#3b82f6" : "#f87171";
             ctx.fill();
             ctx.strokeStyle = isHovered ? "#ffffff" : "#0a0a0a";
             ctx.lineWidth = isHovered ? 3 : 2;
             ctx.stroke();
           }
 
-          // Display PCR value at 30-minute intervals - using IST
+          // Display value at 30-minute intervals - using IST
           const utcDate = new Date(point.dateTime);
           const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
           const minutes = istDate.getMinutes();
           const shouldShowValue = minutes === 0 || minutes === 30 || isLast;
           
           if (shouldShowValue) {
-            ctx.fillStyle = "#f59e0b";
+            ctx.fillStyle = "#3b82f6";
             ctx.font = "11px sans-serif";
             ctx.textAlign = "center";
-            ctx.fillText(point.pcr.toFixed(3), x, y + 15);
+            ctx.fillText(point.clampedImbalance.toFixed(1), x, y - 10);
           }
+        });
+
+        // Draw dots for PCR only on hover or last point if available
+        if (hasPCR) {
+          const pcrValues = clampedData.map(d => d.pcr).filter(p => p !== undefined) as number[];
+          const minPCR = Math.min(...pcrValues);
+          const maxPCR = Math.max(...pcrValues);
+          const pcrRange = maxPCR - minPCR || 1;
+
+          visibleData.forEach((point, index) => {
+            if (point.pcr !== undefined && point.pcr !== null) {
+              const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
+              const normalizedPCR = (point.pcr - minPCR) / pcrRange;
+              const y = padding.top + (1 - normalizedPCR) * graphHeight;
+
+              const isLast = index === visibleData.length - 1;
+              const isHovered = tooltip.visible && tooltip.dataIndex === index;
+              
+              // Only draw dot if hovered or last point
+              if (isHovered || isLast) {
+                ctx.beginPath();
+                ctx.arc(x, y, isHovered ? 8 : 6, 0, 2 * Math.PI);
+                ctx.fillStyle = isHovered ? "#fcd34d" : "#f87171";
+                ctx.fill();
+                ctx.strokeStyle = isHovered ? "#ffffff" : "#0a0a0a";
+                ctx.lineWidth = isHovered ? 3 : 2;
+                ctx.stroke();
+              }
+
+              // Display PCR value at 30-minute intervals - using IST
+              const utcDate = new Date(point.dateTime);
+              const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+              const minutes = istDate.getMinutes();
+              const shouldShowValue = minutes === 0 || minutes === 30 || isLast;
+              
+              if (shouldShowValue) {
+                ctx.fillStyle = "#f59e0b";
+                ctx.font = "11px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(point.pcr.toFixed(3), x, y + 15);
+              }
+            }
+          });
         }
-      });
+      }
+
+      // Draw X-axis labels dynamically - converted to IST (drawn last for visibility)
+      ctx.fillStyle = isDarkMode ? "#d1d5db" : "#374151";
+      ctx.textAlign = "center";
+      ctx.font = isMobile ? "10px sans-serif" : "12px sans-serif";
+      
+      // Guard against divide-by-zero
+      if (clampedData.length > 1) {
+        // Calculate optimal number of labels based on screen width
+        const maxLabels = isMobile ? 4 : isTablet ? 6 : 8;
+        const labelInterval = Math.max(1, Math.floor(clampedData.length / maxLabels));
+        
+        clampedData.forEach((point, index) => {
+          // Show first, last, and evenly spaced labels
+          const shouldLabel = index === 0 || 
+                             index === clampedData.length - 1 || 
+                             index % labelInterval === 0;
+          
+          if (shouldLabel) {
+            const utcDate = new Date(point.dateTime);
+            const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+            const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
+            const label = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
+            const yPosition = height - padding.bottom + 20;
+            ctx.fillText(label, x, yPosition);
+          }
+        });
+      } else if (clampedData.length === 1) {
+        const utcDate = new Date(clampedData[0].dateTime);
+        const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+        const label = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
+        const x = padding.left + graphWidth / 2;
+        const yPosition = height - padding.bottom + 20;
+        ctx.fillText(label, x, yPosition);
+      }
+    };
+
+    // Animation Logic
+    let animationFrameId: number;
+    let startTime: number;
+    const duration = 2000; // 2 seconds for the line to travel
+
+    // Check if key changed to reset animation
+    if (previousKeyRef.current !== data.key) {
+      hasAnimatedRef.current = false;
+      previousKeyRef.current = data.key;
     }
 
-    // Draw X-axis labels dynamically - converted to IST (drawn last for visibility)
-    ctx.fillStyle = isDarkMode ? "#d1d5db" : "#374151";
-    ctx.textAlign = "center";
-    ctx.font = isMobile ? "10px sans-serif" : "12px sans-serif";
-    
-    // Guard against divide-by-zero
-    if (clampedData.length > 1) {
-      // Calculate optimal number of labels based on screen width
-      const maxLabels = isMobile ? 4 : isTablet ? 6 : 8;
-      const labelInterval = Math.max(1, Math.floor(clampedData.length / maxLabels));
-      
-      clampedData.forEach((point, index) => {
-        // Show first, last, and evenly spaced labels
-        const shouldLabel = index === 0 || 
-                           index === clampedData.length - 1 || 
-                           index % labelInterval === 0;
-        
-        if (shouldLabel) {
-          const utcDate = new Date(point.dateTime);
-          const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
-          const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
-          const label = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
-          const yPosition = height - padding.bottom + 20;
-          ctx.fillText(label, x, yPosition);
-        }
-      });
-    } else if (clampedData.length === 1) {
-      const utcDate = new Date(clampedData[0].dateTime);
-      const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
-      const label = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
-      const x = padding.left + graphWidth / 2;
-      const yPosition = height - padding.bottom + 20;
-      ctx.fillText(label, x, yPosition);
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      draw(progress);
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        hasAnimatedRef.current = true;
+      }
+    };
+
+    // If not yet animated for this key, start animation
+    if (!hasAnimatedRef.current) {
+      animationFrameId = requestAnimationFrame(animate);
+    } else {
+      // Otherwise draw fully immediately (e.g. on resize or data update)
+      draw(1);
     }
+
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
 
   }, [data, isExpanded, tooltip.visible, tooltip.dataIndex, isDarkMode]);
 
