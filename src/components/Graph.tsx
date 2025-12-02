@@ -41,7 +41,10 @@ export default function Graph({ data }: GraphProps) {
 
   // Animation refs
   const previousKeyRef = useRef<string>(data.key);
-  const hasAnimatedRef = useRef<boolean>(false);
+  const imbalanceProgressRef = useRef(0);
+  const pcrProgressRef = useRef(0);
+  const animationRef = useRef<number | undefined>(undefined);
+  const lastTimeRef = useRef<number>(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -104,7 +107,7 @@ export default function Graph({ data }: GraphProps) {
     const hasPCR = clampedData.some(point => point.pcr !== undefined && point.pcr !== null);
 
     // Draw function to handle animation frames
-    const draw = (progress: number) => {
+    const draw = (imbalanceProg: number, pcrProg: number) => {
       // Clear canvas with theme-aware background
       ctx.fillStyle = isDarkMode ? "#0a0a0a" : "#ffffff";
       ctx.fillRect(0, 0, width, height);
@@ -184,13 +187,12 @@ export default function Graph({ data }: GraphProps) {
         });
       }
 
-      // Determine visible data based on progress
-      const maxIndex = Math.floor((clampedData.length - 1) * progress);
-      const visibleData = clampedData.slice(0, maxIndex + 1);
+      // Draw Imbalance Line
+      if (imbalanceProg > 0) {
+        const maxIndex = Math.floor((clampedData.length - 1) * imbalanceProg);
+        const visibleData = clampedData.slice(0, maxIndex + 1);
 
-      if (visibleData.length > 0) {
-        // Draw Imbalance line
-        if (showImbalance) {
+        if (visibleData.length > 0) {
           ctx.strokeStyle = "#3b82f6";
           ctx.lineWidth = 4;
           ctx.beginPath();
@@ -218,38 +220,8 @@ export default function Graph({ data }: GraphProps) {
             ctx.fillStyle = isDarkMode ? "#ffffff" : "#000000";
             ctx.fill();
           });
-        }
 
-        // Draw PCR line if available
-        if (hasPCR && showPCR) {
-          const pcrValues = clampedData.map(d => d.pcr).filter(p => p !== undefined) as number[];
-          const minPCR = Math.min(...pcrValues);
-          const maxPCR = Math.max(...pcrValues);
-          const pcrRange = maxPCR - minPCR || 1;
-
-          ctx.strokeStyle = "#f59e0b";
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-
-          visibleData.forEach((point, index) => {
-            if (point.pcr !== undefined && point.pcr !== null) {
-              const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
-              const normalizedPCR = (point.pcr - minPCR) / pcrRange;
-              const y = padding.top + (1 - normalizedPCR) * graphHeight;
-
-              if (index === 0) {
-                ctx.moveTo(x, y);
-              } else {
-                ctx.lineTo(x, y);
-              }
-            }
-          });
-
-          ctx.stroke();
-        }
-
-        // Draw dots for Imbalance only on hover or last point
-        if (showImbalance) {
+          // Draw dots for Imbalance only on hover or last point
           visibleData.forEach((point, index) => {
             const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
             const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
@@ -282,14 +254,40 @@ export default function Graph({ data }: GraphProps) {
             }
           });
         }
+      }
 
-        // Draw dots for PCR only on hover or last point if available
-        if (hasPCR && showPCR) {
+      // Draw PCR Line
+      if (hasPCR && pcrProg > 0) {
+        const maxIndex = Math.floor((clampedData.length - 1) * pcrProg);
+        const visibleData = clampedData.slice(0, maxIndex + 1);
+        
+        if (visibleData.length > 0) {
           const pcrValues = clampedData.map(d => d.pcr).filter(p => p !== undefined) as number[];
           const minPCR = Math.min(...pcrValues);
           const maxPCR = Math.max(...pcrValues);
           const pcrRange = maxPCR - minPCR || 1;
 
+          ctx.strokeStyle = "#f59e0b";
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+
+          visibleData.forEach((point, index) => {
+            if (point.pcr !== undefined && point.pcr !== null) {
+              const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
+              const normalizedPCR = (point.pcr - minPCR) / pcrRange;
+              const y = padding.top + (1 - normalizedPCR) * graphHeight;
+
+              if (index === 0) {
+                ctx.moveTo(x, y);
+              } else {
+                ctx.lineTo(x, y);
+              }
+            }
+          });
+
+          ctx.stroke();
+
+          // Draw dots for PCR only on hover or last point
           visibleData.forEach((point, index) => {
             if (point.pcr !== undefined && point.pcr !== null) {
               const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
@@ -364,40 +362,64 @@ export default function Graph({ data }: GraphProps) {
     };
 
     // Animation Logic
-    let animationFrameId: number;
-    let startTime: number;
-    const duration = 2000; // 2 seconds for the line to travel
-
     // Check if key changed to reset animation
     if (previousKeyRef.current !== data.key) {
-      hasAnimatedRef.current = false;
+      imbalanceProgressRef.current = 0;
+      pcrProgressRef.current = 0;
       previousKeyRef.current = data.key;
     }
 
     const animate = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const progress = Math.min(elapsed / duration, 1);
+      if (!lastTimeRef.current) lastTimeRef.current = timestamp;
+      const delta = timestamp - lastTimeRef.current;
+      lastTimeRef.current = timestamp;
 
-      draw(progress);
+      // Calculate targets
+      const targetImbalance = showImbalance ? 1 : 0;
+      const targetPCR = showPCR ? 1 : 0;
 
-      if (progress < 1) {
-        animationFrameId = requestAnimationFrame(animate);
+      // Animation speed (adjust divisor to change speed)
+      const step = delta / 1500; 
+
+      let changed = false;
+
+      // Update Imbalance Progress
+      if (Math.abs(imbalanceProgressRef.current - targetImbalance) > 0.001) {
+        if (imbalanceProgressRef.current < targetImbalance) {
+          imbalanceProgressRef.current = Math.min(imbalanceProgressRef.current + step, targetImbalance);
+        } else {
+          imbalanceProgressRef.current = Math.max(imbalanceProgressRef.current - step, targetImbalance);
+        }
+        changed = true;
       } else {
-        hasAnimatedRef.current = true;
+        imbalanceProgressRef.current = targetImbalance;
+      }
+
+      // Update PCR Progress
+      if (Math.abs(pcrProgressRef.current - targetPCR) > 0.001) {
+        if (pcrProgressRef.current < targetPCR) {
+          pcrProgressRef.current = Math.min(pcrProgressRef.current + step, targetPCR);
+        } else {
+          pcrProgressRef.current = Math.max(pcrProgressRef.current - step, targetPCR);
+        }
+        changed = true;
+      } else {
+        pcrProgressRef.current = targetPCR;
+      }
+
+      draw(imbalanceProgressRef.current, pcrProgressRef.current);
+
+      if (changed) {
+        animationRef.current = requestAnimationFrame(animate);
+      } else {
+        lastTimeRef.current = 0;
       }
     };
 
-    // If not yet animated for this key, start animation
-    if (!hasAnimatedRef.current) {
-      animationFrameId = requestAnimationFrame(animate);
-    } else {
-      // Otherwise draw fully immediately (e.g. on resize or data update)
-      draw(1);
-    }
+    animationRef.current = requestAnimationFrame(animate);
 
     return () => {
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
     };
 
   }, [data, isExpanded, tooltip.visible, tooltip.dataIndex, isDarkMode, showPCR, showImbalance]);
