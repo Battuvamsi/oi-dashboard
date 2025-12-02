@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { BarChart3, TrendingUp, Activity, ArrowRight, Sparkles, Moon, Sun } from "lucide-react";
 import LtpBanner from "@/components/LtpBanner";
+import TickerTapeWidget from "@/components/TickerTapeWidget";
+import TradingViewWidget from "@/components/TradingViewWidget";
 import { useEffect, useState } from "react";
 
 interface LtpData {
@@ -105,6 +107,11 @@ export default function Landing() {
         </div>
       </nav>
 
+      {/* Ticker Tape Widget */}
+      <div className="w-full z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <TickerTapeWidget />
+      </div>
+
       {/* Hero Section */}
       <div className="flex-1 flex flex-col items-center justify-center px-3 sm:px-4 py-3 sm:py-4 md:py-8 relative overflow-hidden">
         {/* Background candlestick chart image */}
@@ -155,6 +162,18 @@ export default function Landing() {
             <Button size="sm" onClick={() => navigate("/dashboard")} className="cursor-pointer shadow-xl text-sm sm:text-sm md:text-base px-6 sm:px-6 md:px-8 py-2 sm:py-2 md:py-2.5 h-auto">
               Get Started <ArrowRight className="ml-1 sm:ml-1 md:ml-2 h-4 w-4 sm:h-3 sm:w-3 md:h-5 md:w-5" />
             </Button>
+          </motion.div>
+
+          {/* TradingView Widget Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="w-full max-w-5xl mx-auto mt-8 sm:mt-12 px-2 sm:px-0"
+          >
+            <div className="rounded-xl overflow-hidden border border-border/50 shadow-2xl bg-card/50 backdrop-blur-sm h-[300px] sm:h-[400px] md:h-[500px]">
+              <TradingViewWidget />
+            </div>
           </motion.div>
 
           {/* Features */}
