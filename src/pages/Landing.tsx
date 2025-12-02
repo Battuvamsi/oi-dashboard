@@ -149,7 +149,7 @@ export default function Landing() {
             className="w-full max-w-5xl mx-auto mt-4 sm:mt-6 px-2 sm:px-0"
           >
             <div className="rounded-xl overflow-hidden border border-border/50 shadow-2xl bg-card/50 backdrop-blur-sm h-[200px] sm:h-[250px] md:h-[300px]">
-              <TradingViewWidget />
+              <TradingViewWidget symbol="BITSTAMP:BTCUSD" />
             </div>
           </motion.div>
 

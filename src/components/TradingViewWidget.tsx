@@ -1,6 +1,10 @@
 import { useEffect, useRef, memo } from 'react';
 
-function TradingViewWidget() {
+interface TradingViewWidgetProps {
+  symbol?: string;
+}
+
+function TradingViewWidget({ symbol = "BSE:SENSEX" }: TradingViewWidgetProps) {
   const container = useRef<HTMLDivElement>(null);
 
   useEffect(
@@ -27,7 +31,7 @@ function TradingViewWidget() {
             "locale": "en",
             "save_image": true,
             "style": "1",
-            "symbol": "BSE:SENSEX",
+            "symbol": "${symbol}",
             "theme": "dark",
             "timezone": "Asia/Kolkata",
             "backgroundColor": "#0F0F0F",
@@ -52,7 +56,7 @@ function TradingViewWidget() {
         
         const copyright = document.createElement("div");
         copyright.className = "tradingview-widget-copyright";
-        copyright.innerHTML = `<a href="https://www.tradingview.com/symbols/BSE-SENSEX/" rel="noopener nofollow" target="_blank"><span class="blue-text">SENSEX chart</span></a><span class="trademark"> by TradingView</span>`;
+        copyright.innerHTML = `<a href="https://www.tradingview.com/symbols/${symbol.replace(':', '-')}/" rel="noopener nofollow" target="_blank"><span class="blue-text">${symbol} chart</span></a><span class="trademark"> by TradingView</span>`;
         
         widgetContainer.appendChild(widget);
         widgetContainer.appendChild(copyright);
@@ -61,7 +65,7 @@ function TradingViewWidget() {
         container.current.appendChild(widgetContainer);
       }
     },
-    []
+    [symbol]
   );
 
   return (

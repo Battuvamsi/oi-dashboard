@@ -529,7 +529,7 @@ export default function Dashboard() {
                   {/* TradingView Widget for SENSEX */}
                   {selectedKey && selectedKey.toUpperCase().includes('SENSEX') && (
                     <div className="w-full h-[400px] rounded-lg overflow-hidden border border-border bg-card/80 backdrop-blur-sm p-1">
-                      <TradingViewWidget />
+                      <TradingViewWidget symbol="BSE:SENSEX" />
                     </div>
                   )}
 
