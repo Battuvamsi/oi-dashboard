@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
@@ -25,6 +26,7 @@ export default function Graph({ data }: GraphProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(true);
+  const [showPCR, setShowPCR] = useState(true);
   const [tooltip, setTooltip] = useState<{
     x: number;
     y: number;
@@ -162,7 +164,7 @@ export default function Graph({ data }: GraphProps) {
       });
 
       // Draw right Y-axis labels for PCR if available
-      if (hasPCR) {
+      if (hasPCR && showPCR) {
         const pcrValues = clampedData.map(d => d.pcr).filter(p => p !== undefined) as number[];
         const minPCR = Math.min(...pcrValues);
         const maxPCR = Math.max(...pcrValues);
@@ -214,7 +216,7 @@ export default function Graph({ data }: GraphProps) {
         });
 
         // Draw PCR line if available
-        if (hasPCR) {
+        if (hasPCR && showPCR) {
           const pcrValues = clampedData.map(d => d.pcr).filter(p => p !== undefined) as number[];
           const minPCR = Math.min(...pcrValues);
           const maxPCR = Math.max(...pcrValues);
@@ -275,7 +277,7 @@ export default function Graph({ data }: GraphProps) {
         });
 
         // Draw dots for PCR only on hover or last point if available
-        if (hasPCR) {
+        if (hasPCR && showPCR) {
           const pcrValues = clampedData.map(d => d.pcr).filter(p => p !== undefined) as number[];
           const minPCR = Math.min(...pcrValues);
           const maxPCR = Math.max(...pcrValues);
@@ -391,7 +393,7 @@ export default function Graph({ data }: GraphProps) {
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
 
-  }, [data, isExpanded, tooltip.visible, tooltip.dataIndex, isDarkMode]);
+  }, [data, isExpanded, tooltip.visible, tooltip.dataIndex, isDarkMode, showPCR]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
@@ -451,7 +453,7 @@ export default function Graph({ data }: GraphProps) {
       const timeStr = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
       
       let tooltipContent = `Time: ${timeStr}\\nImbalance: ${point.clampedImbalance.toFixed(2)}`;
-      if (point.pcr !== undefined && point.pcr !== null) {
+      if (point.pcr !== undefined && point.pcr !== null && showPCR) {
         tooltipContent += `\\nPCR: ${point.pcr.toFixed(4)}`;
       }
 
@@ -486,8 +488,15 @@ export default function Graph({ data }: GraphProps) {
               <span className="text-muted-foreground">Imbalance</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-0.5 bg-[#f59e0b]"></div>
-              <span className="text-muted-foreground">PCR</span>
+              <Switch 
+                checked={showPCR} 
+                onCheckedChange={setShowPCR} 
+                className="scale-75 data-[state=checked]:bg-[#f59e0b]" 
+              />
+              <div className="flex items-center gap-2 cursor-pointer" onClick={() => setShowPCR(!showPCR)}>
+                <div className="w-4 h-0.5 bg-[#f59e0b]"></div>
+                <span className="text-muted-foreground">PCR</span>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-3 bg-green-500/20 border border-green-500/40 rounded"></div>
