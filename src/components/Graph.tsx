@@ -27,6 +27,7 @@ export default function Graph({ data }: GraphProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(true);
   const [showPCR, setShowPCR] = useState(true);
+  const [showImbalance, setShowImbalance] = useState(true);
   const [tooltip, setTooltip] = useState<{
     x: number;
     y: number;
@@ -158,9 +159,11 @@ export default function Graph({ data }: GraphProps) {
         ctx.stroke();
 
         // Y-axis label - theme-aware
-        ctx.fillStyle = isDarkMode ? "#d1d5db" : "#374151";
-        ctx.textAlign = "right";
-        ctx.fillText(val.toString(), padding.left - 10, y + 4);
+        if (showImbalance) {
+          ctx.fillStyle = isDarkMode ? "#d1d5db" : "#374151";
+          ctx.textAlign = "right";
+          ctx.fillText(val.toString(), padding.left - 10, y + 4);
+        }
       });
 
       // Draw right Y-axis labels for PCR if available
@@ -187,33 +190,35 @@ export default function Graph({ data }: GraphProps) {
 
       if (visibleData.length > 0) {
         // Draw Imbalance line
-        ctx.strokeStyle = "#3b82f6";
-        ctx.lineWidth = 4;
-        ctx.beginPath();
-
-        visibleData.forEach((point, index) => {
-          const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
-          const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
-
-          if (index === 0) {
-            ctx.moveTo(x, y);
-          } else {
-            ctx.lineTo(x, y);
-          }
-        });
-
-        ctx.stroke();
-
-        // Draw dots on the imbalance line - theme-aware
-        visibleData.forEach((point, index) => {
-          const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
-          const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
-
+        if (showImbalance) {
+          ctx.strokeStyle = "#3b82f6";
+          ctx.lineWidth = 4;
           ctx.beginPath();
-          ctx.arc(x, y, 3, 0, 2 * Math.PI);
-          ctx.fillStyle = isDarkMode ? "#ffffff" : "#000000";
-          ctx.fill();
-        });
+
+          visibleData.forEach((point, index) => {
+            const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
+            const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
+
+            if (index === 0) {
+              ctx.moveTo(x, y);
+            } else {
+              ctx.lineTo(x, y);
+            }
+          });
+
+          ctx.stroke();
+
+          // Draw dots on the imbalance line - theme-aware
+          visibleData.forEach((point, index) => {
+            const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
+            const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
+
+            ctx.beginPath();
+            ctx.arc(x, y, 3, 0, 2 * Math.PI);
+            ctx.fillStyle = isDarkMode ? "#ffffff" : "#000000";
+            ctx.fill();
+          });
+        }
 
         // Draw PCR line if available
         if (hasPCR && showPCR) {
@@ -244,37 +249,39 @@ export default function Graph({ data }: GraphProps) {
         }
 
         // Draw dots for Imbalance only on hover or last point
-        visibleData.forEach((point, index) => {
-          const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
-          const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
+        if (showImbalance) {
+          visibleData.forEach((point, index) => {
+            const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
+            const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
 
-          const isLast = index === visibleData.length - 1;
-          const isHovered = tooltip.visible && tooltip.dataIndex === index;
-          
-          // Only draw dot if hovered or last point
-          if (isHovered || isLast) {
-            ctx.beginPath();
-            ctx.arc(x, y, isHovered ? 8 : 6, 0, 2 * Math.PI);
-            ctx.fillStyle = isHovered ? "#3b82f6" : "#f87171";
-            ctx.fill();
-            ctx.strokeStyle = isHovered ? "#ffffff" : "#0a0a0a";
-            ctx.lineWidth = isHovered ? 3 : 2;
-            ctx.stroke();
-          }
+            const isLast = index === visibleData.length - 1;
+            const isHovered = tooltip.visible && tooltip.dataIndex === index;
+            
+            // Only draw dot if hovered or last point
+            if (isHovered || isLast) {
+              ctx.beginPath();
+              ctx.arc(x, y, isHovered ? 8 : 6, 0, 2 * Math.PI);
+              ctx.fillStyle = isHovered ? "#3b82f6" : "#f87171";
+              ctx.fill();
+              ctx.strokeStyle = isHovered ? "#ffffff" : "#0a0a0a";
+              ctx.lineWidth = isHovered ? 3 : 2;
+              ctx.stroke();
+            }
 
-          // Display value at 30-minute intervals - using IST
-          const utcDate = new Date(point.dateTime);
-          const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
-          const minutes = istDate.getMinutes();
-          const shouldShowValue = minutes === 0 || minutes === 30 || isLast;
-          
-          if (shouldShowValue) {
-            ctx.fillStyle = "#3b82f6";
-            ctx.font = "11px sans-serif";
-            ctx.textAlign = "center";
-            ctx.fillText(point.clampedImbalance.toFixed(1), x, y - 10);
-          }
-        });
+            // Display value at 30-minute intervals - using IST
+            const utcDate = new Date(point.dateTime);
+            const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+            const minutes = istDate.getMinutes();
+            const shouldShowValue = minutes === 0 || minutes === 30 || isLast;
+            
+            if (shouldShowValue) {
+              ctx.fillStyle = "#3b82f6";
+              ctx.font = "11px sans-serif";
+              ctx.textAlign = "center";
+              ctx.fillText(point.clampedImbalance.toFixed(1), x, y - 10);
+            }
+          });
+        }
 
         // Draw dots for PCR only on hover or last point if available
         if (hasPCR && showPCR) {
@@ -393,7 +400,7 @@ export default function Graph({ data }: GraphProps) {
       if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
 
-  }, [data, isExpanded, tooltip.visible, tooltip.dataIndex, isDarkMode, showPCR]);
+  }, [data, isExpanded, tooltip.visible, tooltip.dataIndex, isDarkMode, showPCR, showImbalance]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
@@ -452,7 +459,10 @@ export default function Graph({ data }: GraphProps) {
       const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
       const timeStr = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
       
-      let tooltipContent = `Time: ${timeStr}\\nImbalance: ${point.clampedImbalance.toFixed(2)}`;
+      let tooltipContent = `Time: ${timeStr}`;
+      if (showImbalance) {
+        tooltipContent += `\\nImbalance: ${point.clampedImbalance.toFixed(2)}`;
+      }
       if (point.pcr !== undefined && point.pcr !== null && showPCR) {
         tooltipContent += `\\nPCR: ${point.pcr.toFixed(4)}`;
       }
@@ -484,8 +494,15 @@ export default function Graph({ data }: GraphProps) {
           <h3 className="text-lg font-bold tracking-tight text-foreground">Total Imbalance & PCR Over Time</h3>
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-0.5 bg-[#3b82f6]"></div>
-              <span className="text-muted-foreground">Imbalance</span>
+              <Switch 
+                checked={showImbalance} 
+                onCheckedChange={setShowImbalance} 
+                className="scale-75 data-[state=checked]:bg-[#3b82f6]" 
+              />
+              <div className="flex items-center gap-2 cursor-pointer" onClick={() => setShowImbalance(!showImbalance)}>
+                <div className="w-4 h-0.5 bg-[#3b82f6]"></div>
+                <span className="text-muted-foreground">Imbalance</span>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <Switch 
