@@ -1,6 +1,8 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
@@ -20,9 +22,11 @@ interface GraphProps {
     key: string;
     values: GraphDataPoint[];
   };
+  isSticky?: boolean;
+  onToggleSticky?: (checked: boolean) => void;
 }
 
-export default function Graph({ data }: GraphProps) {
+export default function Graph({ data, isSticky, onToggleSticky }: GraphProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(true);
@@ -524,10 +528,10 @@ export default function Graph({ data }: GraphProps) {
 
   return (
     <Card className="p-3 bg-card/80 backdrop-blur-sm">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+        <div className="flex items-center gap-4 flex-wrap">
           <h3 className="text-lg font-bold tracking-tight text-foreground">Total Imbalance & PCR Over Time</h3>
-          <div className="flex items-center gap-4 text-sm">
+          <div className="flex items-center gap-4 text-sm flex-wrap">
             <div className="flex items-center gap-2">
               <Switch 
                 checked={showImbalance} 
@@ -558,6 +562,17 @@ export default function Graph({ data }: GraphProps) {
               <div className="w-4 h-3 bg-red-500/20 border border-red-500/40 rounded"></div>
               <span className="text-muted-foreground text-xs">Bearish (-30)</span>
             </div>
+            {onToggleSticky && (
+              <div className="flex items-center gap-2 border-l pl-4 ml-2 border-border/50">
+                <Checkbox 
+                  id="sticky-mode" 
+                  checked={isSticky} 
+                  onCheckedChange={(checked) => onToggleSticky(checked as boolean)}
+                  className="h-4 w-4"
+                />
+                <Label htmlFor="sticky-mode" className="text-sm text-muted-foreground cursor-pointer font-normal">Sticky Graph</Label>
+              </div>
+            )}
           </div>
         </div>
         <Button
