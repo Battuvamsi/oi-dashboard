@@ -210,14 +210,27 @@ export default function Graph({ data }: GraphProps) {
 
           ctx.stroke();
 
-          // Draw dots on the imbalance line - theme-aware
+          // Draw dots on the imbalance line - trend-aware
           visibleData.forEach((point, index) => {
             const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
             const y = padding.top + ((120 - point.clampedImbalance) / 240) * graphHeight;
 
             ctx.beginPath();
             ctx.arc(x, y, 3, 0, 2 * Math.PI);
-            ctx.fillStyle = isDarkMode ? "#ffffff" : "#000000";
+
+            // Determine color based on trend
+            let dotColor = "#eab308"; // Default yellow (neutral)
+
+            if (index > 0) {
+              const prevPoint = visibleData[index - 1];
+              if (point.clampedImbalance > prevPoint.clampedImbalance) {
+                dotColor = "#22c55e"; // Green (Up)
+              } else if (point.clampedImbalance < prevPoint.clampedImbalance) {
+                dotColor = "#ef4444"; // Red (Down)
+              }
+            }
+
+            ctx.fillStyle = dotColor;
             ctx.fill();
           });
 
