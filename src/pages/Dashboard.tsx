@@ -498,8 +498,6 @@ export default function Dashboard() {
 
         {/* Right Pane - Data Display with Tabs */}
         <div className="flex-1 overflow-auto bg-background w-full flex flex-col">
-          {/* Ticker Tape Widget */}
-          <TickerTapeWidget />
           
           {/* Navbar with Tabs */}
           <div className="border-b bg-card/80 backdrop-blur-sm px-2 sm:px-4 py-2 flex items-center justify-between gap-4">
@@ -562,13 +560,6 @@ export default function Dashboard() {
                       onToggleSticky={setIsGraphSticky}
                     />
                   </div>
-
-                  {/* TradingView Widget for SENSEX */}
-                  {selectedKey && selectedKey.toUpperCase().includes('SENSEX') && (
-                    <div className="w-full h-[400px] rounded-lg overflow-hidden border border-border bg-card/80 backdrop-blur-sm p-1">
-                      <TradingViewWidget symbol="BSE:SENSEX" />
-                    </div>
-                  )}
 
                   {/* Table */}
                   <OiTable
