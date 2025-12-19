@@ -109,6 +109,7 @@ export default function Dashboard() {
   
   // Sticky Graph State
   const [isGraphSticky, setIsGraphSticky] = useState(false);
+  const [isHeaderSticky, setIsHeaderSticky] = useState(true);
   const [headerHeight, setHeaderHeight] = useState(0);
   const headerRef = useRef<HTMLDivElement>(null);
 
@@ -543,16 +544,20 @@ export default function Dashboard() {
                   {/* Sticky Header: LTP Banner & Totals Badges */}
                   <div 
                     ref={headerRef}
-                    className="sticky top-0 z-40 bg-background/95 backdrop-blur-md py-1 -mx-1 sm:-mx-2 md:-mx-3 lg:-mx-4 px-1 sm:px-2 md:px-3 lg:px-4 border-b border-border/40 shadow-sm space-y-1"
+                    className={`${isHeaderSticky ? "sticky top-0" : "relative"} z-40 bg-background/95 backdrop-blur-md py-1 -mx-1 sm:-mx-2 md:-mx-3 lg:-mx-4 px-1 sm:px-2 md:px-3 lg:px-4 border-b border-border/40 shadow-sm space-y-1 transition-all duration-300`}
                   >
                     <LtpBanner data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty!, sensex: ltpData.sensex! }} showOHLC={false} compact={true} />
-                    <TotalsBadges totals={oiChangeData.oiChangeTotalValues} />
+                    <TotalsBadges 
+                      totals={oiChangeData.oiChangeTotalValues} 
+                      isSticky={isHeaderSticky}
+                      onToggleSticky={setIsHeaderSticky}
+                    />
                   </div>
 
                   {/* Graph */}
                   <div 
                     className={`transition-all duration-300 z-30 ${isGraphSticky ? "sticky" : ""}`}
-                    style={{ top: isGraphSticky ? headerHeight : undefined }}
+                    style={{ top: isGraphSticky ? (isHeaderSticky ? headerHeight : 0) : undefined }}
                   >
                     <Graph 
                       data={graphData} 

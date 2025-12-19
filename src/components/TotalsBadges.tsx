@@ -1,6 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 interface TotalsBadgesProps {
   totals: {
@@ -9,9 +11,11 @@ interface TotalsBadgesProps {
     totalImbalance: number;
     pcr: number;
   };
+  isSticky?: boolean;
+  onToggleSticky?: (checked: boolean) => void;
 }
 
-export default function TotalsBadges({ totals }: TotalsBadgesProps) {
+export default function TotalsBadges({ totals, isSticky, onToggleSticky }: TotalsBadgesProps) {
   const getTrendInfo = () => {
     if (totals.totalImbalance >= 30) {
       return { label: "BULLISH", color: "bg-green-500/90 hover:bg-green-500" };
@@ -34,7 +38,7 @@ export default function TotalsBadges({ totals }: TotalsBadgesProps) {
 
   return (
     <Card className="p-1 sm:p-1.5 md:p-2 bg-card/80 backdrop-blur-sm">
-      <div className="flex flex-wrap gap-1 sm:gap-1.5 md:gap-2">
+      <div className="flex flex-wrap gap-1 sm:gap-1.5 md:gap-2 items-center">
         {badges.map((badge, index) => (
           <motion.div
             key={badge.label}
@@ -49,6 +53,18 @@ export default function TotalsBadges({ totals }: TotalsBadgesProps) {
             <span className="text-xs sm:text-sm md:text-base font-bold text-foreground truncate">{badge.value}</span>
           </motion.div>
         ))}
+        
+        {onToggleSticky && (
+          <div className="flex items-center gap-2 border-l border-border/50 pl-2 ml-auto">
+            <Checkbox 
+              id="header-sticky-mode" 
+              checked={isSticky} 
+              onCheckedChange={(checked) => onToggleSticky(checked as boolean)}
+              className="h-3.5 w-3.5"
+            />
+            <Label htmlFor="header-sticky-mode" className="text-xs cursor-pointer text-muted-foreground hover:text-foreground transition-colors">Sticky Header</Label>
+          </div>
+        )}
       </div>
     </Card>
   );
