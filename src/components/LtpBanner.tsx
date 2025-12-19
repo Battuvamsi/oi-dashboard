@@ -46,7 +46,7 @@ const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { la
               <div className="text-xs sm:text-sm font-bold text-muted-foreground uppercase tracking-wide">{label}</div>
               <span className="text-sm sm:text-base font-bold text-foreground">{data.ltp.toFixed(2)}</span>
             </div>
-            <div className={`flex items-center gap-1 text-[9px] sm:text-[10px] font-semibold ${isPositive ? "text-green-400" : "text-red-400"}`}>
+            <div className={`flex items-center gap-1 text-[9px] sm:text-[10px] font-semibold ${isPositive ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}`}>
               {isPositive ? <TrendingUp className="h-2.5 w-2.5" /> : <TrendingDown className="h-2.5 w-2.5" />}
               <span>{isPositive ? "+" : ""}{difference.toFixed(2)}</span>
               <span className="hidden sm:inline">({isPositive ? "+" : ""}{changePercentage.toFixed(2)}%)</span>
@@ -59,7 +59,7 @@ const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { la
             </div>
             <div className={`flex items-baseline ${compact ? 'gap-0.5 sm:gap-1' : 'gap-1 sm:gap-1.5'}`}>
               <span className={`${compact ? 'text-lg sm:text-xl md:text-2xl' : 'text-2xl sm:text-3xl md:text-4xl'} font-bold text-foreground`}>{data.ltp.toFixed(2)}</span>
-              <div className={`flex items-center gap-0.5 ${compact ? 'text-[9px] sm:text-[10px]' : 'text-xs sm:text-sm'} font-semibold ${isPositive ? "text-green-400" : "text-red-400"}`}>
+              <div className={`flex items-center gap-0.5 ${compact ? 'text-[9px] sm:text-[10px]' : 'text-xs sm:text-sm'} font-semibold ${isPositive ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}`}>
                 {isPositive ? <TrendingUp className={compact ? "h-2 w-2" : "h-3 w-3"} /> : <TrendingDown className={compact ? "h-2 w-2" : "h-3 w-3"} />}
                 <span>
                   {isPositive ? "+" : ""}{difference.toFixed(2)}
@@ -72,7 +72,7 @@ const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { la
               </div>
             </div>
             {!compact && (
-              <div className={`${compact ? 'text-[9px] sm:text-[10px]' : 'text-[10px] sm:text-xs'} font-semibold ${isPositive ? "text-green-400" : "text-red-400"}`}>
+              <div className={`${compact ? 'text-[9px] sm:text-[10px]' : 'text-[10px] sm:text-xs'} font-semibold ${isPositive ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}`}>
                 {isPositive ? "+" : ""}{changePercentage.toFixed(2)}%
               </div>
             )}
@@ -86,11 +86,11 @@ const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { la
             </div>
             <div>
               <p className="text-muted-foreground font-semibold text-[8px]">H</p>
-              <p className="font-bold text-green-400 text-[10px]">{data.high.toFixed(2)}</p>
+              <p className="font-bold text-green-700 dark:text-green-400 text-[10px]">{data.high.toFixed(2)}</p>
             </div>
             <div>
               <p className="text-muted-foreground font-semibold text-[8px]">L</p>
-              <p className="font-bold text-red-400 text-[10px]">{data.low.toFixed(2)}</p>
+              <p className="font-bold text-red-700 dark:text-red-400 text-[10px]">{data.low.toFixed(2)}</p>
             </div>
             <div>
               <p className="text-muted-foreground font-semibold text-[8px]">C</p>
