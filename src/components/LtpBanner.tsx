@@ -53,7 +53,7 @@ const InstrumentCard = ({
         : "border-red-500/40 dark:border-red-500/20 bg-gradient-to-br from-red-500/25 to-red-500/5 dark:from-red-500/10 dark:to-card/40"
       } backdrop-blur-sm transition-all duration-300 ${
         isSelected 
-          ? "ring-2 ring-primary shadow-lg shadow-primary/20 scale-[1.05] z-10 bg-background/90 dark:bg-background/60 -translate-y-0.5" 
+          ? "ring-1 ring-primary border-primary shadow-[0_0_30px_-5px_hsl(var(--primary)/0.5)] scale-[1.05] z-10 bg-background/95 dark:bg-background/80 -translate-y-1" 
           : "opacity-90 hover:opacity-100 hover:bg-card/60 hover:scale-[1.01]"
       }`}>
       <motion.div
