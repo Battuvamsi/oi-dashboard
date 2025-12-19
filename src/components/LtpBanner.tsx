@@ -46,8 +46,8 @@ const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { la
               <div className={`text-xs sm:text-sm font-bold uppercase tracking-wide ${isPositive ? "text-green-900 dark:text-muted-foreground" : "text-red-900 dark:text-muted-foreground"}`}>{label}</div>
               <span className="text-sm sm:text-base font-bold text-foreground">{data.ltp.toFixed(2)}</span>
             </div>
-            <div className={`flex items-center gap-1 text-[9px] sm:text-[10px] font-semibold ${isPositive ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}`}>
-              {isPositive ? <TrendingUp className="h-2.5 w-2.5" /> : <TrendingDown className="h-2.5 w-2.5" />}
+            <div className={`flex items-center gap-1 text-[10px] sm:text-xs font-semibold ${isPositive ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}`}>
+              {isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
               <span>{isPositive ? "+" : ""}{difference.toFixed(2)}</span>
               <span className="hidden sm:inline">({isPositive ? "+" : ""}{changePercentage.toFixed(2)}%)</span>
             </div>
