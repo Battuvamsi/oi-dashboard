@@ -106,9 +106,6 @@ export default function Dashboard() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [historicalKeys, setHistoricalKeys] = useState<string[]>([]);
   const [loadingHistoricalKeys, setLoadingHistoricalKeys] = useState(false);
-  const [isGraphSticky, setIsGraphSticky] = useState(false);
-  const headerRef = useRef<HTMLDivElement>(null);
-  const [headerHeight, setHeaderHeight] = useState(0);
 
   const API_BASE = "https://ticker.pollenprints.in";
   const navigate = useNavigate();
@@ -327,19 +324,6 @@ export default function Dashboard() {
 
     initialFetch();
 
-    // Update header height when data changes (as it might affect layout)
-    useEffect(() => {
-      const updateHeight = () => {
-        if (headerRef.current) {
-          setHeaderHeight(headerRef.current.offsetHeight);
-        }
-      };
-      
-      updateHeight();
-      window.addEventListener('resize', updateHeight);
-      return () => window.removeEventListener('resize', updateHeight);
-    }, [ltpData, oiChangeData, activeTab]);
-
     // Set up intervals only for "today" tab
     if (activeTab === "today") {
       const ltpInterval = setInterval(fetchLtpData, 3000); // Every 3 seconds
@@ -536,7 +520,6 @@ export default function Dashboard() {
                 <div className="p-1 sm:p-2 md:p-3 lg:p-4 space-y-1 sm:space-y-2 md:space-y-3 max-w-[1600px] mx-auto w-full">
                   {/* Sticky Header: LTP Banner & Totals Badges */}
                   <div 
-                    ref={headerRef}
                     className="sticky top-0 z-40 bg-background/95 backdrop-blur-md py-1 -mx-1 sm:-mx-2 md:-mx-3 lg:-mx-4 px-1 sm:px-2 md:px-3 lg:px-4 border-b border-border/40 shadow-sm space-y-1"
                   >
                     <LtpBanner data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty!, sensex: ltpData.sensex! }} showOHLC={false} compact={true} />
@@ -544,19 +527,8 @@ export default function Dashboard() {
                   </div>
 
                   {/* Graph */}
-                  <div 
-                    style={{ 
-                      position: isGraphSticky ? 'sticky' : 'static', 
-                      top: isGraphSticky ? headerHeight : 'auto',
-                      zIndex: 30 
-                    }}
-                    className="transition-all duration-200"
-                  >
-                    <Graph 
-                      data={graphData} 
-                      isSticky={isGraphSticky}
-                      onToggleSticky={setIsGraphSticky}
-                    />
+                  <div>
+                    <Graph data={graphData} />
                   </div>
 
                   {/* TradingView Widget for SENSEX */}

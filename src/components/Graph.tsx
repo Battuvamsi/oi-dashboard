@@ -22,11 +22,9 @@ interface GraphProps {
     key: string;
     values: GraphDataPoint[];
   };
-  isSticky?: boolean;
-  onToggleSticky?: (checked: boolean) => void;
 }
 
-export default function Graph({ data, isSticky = false, onToggleSticky }: GraphProps) {
+export default function Graph({ data }: GraphProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(true);
@@ -574,17 +572,6 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
               <div className="w-4 h-3 bg-red-500/20 border border-red-500/40 rounded"></div>
               <span className="text-muted-foreground text-xs">Bearish (-30)</span>
             </div>
-            {onToggleSticky && (
-              <div className="flex items-center gap-2 border-l pl-4 ml-2 border-border/50">
-                <Checkbox 
-                  id="sticky-mode" 
-                  checked={isSticky} 
-                  onCheckedChange={(checked) => onToggleSticky(checked as boolean)}
-                  className="h-4 w-4"
-                />
-                <Label htmlFor="sticky-mode" className="text-sm text-muted-foreground cursor-pointer font-normal">Sticky Graph</Label>
-              </div>
-            )}
           </div>
         </div>
         <Button
