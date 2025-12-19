@@ -26,15 +26,36 @@ interface LtpBannerProps {
   };
   showOHLC?: boolean;
   compact?: boolean;
+  selectedKey?: string | null;
 }
 
-const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { label: string; data: LtpData; showOHLC?: boolean; compact?: boolean }) => {
+const InstrumentCard = ({ 
+  label, 
+  data, 
+  showOHLC = false, 
+  compact = false,
+  isSelected = false 
+}: { 
+  label: string; 
+  data: LtpData; 
+  showOHLC?: boolean; 
+  compact?: boolean;
+  isSelected?: boolean;
+}) => {
   const difference = data.ltp - data.close;
   const changePercentage = data.change;
   const isPositive = difference >= 0;
 
   return (
-    <div className={`flex-1 ${compact ? 'p-1 sm:p-2' : 'p-2 sm:p-2.5'} rounded-md border ${isPositive ? "border-green-500/40 dark:border-green-500/20 bg-gradient-to-br from-green-500/25 to-green-500/5 dark:from-green-500/10 dark:to-card/40" : "border-red-500/40 dark:border-red-500/20 bg-gradient-to-br from-red-500/25 to-red-500/5 dark:from-red-500/10 dark:to-card/40"} backdrop-blur-sm hover:bg-card/60 transition-all duration-300`}>
+    <div className={`flex-1 ${compact ? 'p-1 sm:p-2' : 'p-2 sm:p-2.5'} rounded-md border ${
+      isPositive 
+        ? "border-green-500/40 dark:border-green-500/20 bg-gradient-to-br from-green-500/25 to-green-500/5 dark:from-green-500/10 dark:to-card/40" 
+        : "border-red-500/40 dark:border-red-500/20 bg-gradient-to-br from-red-500/25 to-red-500/5 dark:from-red-500/10 dark:to-card/40"
+      } backdrop-blur-sm hover:bg-card/60 transition-all duration-300 ${
+        isSelected 
+          ? "ring-2 ring-primary shadow-lg scale-[1.02] z-10 bg-card/80" 
+          : "opacity-90 hover:opacity-100"
+      }`}>
       <motion.div
         initial={{ opacity: 0, y: -5 }}
         animate={{ opacity: 1, y: 0 }}
@@ -103,12 +124,35 @@ const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { la
   );
 };
 
-export default function LtpBanner({ data, showOHLC = false, compact = false }: LtpBannerProps) {
+export default function LtpBanner({ data, showOHLC = false, compact = false, selectedKey }: LtpBannerProps) {
+  const checkSelected = (label: string) => {
+    if (!selectedKey) return false;
+    return selectedKey.toUpperCase().startsWith(label);
+  };
+
   return (
     <div className={`flex ${compact ? 'gap-1 sm:gap-2' : 'gap-2 sm:gap-3 md:gap-4 lg:gap-6'} w-full ${compact ? 'max-w-full' : 'md:max-w-3xl lg:max-w-5xl'} mx-auto justify-center`}>
-      <InstrumentCard label="NIFTY" data={data.nifty} showOHLC={showOHLC} compact={compact} />
-      <InstrumentCard label="BANKNIFTY" data={data.banknifty} showOHLC={showOHLC} compact={compact} />
-      <InstrumentCard label="SENSEX" data={data.sensex} showOHLC={showOHLC} compact={compact} />
+      <InstrumentCard 
+        label="NIFTY" 
+        data={data.nifty} 
+        showOHLC={showOHLC} 
+        compact={compact} 
+        isSelected={checkSelected("NIFTY")}
+      />
+      <InstrumentCard 
+        label="BANKNIFTY" 
+        data={data.banknifty} 
+        showOHLC={showOHLC} 
+        compact={compact} 
+        isSelected={checkSelected("BANKNIFTY")}
+      />
+      <InstrumentCard 
+        label="SENSEX" 
+        data={data.sensex} 
+        showOHLC={showOHLC} 
+        compact={compact} 
+        isSelected={checkSelected("SENSEX")}
+      />
     </div>
   );
 }

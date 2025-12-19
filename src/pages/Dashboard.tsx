@@ -546,7 +546,12 @@ export default function Dashboard() {
                     ref={headerRef}
                     className={`${isHeaderSticky ? "sticky top-0" : "relative"} z-40 bg-background/95 backdrop-blur-md py-1 -mx-1 sm:-mx-2 md:-mx-3 lg:-mx-4 px-1 sm:px-2 md:px-3 lg:px-4 border-b border-border/40 shadow-sm space-y-1 transition-all duration-300`}
                   >
-                    <LtpBanner data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty!, sensex: ltpData.sensex! }} showOHLC={false} compact={true} />
+                    <LtpBanner 
+                      data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty!, sensex: ltpData.sensex! }} 
+                      showOHLC={false} 
+                      compact={true} 
+                      selectedKey={selectedKey}
+                    />
                     <TotalsBadges 
                       totals={oiChangeData.oiChangeTotalValues} 
                       isSticky={isHeaderSticky}
