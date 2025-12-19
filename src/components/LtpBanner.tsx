@@ -34,7 +34,7 @@ const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { la
   const isPositive = difference >= 0;
 
   return (
-    <div className={`flex-1 ${compact ? 'p-0.5 sm:p-1' : 'p-2 sm:p-2.5'} rounded-md border ${isPositive ? "border-green-500/40 dark:border-green-500/20 bg-gradient-to-br from-green-500/25 to-green-500/5 dark:from-green-500/10 dark:to-card/40" : "border-red-500/40 dark:border-red-500/20 bg-gradient-to-br from-red-500/25 to-red-500/5 dark:from-red-500/10 dark:to-card/40"} backdrop-blur-sm hover:bg-card/60 transition-all duration-300`}>
+    <div className={`flex-1 ${compact ? 'p-1 sm:p-2' : 'p-2 sm:p-2.5'} rounded-md border ${isPositive ? "border-green-500/40 dark:border-green-500/20 bg-gradient-to-br from-green-500/25 to-green-500/5 dark:from-green-500/10 dark:to-card/40" : "border-red-500/40 dark:border-red-500/20 bg-gradient-to-br from-red-500/25 to-red-500/5 dark:from-red-500/10 dark:to-card/40"} backdrop-blur-sm hover:bg-card/60 transition-all duration-300`}>
       <motion.div
         initial={{ opacity: 0, y: -5 }}
         animate={{ opacity: 1, y: 0 }}
@@ -42,12 +42,12 @@ const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { la
       >
         {compact ? (
           <div className="flex flex-row items-center justify-between w-full gap-1 sm:gap-2 px-1">
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <div className={`text-xs sm:text-sm font-bold uppercase tracking-wide ${isPositive ? "text-green-900 dark:text-muted-foreground" : "text-red-900 dark:text-muted-foreground"}`}>{label}</div>
-              <span className="text-sm sm:text-base font-bold text-foreground">{data.ltp.toFixed(2)}</span>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className={`text-sm sm:text-base font-bold uppercase tracking-wide ${isPositive ? "text-green-900 dark:text-muted-foreground" : "text-red-900 dark:text-muted-foreground"}`}>{label}</div>
+              <span className="text-lg sm:text-xl font-bold text-foreground">{data.ltp.toFixed(2)}</span>
             </div>
-            <div className={`flex items-center gap-1 text-[10px] sm:text-xs font-semibold ${isPositive ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}`}>
-              {isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+            <div className={`flex items-center gap-1 text-xs sm:text-sm font-semibold ${isPositive ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}`}>
+              {isPositive ? <TrendingUp className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <TrendingDown className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
               <span>{isPositive ? "+" : ""}{difference.toFixed(2)}</span>
               <span className="hidden sm:inline">({isPositive ? "+" : ""}{changePercentage.toFixed(2)}%)</span>
             </div>
