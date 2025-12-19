@@ -106,6 +106,11 @@ export default function Dashboard() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [historicalKeys, setHistoricalKeys] = useState<string[]>([]);
   const [loadingHistoricalKeys, setLoadingHistoricalKeys] = useState(false);
+  
+  // Sticky Graph State
+  const [isGraphSticky, setIsGraphSticky] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(0);
+  const headerRef = useRef<HTMLDivElement>(null);
 
   const API_BASE = "https://ticker.pollenprints.in";
   const navigate = useNavigate();
@@ -338,6 +343,25 @@ export default function Dashboard() {
     }
   }, [selectedKey, activeTab, selectedDate]);
 
+  // Measure header height for sticky positioning
+  useEffect(() => {
+    const updateHeight = () => {
+      if (headerRef.current) {
+        setHeaderHeight(headerRef.current.offsetHeight);
+      }
+    };
+
+    updateHeight();
+    
+    // Use ResizeObserver to handle dynamic height changes
+    const observer = new ResizeObserver(updateHeight);
+    if (headerRef.current) {
+      observer.observe(headerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   if (loadingKeys) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -520,6 +544,7 @@ export default function Dashboard() {
                 <div className="p-1 sm:p-2 md:p-3 lg:p-4 space-y-1 sm:space-y-2 md:space-y-3 max-w-[1600px] mx-auto w-full">
                   {/* Sticky Header: LTP Banner & Totals Badges */}
                   <div 
+                    ref={headerRef}
                     className="sticky top-0 z-40 bg-background/95 backdrop-blur-md py-1 -mx-1 sm:-mx-2 md:-mx-3 lg:-mx-4 px-1 sm:px-2 md:px-3 lg:px-4 border-b border-border/40 shadow-sm space-y-1"
                   >
                     <LtpBanner data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty!, sensex: ltpData.sensex! }} showOHLC={false} compact={true} />
@@ -527,8 +552,15 @@ export default function Dashboard() {
                   </div>
 
                   {/* Graph */}
-                  <div>
-                    <Graph data={graphData} />
+                  <div 
+                    className={`transition-all duration-300 z-30 ${isGraphSticky ? "sticky" : ""}`}
+                    style={{ top: isGraphSticky ? headerHeight : undefined }}
+                  >
+                    <Graph 
+                      data={graphData} 
+                      isSticky={isGraphSticky}
+                      onToggleSticky={setIsGraphSticky}
+                    />
                   </div>
 
                   {/* TradingView Widget for SENSEX */}
