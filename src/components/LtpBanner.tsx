@@ -34,7 +34,7 @@ const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { la
   const isPositive = difference >= 0;
 
   return (
-    <div className={`flex-1 ${compact ? 'p-0.5 sm:p-1' : 'p-2 sm:p-2.5'} rounded-md border border-primary/30 bg-gradient-to-br from-primary/5 to-card/70 backdrop-blur-sm hover:border-primary/50 transition-all duration-300`}>
+    <div className={`flex-1 ${compact ? 'p-0.5 sm:p-1' : 'p-2 sm:p-2.5'} rounded-md border ${isPositive ? "border-green-500/20 bg-gradient-to-br from-green-500/10 to-card/40" : "border-red-500/20 bg-gradient-to-br from-red-500/10 to-card/40"} backdrop-blur-sm hover:bg-card/60 transition-all duration-300`}>
       <motion.div
         initial={{ opacity: 0, y: -5 }}
         animate={{ opacity: 1, y: 0 }}
