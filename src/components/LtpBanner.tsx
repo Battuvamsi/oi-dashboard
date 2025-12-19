@@ -47,14 +47,14 @@ const InstrumentCard = ({
   const isPositive = difference >= 0;
 
   return (
-    <div className={`flex-1 ${compact ? 'p-1 sm:p-2' : 'p-2 sm:p-2.5'} rounded-md border ${
+    <div className={`flex-1 ${compact ? 'p-1 sm:p-2' : 'p-2 sm:p-2.5'} rounded-lg border ${
       isPositive 
         ? "border-green-500/40 dark:border-green-500/20 bg-gradient-to-br from-green-500/25 to-green-500/5 dark:from-green-500/10 dark:to-card/40" 
         : "border-red-500/40 dark:border-red-500/20 bg-gradient-to-br from-red-500/25 to-red-500/5 dark:from-red-500/10 dark:to-card/40"
-      } backdrop-blur-sm hover:bg-card/60 transition-all duration-300 ${
+      } backdrop-blur-sm transition-all duration-300 ${
         isSelected 
-          ? "ring-2 ring-primary shadow-lg scale-[1.02] z-10 bg-card/80" 
-          : "opacity-90 hover:opacity-100"
+          ? "ring-2 ring-primary shadow-lg shadow-primary/20 scale-[1.05] z-10 bg-background/90 dark:bg-background/60 -translate-y-0.5" 
+          : "opacity-90 hover:opacity-100 hover:bg-card/60 hover:scale-[1.01]"
       }`}>
       <motion.div
         initial={{ opacity: 0, y: -5 }}
