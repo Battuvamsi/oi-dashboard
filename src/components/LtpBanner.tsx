@@ -43,7 +43,7 @@ const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { la
         {compact ? (
           <div className="flex flex-row items-center justify-between w-full gap-1 sm:gap-2 px-1">
             <div className="flex items-center gap-1.5 sm:gap-2">
-              <div className="text-xs sm:text-sm font-bold text-muted-foreground uppercase tracking-wide">{label}</div>
+              <div className={`text-xs sm:text-sm font-bold uppercase tracking-wide ${isPositive ? "text-green-900 dark:text-muted-foreground" : "text-red-900 dark:text-muted-foreground"}`}>{label}</div>
               <span className="text-sm sm:text-base font-bold text-foreground">{data.ltp.toFixed(2)}</span>
             </div>
             <div className={`flex items-center gap-1 text-[9px] sm:text-[10px] font-semibold ${isPositive ? "text-green-700 dark:text-green-400" : "text-red-700 dark:text-red-400"}`}>
@@ -54,7 +54,7 @@ const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { la
           </div>
         ) : (
           <div className={`flex flex-col ${compact ? 'gap-0 sm:gap-0.5' : 'gap-1 sm:gap-1.5'} flex-1`}>
-            <div className={`${compact ? 'text-[8px] sm:text-[9px]' : 'text-[10px] sm:text-xs'} font-semibold text-muted-foreground uppercase tracking-wide`}>
+            <div className={`${compact ? 'text-[8px] sm:text-[9px]' : 'text-[10px] sm:text-xs'} font-semibold uppercase tracking-wide ${isPositive ? "text-green-900 dark:text-muted-foreground" : "text-red-900 dark:text-muted-foreground"}`}>
               {label}
             </div>
             <div className={`flex items-baseline ${compact ? 'gap-0.5 sm:gap-1' : 'gap-1 sm:gap-1.5'}`}>
@@ -81,19 +81,19 @@ const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { la
         {showOHLC && (
           <div className="hidden md:flex flex-col gap-1 text-right">
             <div>
-              <p className="text-muted-foreground font-semibold text-[8px]">O</p>
+              <p className={`font-semibold text-[8px] ${isPositive ? "text-green-900/70 dark:text-muted-foreground" : "text-red-900/70 dark:text-muted-foreground"}`}>O</p>
               <p className="font-bold text-foreground text-[10px]">{data.open.toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-muted-foreground font-semibold text-[8px]">H</p>
+              <p className={`font-semibold text-[8px] ${isPositive ? "text-green-900/70 dark:text-muted-foreground" : "text-red-900/70 dark:text-muted-foreground"}`}>H</p>
               <p className="font-bold text-green-700 dark:text-green-400 text-[10px]">{data.high.toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-muted-foreground font-semibold text-[8px]">L</p>
+              <p className={`font-semibold text-[8px] ${isPositive ? "text-green-900/70 dark:text-muted-foreground" : "text-red-900/70 dark:text-muted-foreground"}`}>L</p>
               <p className="font-bold text-red-700 dark:text-red-400 text-[10px]">{data.low.toFixed(2)}</p>
             </div>
             <div>
-              <p className="text-muted-foreground font-semibold text-[8px]">C</p>
+              <p className={`font-semibold text-[8px] ${isPositive ? "text-green-900/70 dark:text-muted-foreground" : "text-red-900/70 dark:text-muted-foreground"}`}>C</p>
               <p className="font-bold text-foreground text-[10px]">{data.close.toFixed(2)}</p>
             </div>
           </div>
