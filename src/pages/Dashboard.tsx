@@ -518,7 +518,9 @@ export default function Dashboard() {
               ) : oiChangeData && graphData && ltpData.nifty && ltpData.banknifty && ltpData.sensex ? (
                 <div className="p-1 sm:p-2 md:p-3 lg:p-4 space-y-1 sm:space-y-2 md:space-y-3 max-w-[1600px] mx-auto w-full">
                   {/* LTP Banner - compact without OHLC */}
-                  <LtpBanner data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty!, sensex: ltpData.sensex! }} showOHLC={false} compact={true} />
+                  <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-md py-1 -mx-1 sm:-mx-2 md:-mx-3 lg:-mx-4 px-1 sm:px-2 md:px-3 lg:px-4 border-b border-border/40 shadow-sm">
+                    <LtpBanner data={{ nifty: ltpData.nifty!, banknifty: ltpData.banknifty!, sensex: ltpData.sensex! }} showOHLC={false} compact={true} />
+                  </div>
 
                   {/* Totals Badges */}
                   <TotalsBadges totals={oiChangeData.oiChangeTotalValues} />
