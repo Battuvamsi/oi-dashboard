@@ -329,17 +329,15 @@ export default function Dashboard() {
 
     // Update header height when data changes (as it might affect layout)
     useEffect(() => {
-      if (headerRef.current) {
-        const updateHeight = () => {
-          if (headerRef.current) {
-            setHeaderHeight(headerRef.current.offsetHeight);
-          }
-        };
-        
-        updateHeight();
-        window.addEventListener('resize', updateHeight);
-        return () => window.removeEventListener('resize', updateHeight);
-      }
+      const updateHeight = () => {
+        if (headerRef.current) {
+          setHeaderHeight(headerRef.current.offsetHeight);
+        }
+      };
+      
+      updateHeight();
+      window.addEventListener('resize', updateHeight);
+      return () => window.removeEventListener('resize', updateHeight);
     }, [ltpData, oiChangeData, activeTab]);
 
     // Set up intervals only for "today" tab

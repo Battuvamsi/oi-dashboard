@@ -26,7 +26,7 @@ interface GraphProps {
   onToggleSticky?: (checked: boolean) => void;
 }
 
-export default function Graph({ data, isSticky, onToggleSticky }: GraphProps) {
+export default function Graph({ data, isSticky = false, onToggleSticky }: GraphProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(true);
@@ -76,6 +76,7 @@ export default function Graph({ data, isSticky, onToggleSticky }: GraphProps) {
 
     // Filter data to only show 9:10 AM to 4:00 PM IST
     const filteredData = data.values.filter((point) => {
+      if (!point.dateTime) return false;
       const utcDate = new Date(point.dateTime);
       const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
       const hours = istDate.getHours();
@@ -97,15 +98,20 @@ export default function Graph({ data, isSticky, onToggleSticky }: GraphProps) {
     }
 
     // Clamp imbalance values
-    const clampedData = filteredData.map((point) => ({
-      ...point,
-      rawImbalance: point.oichangeFinalResult.oiChangeTotalValues.totalImbalance,
-      clampedImbalance: Math.max(
-        -120,
-        Math.min(120, point.oichangeFinalResult.oiChangeTotalValues.totalImbalance)
-      ),
-      pcr: point.oichangeFinalResult.oiChangeTotalValues.pcr,
-    }));
+    const clampedData = filteredData.map((point) => {
+      const totalImbalance = point.oichangeFinalResult?.oiChangeTotalValues?.totalImbalance ?? 0;
+      const pcr = point.oichangeFinalResult?.oiChangeTotalValues?.pcr;
+      
+      return {
+        ...point,
+        rawImbalance: totalImbalance,
+        clampedImbalance: Math.max(
+          -120,
+          Math.min(120, totalImbalance)
+        ),
+        pcr: pcr,
+      };
+    });
 
     // Check if PCR data exists
     const hasPCR = clampedData.some(point => point.pcr !== undefined && point.pcr !== null);
@@ -462,6 +468,7 @@ export default function Graph({ data, isSticky, onToggleSticky }: GraphProps) {
 
     // Filter data to only show 9:10 AM to 4:00 PM IST
     const filteredData = data.values.filter((point) => {
+      if (!point.dateTime) return false;
       const utcDate = new Date(point.dateTime);
       const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
       const hours = istDate.getHours();
@@ -479,14 +486,19 @@ export default function Graph({ data, isSticky, onToggleSticky }: GraphProps) {
     }
 
     // Find closest data point
-    const clampedData = filteredData.map((point) => ({
-      ...point,
-      clampedImbalance: Math.max(
-        -120,
-        Math.min(120, point.oichangeFinalResult.oiChangeTotalValues.totalImbalance)
-      ),
-      pcr: point.oichangeFinalResult.oiChangeTotalValues.pcr,
-    }));
+    const clampedData = filteredData.map((point) => {
+      const totalImbalance = point.oichangeFinalResult?.oiChangeTotalValues?.totalImbalance ?? 0;
+      const pcr = point.oichangeFinalResult?.oiChangeTotalValues?.pcr;
+      
+      return {
+        ...point,
+        clampedImbalance: Math.max(
+          -120,
+          Math.min(120, totalImbalance)
+        ),
+        pcr: pcr,
+      };
+    });
 
     const relativeX = mouseX - padding.left;
     const dataIndex = Math.round((relativeX / graphWidth) * (clampedData.length - 1));
