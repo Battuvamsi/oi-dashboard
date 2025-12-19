@@ -551,6 +551,7 @@ export default function Dashboard() {
                       totals={oiChangeData.oiChangeTotalValues} 
                       isSticky={isHeaderSticky}
                       onToggleSticky={setIsHeaderSticky}
+                      recentImbalances={graphData?.values.slice(-4).map(v => v.oichangeFinalResult.oiChangeTotalValues.totalImbalance) || []}
                     />
                   </div>
 

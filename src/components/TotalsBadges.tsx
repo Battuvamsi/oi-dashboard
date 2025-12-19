@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { ArrowBigUp, ArrowBigDown, ArrowRight } from "lucide-react";
 
 interface TotalsBadgesProps {
   totals: {
@@ -13,9 +14,10 @@ interface TotalsBadgesProps {
   };
   isSticky?: boolean;
   onToggleSticky?: (checked: boolean) => void;
+  recentImbalances?: number[];
 }
 
-export default function TotalsBadges({ totals, isSticky, onToggleSticky }: TotalsBadgesProps) {
+export default function TotalsBadges({ totals, isSticky, onToggleSticky, recentImbalances = [] }: TotalsBadgesProps) {
   const getTrendInfo = () => {
     if (totals.totalImbalance >= 30) {
       return { label: "BULLISH", color: "bg-green-500/90 hover:bg-green-500" };
@@ -27,6 +29,25 @@ export default function TotalsBadges({ totals, isSticky, onToggleSticky }: Total
   };
 
   const trendInfo = getTrendInfo();
+
+  const getTrendArrow = () => {
+    if (!recentImbalances || recentImbalances.length < 4) return null;
+    
+    const [v1, v2, v3, v4] = recentImbalances;
+    
+    // Check strictly increasing (Up)
+    if (v1 < v2 && v2 < v3 && v3 < v4) {
+      return <ArrowBigUp className="h-5 w-5 sm:h-6 sm:w-6 text-green-500 fill-green-500 drop-shadow-sm" />;
+    }
+    
+    // Check strictly decreasing (Down)
+    if (v1 > v2 && v2 > v3 && v3 > v4) {
+      return <ArrowBigDown className="h-5 w-5 sm:h-6 sm:w-6 text-red-500 fill-red-500 drop-shadow-sm" />;
+    }
+    
+    // Otherwise neutral (Horizontal)
+    return <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500 stroke-[3px] drop-shadow-sm" />;
+  };
 
   const badges = [
     { label: "Call OI", value: totals.callOiSum.toLocaleString(), color: "bg-green-500/90 hover:bg-green-500" },
@@ -51,6 +72,7 @@ export default function TotalsBadges({ totals, isSticky, onToggleSticky }: Total
               {badge.label}
             </Badge>
             <span className="text-xs sm:text-sm md:text-base font-bold text-foreground truncate">{badge.value}</span>
+            {badge.label === "Imbalance" && getTrendArrow()}
           </motion.div>
         ))}
         
