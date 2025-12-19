@@ -43,8 +43,8 @@ const InstrumentCard = ({
   isSelected?: boolean;
 }) => {
   const difference = data.ltp - data.close;
-  const changePercentage = data.change;
   const isPositive = difference >= 0;
+  const changePercentage = data.change;
 
   return (
     <div className={`flex-1 ${compact ? 'p-1 sm:p-2' : 'p-2 sm:p-2.5'} rounded-lg border ${
@@ -53,7 +53,7 @@ const InstrumentCard = ({
         : "border-red-500/40 dark:border-red-500/20 bg-gradient-to-br from-red-500/25 to-red-500/5 dark:from-red-500/10 dark:to-card/40"
       } backdrop-blur-sm transition-all duration-300 ${
         isSelected 
-          ? "ring-1 ring-primary border-primary shadow-[0_0_30px_-5px_hsl(var(--primary)/0.5)] scale-[1.05] z-10 bg-background/95 dark:bg-background/80 -translate-y-1" 
+          ? `ring-1 ${isPositive ? "ring-green-500 border-green-500 shadow-[0_0_30px_-5px_rgba(34,197,94,0.6)]" : "ring-red-500 border-red-500 shadow-[0_0_30px_-5px_rgba(239,68,68,0.6)]"} scale-[1.05] z-10 bg-background/95 dark:bg-background/80 -translate-y-1`
           : "opacity-90 hover:opacity-100 hover:bg-card/60 hover:scale-[1.01]"
       }`}>
       <motion.div
