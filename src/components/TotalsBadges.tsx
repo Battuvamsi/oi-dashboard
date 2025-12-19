@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { ArrowBigUp, ArrowBigDown, ArrowBigRight } from "lucide-react";
+import { ArrowBigUp, ArrowBigDown, ArrowLeftRight } from "lucide-react";
 
 interface TotalsBadgesProps {
   totals: {
@@ -46,7 +46,7 @@ export default function TotalsBadges({ totals, isSticky, onToggleSticky, recentI
     }
     
     // Otherwise neutral (Horizontal)
-    return <ArrowBigRight className="h-6 w-6 sm:h-7 sm:w-7 text-yellow-500 fill-yellow-500 drop-shadow-md filter" />;
+    return <ArrowLeftRight className="h-6 w-6 sm:h-7 sm:w-7 text-yellow-500 drop-shadow-md filter" strokeWidth={3} />;
   };
 
   const badges = [
