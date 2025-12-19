@@ -34,36 +34,50 @@ const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { la
   const isPositive = difference >= 0;
 
   return (
-    <div className={`flex-1 ${compact ? 'p-1 sm:p-1.5' : 'p-2 sm:p-2.5'} rounded-md border border-primary/30 bg-gradient-to-br from-primary/5 to-card/70 backdrop-blur-sm hover:border-primary/50 transition-all duration-300`}>
+    <div className={`flex-1 ${compact ? 'p-0.5 sm:p-1' : 'p-2 sm:p-2.5'} rounded-md border border-primary/30 bg-gradient-to-br from-primary/5 to-card/70 backdrop-blur-sm hover:border-primary/50 transition-all duration-300`}>
       <motion.div
         initial={{ opacity: 0, y: -5 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`flex ${showOHLC ? "md:flex-row md:items-start md:justify-between" : "flex-col"} ${compact ? 'gap-0 sm:gap-0.5' : 'gap-1 sm:gap-1.5'}`}
+        className={`flex ${showOHLC ? "md:flex-row md:items-start md:justify-between" : "flex-col"} ${compact ? 'gap-0' : 'gap-1 sm:gap-1.5'}`}
       >
-        <div className={`flex flex-col ${compact ? 'gap-0 sm:gap-0.5' : 'gap-1 sm:gap-1.5'} flex-1`}>
-          <div className={`${compact ? 'text-[8px] sm:text-[9px]' : 'text-[10px] sm:text-xs'} font-semibold text-muted-foreground uppercase tracking-wide`}>
-            {label}
+        {compact ? (
+          <div className="flex flex-row items-center justify-between w-full gap-1 sm:gap-2 px-1">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wide">{label}</div>
+              <span className="text-sm sm:text-base font-bold text-foreground">{data.ltp.toFixed(2)}</span>
+            </div>
+            <div className={`flex items-center gap-1 text-[9px] sm:text-[10px] font-semibold ${isPositive ? "text-green-400" : "text-red-400"}`}>
+              {isPositive ? <TrendingUp className="h-2.5 w-2.5" /> : <TrendingDown className="h-2.5 w-2.5" />}
+              <span>{isPositive ? "+" : ""}{difference.toFixed(2)}</span>
+              <span className="hidden sm:inline">({isPositive ? "+" : ""}{changePercentage.toFixed(2)}%)</span>
+            </div>
           </div>
-          <div className={`flex items-baseline ${compact ? 'gap-0.5 sm:gap-1' : 'gap-1 sm:gap-1.5'}`}>
-            <span className={`${compact ? 'text-lg sm:text-xl md:text-2xl' : 'text-2xl sm:text-3xl md:text-4xl'} font-bold text-foreground`}>{data.ltp.toFixed(2)}</span>
-            <div className={`flex items-center gap-0.5 ${compact ? 'text-[9px] sm:text-[10px]' : 'text-xs sm:text-sm'} font-semibold ${isPositive ? "text-green-400" : "text-red-400"}`}>
-              {isPositive ? <TrendingUp className={compact ? "h-2 w-2" : "h-3 w-3"} /> : <TrendingDown className={compact ? "h-2 w-2" : "h-3 w-3"} />}
-              <span>
-                {isPositive ? "+" : ""}{difference.toFixed(2)}
-              </span>
-              {compact && (
-                <span className="ml-0.5">
-                  ({isPositive ? "+" : ""}{changePercentage.toFixed(2)}%)
+        ) : (
+          <div className={`flex flex-col ${compact ? 'gap-0 sm:gap-0.5' : 'gap-1 sm:gap-1.5'} flex-1`}>
+            <div className={`${compact ? 'text-[8px] sm:text-[9px]' : 'text-[10px] sm:text-xs'} font-semibold text-muted-foreground uppercase tracking-wide`}>
+              {label}
+            </div>
+            <div className={`flex items-baseline ${compact ? 'gap-0.5 sm:gap-1' : 'gap-1 sm:gap-1.5'}`}>
+              <span className={`${compact ? 'text-lg sm:text-xl md:text-2xl' : 'text-2xl sm:text-3xl md:text-4xl'} font-bold text-foreground`}>{data.ltp.toFixed(2)}</span>
+              <div className={`flex items-center gap-0.5 ${compact ? 'text-[9px] sm:text-[10px]' : 'text-xs sm:text-sm'} font-semibold ${isPositive ? "text-green-400" : "text-red-400"}`}>
+                {isPositive ? <TrendingUp className={compact ? "h-2 w-2" : "h-3 w-3"} /> : <TrendingDown className={compact ? "h-2 w-2" : "h-3 w-3"} />}
+                <span>
+                  {isPositive ? "+" : ""}{difference.toFixed(2)}
                 </span>
-              )}
+                {compact && (
+                  <span className="ml-0.5">
+                    ({isPositive ? "+" : ""}{changePercentage.toFixed(2)}%)
+                  </span>
+                )}
+              </div>
             </div>
+            {!compact && (
+              <div className={`${compact ? 'text-[9px] sm:text-[10px]' : 'text-[10px] sm:text-xs'} font-semibold ${isPositive ? "text-green-400" : "text-red-400"}`}>
+                {isPositive ? "+" : ""}{changePercentage.toFixed(2)}%
+              </div>
+            )}
           </div>
-          {!compact && (
-            <div className={`${compact ? 'text-[9px] sm:text-[10px]' : 'text-[10px] sm:text-xs'} font-semibold ${isPositive ? "text-green-400" : "text-red-400"}`}>
-              {isPositive ? "+" : ""}{changePercentage.toFixed(2)}%
-            </div>
-          )}
-        </div>
+        )}
         {showOHLC && (
           <div className="hidden md:flex flex-col gap-1 text-right">
             <div>
@@ -91,7 +105,7 @@ const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { la
 
 export default function LtpBanner({ data, showOHLC = false, compact = false }: LtpBannerProps) {
   return (
-    <div className={`flex ${compact ? 'gap-1.5 sm:gap-2 md:gap-3' : 'gap-2 sm:gap-3 md:gap-4 lg:gap-6'} w-full ${compact ? 'md:max-w-2xl lg:max-w-4xl' : 'md:max-w-3xl lg:max-w-5xl'} mx-auto justify-center`}>
+    <div className={`flex ${compact ? 'gap-1 sm:gap-2' : 'gap-2 sm:gap-3 md:gap-4 lg:gap-6'} w-full ${compact ? 'max-w-full' : 'md:max-w-3xl lg:max-w-5xl'} mx-auto justify-center`}>
       <InstrumentCard label="NIFTY" data={data.nifty} showOHLC={showOHLC} compact={compact} />
       <InstrumentCard label="BANKNIFTY" data={data.banknifty} showOHLC={showOHLC} compact={compact} />
       <InstrumentCard label="SENSEX" data={data.sensex} showOHLC={showOHLC} compact={compact} />
