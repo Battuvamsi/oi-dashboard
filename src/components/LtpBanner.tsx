@@ -131,7 +131,7 @@ export default function LtpBanner({ data, showOHLC = false, compact = false, sel
   };
 
   return (
-    <div className={`flex ${compact ? 'gap-1 sm:gap-2' : 'gap-2 sm:gap-3 md:gap-4 lg:gap-6'} w-full ${compact ? 'max-w-full' : 'md:max-w-3xl lg:max-w-5xl'} mx-auto justify-center`}>
+    <div className={`flex ${compact ? 'gap-2 sm:gap-4' : 'gap-2 sm:gap-3 md:gap-4 lg:gap-6'} w-full ${compact ? 'max-w-full' : 'md:max-w-3xl lg:max-w-5xl'} mx-auto justify-center`}>
       <InstrumentCard 
         label="NIFTY" 
         data={data.nifty} 
