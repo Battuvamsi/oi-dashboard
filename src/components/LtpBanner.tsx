@@ -43,7 +43,7 @@ const InstrumentCard = ({ label, data, showOHLC = false, compact = false }: { la
         {compact ? (
           <div className="flex flex-row items-center justify-between w-full gap-1 sm:gap-2 px-1">
             <div className="flex items-center gap-1.5 sm:gap-2">
-              <div className="text-[9px] sm:text-[10px] font-bold text-muted-foreground uppercase tracking-wide">{label}</div>
+              <div className="text-xs sm:text-sm font-bold text-muted-foreground uppercase tracking-wide">{label}</div>
               <span className="text-sm sm:text-base font-bold text-foreground">{data.ltp.toFixed(2)}</span>
             </div>
             <div className={`flex items-center gap-1 text-[9px] sm:text-[10px] font-semibold ${isPositive ? "text-green-400" : "text-red-400"}`}>
