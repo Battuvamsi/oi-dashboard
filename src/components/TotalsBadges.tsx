@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { ArrowBigUp, ArrowBigDown, ArrowRight } from "lucide-react";
+import { ArrowBigUp, ArrowBigDown, ArrowBigRight } from "lucide-react";
 
 interface TotalsBadgesProps {
   totals: {
@@ -37,16 +37,16 @@ export default function TotalsBadges({ totals, isSticky, onToggleSticky, recentI
     
     // Check strictly increasing (Up)
     if (v1 < v2 && v2 < v3 && v3 < v4) {
-      return <ArrowBigUp className="h-5 w-5 sm:h-6 sm:w-6 text-green-500 fill-green-500 drop-shadow-sm" />;
+      return <ArrowBigUp className="h-6 w-6 sm:h-7 sm:w-7 text-green-500 fill-green-500 drop-shadow-md filter" />;
     }
     
     // Check strictly decreasing (Down)
     if (v1 > v2 && v2 > v3 && v3 > v4) {
-      return <ArrowBigDown className="h-5 w-5 sm:h-6 sm:w-6 text-red-500 fill-red-500 drop-shadow-sm" />;
+      return <ArrowBigDown className="h-6 w-6 sm:h-7 sm:w-7 text-red-500 fill-red-500 drop-shadow-md filter" />;
     }
     
     // Otherwise neutral (Horizontal)
-    return <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500 stroke-[3px] drop-shadow-sm" />;
+    return <ArrowBigRight className="h-6 w-6 sm:h-7 sm:w-7 text-yellow-500 fill-yellow-500 drop-shadow-md filter" />;
   };
 
   const badges = [
