@@ -38,10 +38,24 @@ export default function AdminRangeUpdate() {
   const fetchRanges = async () => {
     setIsFetchingRanges(true);
     try {
-      const response = await fetch("https://ticker.pollenprints.in/cache/minmax");
+      const response = await fetch("https://ticker.pollenprints.in/api/minmax/minmaxdb");
       if (response.ok) {
         const data = await response.json();
-        setCurrentRanges(data.all);
+        
+        // Transform array response to object map
+        const rangesMap: AllRanges = {};
+        if (Array.isArray(data)) {
+          data.forEach((item: any) => {
+            if (item.symbol) {
+              rangesMap[item.symbol] = {
+                symbol: item.symbol,
+                minimum: item.minimum,
+                maximum: item.maximum
+              };
+            }
+          });
+          setCurrentRanges(rangesMap);
+        }
       }
     } catch (error) {
       console.error("Failed to fetch current ranges:", error);
