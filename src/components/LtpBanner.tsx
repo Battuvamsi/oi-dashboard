@@ -53,8 +53,8 @@ const InstrumentCard = ({
         : "border-red-500/40 dark:border-red-500/20 bg-gradient-to-br from-red-500/25 to-red-500/5 dark:from-red-500/10 dark:to-card/40"
       } backdrop-blur-sm transition-all duration-300 ${
         isSelected 
-          ? `ring-1 ${isPositive ? "ring-green-500 border-green-500 shadow-[0_0_30px_-5px_rgba(34,197,94,0.6)]" : "ring-red-500 border-red-500 shadow-[0_0_30px_-5px_rgba(239,68,68,0.6)]"} scale-[1.05] z-10 bg-background/95 dark:bg-background/80 -translate-y-1`
-          : "opacity-90 hover:opacity-100 hover:bg-card/60 hover:scale-[1.01]"
+          ? `ring-2 ${isPositive ? "ring-green-500 border-green-500 shadow-[0_0_40px_-5px_rgba(34,197,94,0.6)]" : "ring-red-500 border-red-500 shadow-[0_0_40px_-5px_rgba(239,68,68,0.6)]"} scale-[1.05] z-10 bg-background/80 backdrop-blur-xl -translate-y-1.5`
+          : "opacity-70 hover:opacity-100 hover:bg-card/40 hover:scale-[1.01] grayscale-[0.3] hover:grayscale-0"
       }`}>
       <motion.div
         initial={{ opacity: 0, y: -5 }}
