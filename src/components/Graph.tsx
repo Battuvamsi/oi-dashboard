@@ -74,18 +74,21 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
     const graphWidth = width - padding.left - padding.right;
     const graphHeight = height - padding.top - padding.bottom;
 
-    // Filter data to show market hours
-    // Widened range to accommodate both UTC (03:45 start) and IST-as-UTC (09:15 start) formats
+    // Filter data to show market hours in IST
     const filteredData = data.values.filter((point) => {
       if (!point.dateTime) return false;
       const date = new Date(point.dateTime);
-      const hours = date.getUTCHours();
       
-      // Accept data from 3 AM to 4 PM UTC
-      // This covers:
-      // - Real UTC: 03:45 (9:15 IST) to 10:00 (15:30 IST)
-      // - IST as UTC: 09:15 to 15:30
-      return hours >= 3 && hours <= 16;
+      // Convert to IST (UTC+5:30) for filtering
+      const istOffset = 5.5 * 60 * 60 * 1000;
+      const istDate = new Date(date.getTime() + istOffset);
+      
+      const hours = istDate.getUTCHours();
+      const minutes = istDate.getUTCMinutes();
+      const timeInMinutes = hours * 60 + minutes;
+      
+      // Filter for 9:00 AM to 4:00 PM IST (540 to 960 minutes)
+      return timeInMinutes >= 540 && timeInMinutes <= 960;
     });
 
     // If no data in the time range, show empty graph
@@ -366,14 +369,14 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
           if (shouldLabel) {
             const date = new Date(point.dateTime);
             const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
-            const label = date.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
+            const label = date.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Kolkata' });
             const yPosition = height - padding.bottom + 20;
             ctx.fillText(label, x, yPosition);
           }
         });
       } else if (clampedData.length === 1) {
         const date = new Date(clampedData[0].dateTime);
-        const label = date.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
+        const label = date.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Kolkata' });
         const x = padding.left + graphWidth / 2;
         const yPosition = height - padding.bottom + 20;
         ctx.fillText(label, x, yPosition);
@@ -466,10 +469,17 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
     const filteredData = data.values.filter((point) => {
       if (!point.dateTime) return false;
       const date = new Date(point.dateTime);
-      const hours = date.getUTCHours();
       
-      // Accept data from 3 AM to 4 PM UTC
-      return hours >= 3 && hours <= 16;
+      // Convert to IST (UTC+5:30) for filtering
+      const istOffset = 5.5 * 60 * 60 * 1000;
+      const istDate = new Date(date.getTime() + istOffset);
+      
+      const hours = istDate.getUTCHours();
+      const minutes = istDate.getUTCMinutes();
+      const timeInMinutes = hours * 60 + minutes;
+      
+      // Filter for 9:00 AM to 4:00 PM IST
+      return timeInMinutes >= 540 && timeInMinutes <= 960;
     });
 
     if (filteredData.length === 0) {
@@ -498,7 +508,7 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
     if (dataIndex >= 0 && dataIndex < clampedData.length) {
       const point = clampedData[dataIndex];
       const date = new Date(filteredData[dataIndex].dateTime);
-      const timeStr = date.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
+      const timeStr = date.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Kolkata' });
       
       let tooltipContent = `Time: ${timeStr}`;
       if (showImbalance) {
