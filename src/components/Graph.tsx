@@ -74,13 +74,12 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
     const graphWidth = width - padding.left - padding.right;
     const graphHeight = height - padding.top - padding.bottom;
 
-    // Filter data to only show 9:10 AM to 4:00 PM IST
+    // Filter data to only show 9:10 AM to 4:00 PM (using UTC)
     const filteredData = data.values.filter((point) => {
       if (!point.dateTime) return false;
-      const utcDate = new Date(point.dateTime);
-      const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
-      const hours = istDate.getHours();
-      const minutes = istDate.getMinutes();
+      const date = new Date(point.dateTime);
+      const hours = date.getUTCHours();
+      const minutes = date.getUTCMinutes();
       
       if (hours === 9 && minutes >= 10) return true;
       if (hours > 9 && hours < 16) return true;
@@ -93,7 +92,7 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
       ctx.fillStyle = isDarkMode ? "#d1d5db" : "#6b7280";
       ctx.font = "14px sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("No data available for 9:10 AM - 4:00 PM IST", width / 2, height / 2);
+      ctx.fillText("No data available for 9:10 AM - 4:00 PM", width / 2, height / 2);
       return;
     }
 
@@ -263,10 +262,9 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
               ctx.stroke();
             }
 
-            // Display value at 30-minute intervals - using IST
-            const utcDate = new Date(point.dateTime);
-            const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
-            const minutes = istDate.getMinutes();
+            // Display value at 30-minute intervals
+            const date = new Date(point.dateTime);
+            const minutes = date.getMinutes();
             const shouldShowValue = minutes === 0 || minutes === 30 || isLast;
             
             if (shouldShowValue) {
@@ -331,10 +329,9 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
                 ctx.stroke();
               }
 
-              // Display PCR value at 30-minute intervals - using IST
-              const utcDate = new Date(point.dateTime);
-              const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
-              const minutes = istDate.getMinutes();
+              // Display PCR value at 30-minute intervals
+              const date = new Date(point.dateTime);
+              const minutes = date.getMinutes();
               const shouldShowValue = minutes === 0 || minutes === 30 || isLast;
               
               if (shouldShowValue) {
@@ -348,7 +345,7 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
         }
       }
 
-      // Draw X-axis labels dynamically - converted to IST (drawn last for visibility)
+      // Draw X-axis labels dynamically - using UTC (drawn last for visibility)
       ctx.fillStyle = isDarkMode ? "#d1d5db" : "#374151";
       ctx.textAlign = "center";
       ctx.font = isMobile ? "10px sans-serif" : "12px sans-serif";
@@ -366,18 +363,16 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
                              index % labelInterval === 0;
           
           if (shouldLabel) {
-            const utcDate = new Date(point.dateTime);
-            const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+            const date = new Date(point.dateTime);
             const x = padding.left + (index / (clampedData.length - 1)) * graphWidth;
-            const label = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
+            const label = date.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
             const yPosition = height - padding.bottom + 20;
             ctx.fillText(label, x, yPosition);
           }
         });
       } else if (clampedData.length === 1) {
-        const utcDate = new Date(clampedData[0].dateTime);
-        const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
-        const label = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
+        const date = new Date(clampedData[0].dateTime);
+        const label = date.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
         const x = padding.left + graphWidth / 2;
         const yPosition = height - padding.bottom + 20;
         ctx.fillText(label, x, yPosition);
@@ -466,13 +461,12 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
       return;
     }
 
-    // Filter data to only show 9:10 AM to 4:00 PM IST
+    // Filter data to only show 9:10 AM to 4:00 PM (using UTC)
     const filteredData = data.values.filter((point) => {
       if (!point.dateTime) return false;
-      const utcDate = new Date(point.dateTime);
-      const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
-      const hours = istDate.getHours();
-      const minutes = istDate.getMinutes();
+      const date = new Date(point.dateTime);
+      const hours = date.getUTCHours();
+      const minutes = date.getUTCMinutes();
       
       if (hours === 9 && minutes >= 10) return true;
       if (hours > 9 && hours < 16) return true;
@@ -505,17 +499,15 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
     
     if (dataIndex >= 0 && dataIndex < clampedData.length) {
       const point = clampedData[dataIndex];
-      const utcDate = new Date(filteredData[dataIndex].dateTime);
-      // Convert UTC to IST for tooltip display
-      const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
-      const timeStr = istDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false });
+      const date = new Date(filteredData[dataIndex].dateTime);
+      const timeStr = date.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
       
       let tooltipContent = `Time: ${timeStr}`;
       if (showImbalance) {
-        tooltipContent += `\\nImbalance: ${point.clampedImbalance.toFixed(2)}`;
+        tooltipContent += `\nImbalance: ${point.clampedImbalance.toFixed(2)}`;
       }
       if (point.pcr !== undefined && point.pcr !== null && showPCR) {
-        tooltipContent += `\\nPCR: ${point.pcr.toFixed(4)}`;
+        tooltipContent += `\nPCR: ${point.pcr.toFixed(4)}`;
       }
 
       // Calculate the exact position of the data point on the canvas
