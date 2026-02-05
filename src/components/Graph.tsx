@@ -74,17 +74,18 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
     const graphWidth = width - padding.left - padding.right;
     const graphHeight = height - padding.top - padding.bottom;
 
-    // Filter data to only show 9:10 AM to 4:00 PM (using UTC)
+    // Filter data to show market hours
+    // Widened range to accommodate both UTC (03:45 start) and IST-as-UTC (09:15 start) formats
     const filteredData = data.values.filter((point) => {
       if (!point.dateTime) return false;
       const date = new Date(point.dateTime);
       const hours = date.getUTCHours();
-      const minutes = date.getUTCMinutes();
       
-      if (hours === 9 && minutes >= 10) return true;
-      if (hours > 9 && hours < 16) return true;
-      if (hours === 16 && minutes === 0) return true;
-      return false;
+      // Accept data from 3 AM to 4 PM UTC
+      // This covers:
+      // - Real UTC: 03:45 (9:15 IST) to 10:00 (15:30 IST)
+      // - IST as UTC: 09:15 to 15:30
+      return hours >= 3 && hours <= 16;
     });
 
     // If no data in the time range, show empty graph
@@ -92,7 +93,7 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
       ctx.fillStyle = isDarkMode ? "#d1d5db" : "#6b7280";
       ctx.font = "14px sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("No data available for 9:10 AM - 4:00 PM", width / 2, height / 2);
+      ctx.fillText("No data available for market hours", width / 2, height / 2);
       return;
     }
 
@@ -461,17 +462,14 @@ export default function Graph({ data, isSticky = false, onToggleSticky }: GraphP
       return;
     }
 
-    // Filter data to only show 9:10 AM to 4:00 PM (using UTC)
+    // Filter data to show market hours (matching the main render logic)
     const filteredData = data.values.filter((point) => {
       if (!point.dateTime) return false;
       const date = new Date(point.dateTime);
       const hours = date.getUTCHours();
-      const minutes = date.getUTCMinutes();
       
-      if (hours === 9 && minutes >= 10) return true;
-      if (hours > 9 && hours < 16) return true;
-      if (hours === 16 && minutes === 0) return true;
-      return false;
+      // Accept data from 3 AM to 4 PM UTC
+      return hours >= 3 && hours <= 16;
     });
 
     if (filteredData.length === 0) {
